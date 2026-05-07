@@ -1,0 +1,12 @@
+cff-version: 1.2.0
+title: "Pigmentation Genetics in Archaic Hominins: Evaluating DNA phenotyping in Neanderthal and Denisovan genomes"
+message: "If you use this project, please cite it as below."
+type: software
+authors:
+  - family-names: Heald
+    given-names: Lily
+repository-code: "https://github.com/lilyheald/PAINT"
+url: "https://lilyheald.github.io/PAINT/"
+license: MIT
+version: "0.1.0"
+date-released: 2026-05-07
