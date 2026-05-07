@@ -395,7 +395,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2026-04-17
+<strong>Last updated:</strong> 2026-05-07
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -526,15 +526,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomlilyhealdPAINTtreeb5dbe40ee9b4d31c30ba87d75c1cf5709bcef74etargetblankb5dbe40a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomlilyhealdPAINTtree1c4a9434173f0b8165dadf4a9d2b67e6a789ab25targetblank1c4a943a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/lilyheald/PAINT/tree/b5dbe40ee9b4d31c30ba87d75c1cf5709bcef74e" target="_blank">b5dbe40</a>
+<a href="https://github.com/lilyheald/PAINT/tree/1c4a9434173f0b8165dadf4a9d2b67e6a789ab25" target="_blank">1c4a943</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomlilyhealdPAINTtreeb5dbe40ee9b4d31c30ba87d75c1cf5709bcef74etargetblankb5dbe40a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomlilyhealdPAINTtree1c4a9434173f0b8165dadf4a9d2b67e6a789ab25targetblank1c4a943a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -544,7 +544,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/lilyheald/PAINT/tree/b5dbe40ee9b4d31c30ba87d75c1cf5709bcef74e" target="_blank">b5dbe40</a>.
+<a href="https://github.com/lilyheald/PAINT/tree/1c4a9434173f0b8165dadf4a9d2b67e6a789ab25" target="_blank">1c4a943</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -683,6 +683,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/lilyheald/PAINT/blob/1c4a9434173f0b8165dadf4a9d2b67e6a789ab25/analysis/depth.Rmd" target="_blank">1c4a943</a>
+</td>
+<td>
+Lily Heald
+</td>
+<td>
+2026-05-07
+</td>
+<td>
+Update depth.Rmd
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/lilyheald/PAINT/a44460df897dc5b6f8bf47a64aa8cc444808a00a/docs/depth.html" target="_blank">a44460d</a>
+</td>
+<td>
+Lily Heald
+</td>
+<td>
+2026-04-17
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1375,17 +1409,19 @@ rates of ~1% (Sawyer et al., 2012).</p>
 a function of sequencing depth and per-base error rate using a binomial
 distribution. For a given read depth (n), we assumed that each read
 represents an independent observation of the underlying true base with a
-constant per-base error rate (). The probability that an individual read
-reports the correct nucleotide was defined as p = 1-, assuming
-independence among reads and symmetric errors. Consensus accuracy was
-defined as a simple majority rule, meaning that a site was correctly
-called if more than half of the reads supported the true base k = n/2 +
-1. For each combination of depth and error rate, the probability that
-the consensus call is correct is given by the cumulative binomial
-distribution. This formulation models errors as independent Bernoulli
-trials; however, it is important to note that ancient DNA damage
-violates this assumption due to systematic position-dependent
-errors.</p>
+constant per-base error rate (<span
+class="math inline">\(\epsilon\)</span>). The probability that an
+individual read reports the correct nucleotide was defined as <span
+class="math inline">\(p = 1-\epsilon\)</span>, assuming independence
+among reads and symmetric errors. Consensus accuracy was defined as a
+simple majority rule, meaning that a site was correctly called if more
+than half of the reads supported the true base <span
+class="math inline">\(k = \lfloor{n/2}\rfloor + 1\)</span>. For each
+combination of depth and error rate, the probability that the consensus
+call is correct is given by the cumulative binomial distribution. This
+formulation models errors as independent Bernoulli trials; however, it
+is important to note that ancient DNA damage violates this assumption
+due to systematic position-dependent errors.</p>
 <p>To assess the impact of systematic position-dependent damage typical
 of ancient DNA, a position-dependent error model was implemented in
 which per-base error rates vary as a function of distance from fragment
