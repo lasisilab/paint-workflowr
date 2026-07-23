@@ -65,7 +65,7 @@ Owner tags: **(TL)** Tina · **(LH)** Lily · **(YP)** Yemko. Priority: 🔴 hig
 ### D. Writing & lit review
 - [ ] **D1 · Archaic-pigmentation lit review** 🔴 (LH). Undermind search "archaic skin" → use Claude to screen 50–100 papers (new-data / selection papers on archaics since ~2000; pull supplementaries; then search the curated gene list for mentions). Must-know anchors: Lalueza-Fox 2007 (MC1R) + its rebuttals; Omer Gokcumen (Buffalo) archaic/skin work. Feeds both TIG and PAINT.
 - [ ] **D2 · TIG review manuscript** 🔴 (LH/TL). Prioritize — no new analysis needed. Keep TIG vs PAINT tasks differentiated.
-- [ ] **D3 · PAINT paper** 🟡 (TL/LH/YP). Draft title: *"The genetic landscape of pigmentation in our hominins."* Resolve the acronym (§5); TL to scope target journals. Framing: get the archaic-pigmentation *landscape* out before anyone else scoops it; complexity can come in review.
+- [ ] **D3 · PAINT paper** 🟡 (TL/LH/YP). Draft title: *"The genetic landscape of pigmentation in archaic hominins."* Resolve the acronym (§5); TL to scope target journals. Framing: get the archaic-pigmentation *landscape* out before anyone else scoops it; complexity can come in review.
 
 ---
 
@@ -88,3 +88,12 @@ All the pigmentation datasets — including the melanogenesis-network backbone �
 | **Prediction panel** | **HIrisPlex-S** — Chaitanya et al. 2018 (+ Walsh 2017 skin model) | 36 markers → 16 genes (full MC1R red-hair set + blue-eye HERC2/OCA2). Numeric coefficients are an **optional fetch** (Walsh 2017 + Erasmus MC tool), needed only for quantitative probabilities. | SNPs |
 
 Supporting identity/annotation databases (UniProt, MyGene, HGNC gene groups, OmniPath, KEGG hsa04916, STRING v12) and additional population GWAS (**Kim 2024** East-Asian; **Martin 2017** KhoeSan) are also in that repo. **Key structural point (→ B6):** Raghunath / Baxter / Bajpai / D'Arcy are **gene-level**; GWAS Catalog / HIrisPlex are **SNP-level**.
+
+**Direct links** (public repo `tinalasisi/pigmentation-gene-network`, branch `main`):
+- Manifest: [`DATA_SOURCES.md`](https://github.com/tinalasisi/pigmentation-gene-network/blob/main/DATA_SOURCES.md)
+- GWAS Catalog: [`data/external/gwas_catalog/pigmentation_gwas_catalog.csv`](https://github.com/tinalasisi/pigmentation-gene-network/blob/main/data/external/gwas_catalog/pigmentation_gwas_catalog.csv)
+- CRISPR (Bajpai): [`data/processed/bajpai2023_crispr_hits.csv`](https://github.com/tinalasisi/pigmentation-gene-network/blob/main/data/processed/bajpai2023_crispr_hits.csv)
+- Cross-species (Baxter): [`data/processed/baxter2018_650_pigmentation_genes.csv`](https://github.com/tinalasisi/pigmentation-gene-network/blob/main/data/processed/baxter2018_650_pigmentation_genes.csv)
+- Melanogenesis network (Raghunath): [`data/processed/raghunath_edges_typed_signed.csv`](https://github.com/tinalasisi/pigmentation-gene-network/blob/main/data/processed/raghunath_edges_typed_signed.csv) (+ `raghunath_nodes_typed.csv`, raw in `data/raw/raghunath2015/`)
+- PPI (D'Arcy): [`data/raw/darcy2023/`](https://github.com/tinalasisi/pigmentation-gene-network/tree/main/data/raw/darcy2023)
+- **HIrisPlex-S markers:** [`data/processed/hirisplexs2018_markers.csv`](https://github.com/tinalasisi/pigmentation-gene-network/blob/main/data/processed/hirisplexs2018_markers.csv) (extraction: [`notebooks/01c_extract_hirisplex_markers.ipynb`](https://github.com/tinalasisi/pigmentation-gene-network/blob/main/notebooks/01c_extract_hirisplex_markers.ipynb))

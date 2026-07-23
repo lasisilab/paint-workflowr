@@ -43,7 +43,7 @@ Decisions and directions set for the next phase (recorded verbatim-in-spirit; se
 - **DECIDED** — Answer "what color were they?" in two steps: (1) GWAS betas → directionality-only **polygenic score** (+1/−1), optionally skin-only / ≥2-hit; (2) **MC1R** red-hair-variant check (expected null, reconfirm).
 - **DECIDED** — Redo PCA in **three variants** (pigmentation SNPs / whole pigmentation-related genes / genome-wide), with two designs (everybody-together vs. moderns-with-ancients-projected).
 - **DECIDED** — Move the repo into the **Lasisi Lab GitHub org**; set up a **PODFRIDGE-style** cluster-compatible workflow (Lily develops locally, Tina runs cluster steps).
-- **DECIDED** — Prioritize the **TIG review** manuscript (no new analysis); keep it differentiated from the primary **PAINT** paper. Draft PAINT title: *"The genetic landscape of pigmentation in our hominins."*
+- **DECIDED** — Prioritize the **TIG review** manuscript (no new analysis); keep it differentiated from the primary **PAINT** paper. Draft PAINT title: *"The genetic landscape of pigmentation in archaic hominins."*
 - **OPEN** — Whether any datasets are gene-level vs. SNP-level (network is genes) — affects weighting; to be checked (now largely resolved by the pigmentation-gene-network structure).
 - **ACTIONS assigned** — Lily: lit review (Undermind → Claude paper screen), move repo, "where everything lives" doc, subset to skin-specific genes. Tina: update code for 4 datasets, curate gene lists, organize cluster runs, target-journal scoping. Yemko: archaic-data API queries (e.g. EGA), skin-specific expression.
 

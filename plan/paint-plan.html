@@ -171,17 +171,17 @@
 
     <div class="prov">
       <h3>Where each dataset comes from</h3>
-      <p style="font-size:.88rem;color:var(--ink-2)">Full provenance (endpoints, licenses, freeze dates) lives in <code>pigmentation-gene-network/DATA_SOURCES.md</code>.</p>
+      <p style="font-size:.88rem;color:var(--ink-2)">All from the public repo <a href="https://github.com/tinalasisi/pigmentation-gene-network"><code>tinalasisi/pigmentation-gene-network</code></a> — <strong>each dataset name links to its file</strong>; full provenance (endpoints, licenses, freeze dates) in <a href="https://github.com/tinalasisi/pigmentation-gene-network/blob/main/DATA_SOURCES.md">DATA_SOURCES.md</a>.</p>
       <div class="table-scroll">
         <table>
-          <thead><tr><th>Dataset</th><th>Origin</th><th>What / how acquired</th><th>Level</th></tr></thead>
+          <thead><tr><th>Dataset (→ source file)</th><th>Origin</th><th>What / how acquired</th><th>Level</th></tr></thead>
           <tbody>
-            <tr><td><strong>Melanogenesis network</strong> ("Raghunath")</td><td>Raghunath et al. 2015, <em>BMC Res Notes</em></td><td>265-node / 429 signed-directed melanogenesis backbone; curated <strong>in-lab as prior PAINT work</strong> — the mechanistic core everything else annotates.</td><td>genes</td></tr>
-            <tr><td><strong>GWAS Catalog</strong></td><td>NHGRI-EBI (Sollis 2023)</td><td>Pigmentation associations via API (<code>gwas_catalog.py</code>); 1,072 lead SNPs + 723 gene-level.</td><td>SNPs</td></tr>
-            <tr><td><strong>CRISPR screen</strong></td><td>Bajpai et al. 2023, <em>Science</em></td><td>Genome-wide screen; 169 hits (q&lt;0.10) with direction.</td><td>genes</td></tr>
-            <tr><td><strong>Cross-species</strong></td><td>Baxter et al. 2018/19, <em>PCMR</em></td><td>635 human genes + mouse/zebrafish orthologs.</td><td>genes</td></tr>
-            <tr><td><strong>PPI expansion</strong></td><td>D'Arcy et al. 2023, <em>Bioengineering</em></td><td>243-gene OMIM table + 451-node STRING PPI.</td><td>genes</td></tr>
-            <tr><td><strong>Prediction panel</strong></td><td>HIrisPlex-S (Chaitanya 2018 / Walsh 2017)</td><td>36 markers → 16 genes; coefficients = optional fetch.</td><td>SNPs</td></tr>
+            <tr><td><a href="https://github.com/tinalasisi/pigmentation-gene-network/blob/main/data/processed/raghunath_edges_typed_signed.csv"><strong>Melanogenesis network</strong> ("Raghunath")</a></td><td>Raghunath et al. 2015, <em>BMC Res Notes</em></td><td>265-node / 429 signed-directed melanogenesis backbone; curated <strong>in-lab as prior PAINT work</strong> — the mechanistic core everything else annotates.</td><td>genes</td></tr>
+            <tr><td><a href="https://github.com/tinalasisi/pigmentation-gene-network/blob/main/data/external/gwas_catalog/pigmentation_gwas_catalog.csv"><strong>GWAS Catalog</strong></a></td><td>NHGRI-EBI (Sollis 2023)</td><td>Pigmentation associations via API (<code>gwas_catalog.py</code>); 1,072 lead SNPs + 723 gene-level.</td><td>SNPs</td></tr>
+            <tr><td><a href="https://github.com/tinalasisi/pigmentation-gene-network/blob/main/data/processed/bajpai2023_crispr_hits.csv"><strong>CRISPR screen</strong></a></td><td>Bajpai et al. 2023, <em>Science</em></td><td>Genome-wide screen; 169 hits (q&lt;0.10) with direction.</td><td>genes</td></tr>
+            <tr><td><a href="https://github.com/tinalasisi/pigmentation-gene-network/blob/main/data/processed/baxter2018_650_pigmentation_genes.csv"><strong>Cross-species</strong></a></td><td>Baxter et al. 2018/19, <em>PCMR</em></td><td>635 human genes + mouse/zebrafish orthologs.</td><td>genes</td></tr>
+            <tr><td><a href="https://github.com/tinalasisi/pigmentation-gene-network/tree/main/data/raw/darcy2023"><strong>PPI expansion</strong></a></td><td>D'Arcy et al. 2023, <em>Bioengineering</em></td><td>243-gene OMIM table + 451-node STRING PPI.</td><td>genes</td></tr>
+            <tr><td><a href="https://github.com/tinalasisi/pigmentation-gene-network/blob/main/data/processed/hirisplexs2018_markers.csv"><strong>HIrisPlex-S</strong> (prediction panel)</a></td><td>Chaitanya 2018 / Walsh 2017</td><td>36 markers → 16 genes; full MC1R red-hair set + blue-eye HERC2/OCA2. Coefficients = optional fetch (Walsh 2017). Extraction: <a href="https://github.com/tinalasisi/pigmentation-gene-network/blob/main/notebooks/01c_extract_hirisplex_markers.ipynb">notebook 01c</a>.</td><td>SNPs</td></tr>
           </tbody>
         </table>
       </div>
@@ -346,7 +346,7 @@ pca_ancient.slurm:19: REF=".../reference/hg19.fa"   <span class="cmt"># referenc
       <ul class="checklist">
         <li><span class="box"></span><span class="body"><span class="item-head"><span class="idt">D1</span><span class="t">Archaic-pigmentation lit review</span><span class="pri">🔴</span><span class="who">LH</span></span><div class="item-note">Undermind "archaic skin" → Claude-screen 50–100 papers (new-data/selection papers since ~2000 → supplementaries → search the gene list). Anchors: Lalueza-Fox 2007 + rebuttals; Omer Gokcumen. Feeds both papers.</div></span></li>
         <li><span class="box"></span><span class="body"><span class="item-head"><span class="idt">D2</span><span class="t">TIG review manuscript</span><span class="pri">🔴</span><span class="who">LH</span><span class="who">TL</span></span><div class="item-note">Prioritize — no new analysis. Keep TIG vs PAINT tasks separate.</div></span></li>
-        <li><span class="box"></span><span class="body"><span class="item-head"><span class="idt">D3</span><span class="t">PAINT paper</span><span class="pri">🟡</span><span class="who">TL</span><span class="who">LH</span><span class="who">YP</span></span><div class="item-note">Draft title: <em>"The genetic landscape of pigmentation in our hominins."</em> Resolve the PAINT acronym; Tina scopes journals. Get the landscape out before it's scooped.</div></span></li>
+        <li><span class="box"></span><span class="body"><span class="item-head"><span class="idt">D3</span><span class="t">PAINT paper</span><span class="pri">🟡</span><span class="who">TL</span><span class="who">LH</span><span class="who">YP</span></span><div class="item-note">Draft title: <em>"The genetic landscape of pigmentation in archaic hominins."</em> Resolve the PAINT acronym; Tina scopes journals. Get the landscape out before it's scooped.</div></span></li>
       </ul>
     </div>
   </section>
