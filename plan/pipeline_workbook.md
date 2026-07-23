@@ -287,7 +287,7 @@ mod1 <- glmer(Missing ~ factor(Chromosome) + age_scaled + (1|Coverage) + (1|Samp
 | 4 | **`--ploidy 1`** haploid autosomal calling; ploidy inconsistent with pigmentation calls | A4c | 🟡 |
 | 5 | **`subset_sgdp` `-R` region-string bug** — `chr:from-to` file not parsed by `view -R` | B (subset_sgdp) | 🟡 |
 | 6 | **Coordinate-convention split** — `sgdp.snps.pos` used 1-based vs 0-based across scripts | B2, get_simons | 🟡 |
-| 7 | **`glmer (1|Coverage)`** redundant/nested with `(1|Sample)` | E8c | 🟡 |
+| 7 | **glmer redundant random effects** — Coverage is per-sample, so its random intercept is collinear/nested with the Sample random intercept (expect singular fit) | E8c | 🟡 |
 | 8 | Competing/dead scripts (`-mv`, `sgdp_merge_panel`, `vcf_merge`, `ancient_merge`, `pca_ancient`, `pig_pca_proj`) | many | ⚪ cleanup |
 | 9 | Hardcoded laptop paths; missing derived CSVs; hardcoded PCA label rows | E8a/b/d | ⚪ |
 | 10 | No version pinning (bcftools/plink2/R); no `set.seed`; no aDNA damage handling visible | all | ⚪ traceability |

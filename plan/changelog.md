@@ -6,6 +6,11 @@ Legend: **DONE** = action taken · **FOUND** = finding/evidence · **DECIDED** =
 
 ---
 
+## 2026-07-23 — Workbook table fix + reviewer-driven evaluation/QC plan
+
+- **FIX** — `pipeline_workbook.md` known-issues table row 7 rendered broken on GitHub: the cell contained literal `|` inside inline code (`(1|Coverage)`, `(1|Sample)`), which the Markdown table parser read as extra column separators. Rephrased the cell to drop the pipes. (Verified it was the only such offender; code fences balanced; mermaid diagram fine.)
+- **DONE** — Added [`evaluation_plan.md`](evaluation_plan.md): a reviewer-driven, unit-test-style QC/evaluation plan. Works backwards from a skeptical reviewer ("what wouldn't I believe; what are the classic failure modes") into 10 concrete, runnable tests on defined units, ordered by importance. Two principles: provenance-before-analysis, and reproduce-known-truth-first (positive controls). Covers provenance manifest + checksums (genomes, SNP panel, gene coords), build/contig-naming lint (tracer SNPs), the SGDP-PCA positive control, allele/annotation harmonization, PCA/projection non-degeneracy, coverage expectations, sample identity/sex/contamination, aDNA damage, cross-validation vs published results, and reproducibility infra (versions/seeds/DAG/CI). Each item pairs a test with a communication artifact (build-harmonization matrix, SNP funnel, per-sample QC dashboard, auto-generated pipeline DAG). Awaiting Tina's evaluation before implementing.
+
 ## 2026-07-23 — Pipeline audit workbook
 
 - **DONE** — Wrote [`pipeline_workbook.md`](pipeline_workbook.md): a step-by-step, audit-oriented record of the whole bioinformatics pipeline (acquire → depth/filter → archaic calling → SGDP subset/merge → PCA → projection → R analysis). Per step: exact command + tool + module/version, inputs/outputs (path · format · upstream source), key parameters, and a "⚠ Verify" reviewer worklist. Includes a mermaid data-flow diagram, a "which scripts are canonical" table (the pipeline has several competing/dead scripts), a known-issues table, an audit checklist, and a reproduce-from-scratch order. Built by fanning out per-stage extraction over the verbatim script text (repo-only doc; lists cluster paths).
