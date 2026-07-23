@@ -197,7 +197,7 @@
     <div class="sources">
       <div class="src"><span class="tag">Reviewed</span><h3>Repo</h3><p><code>lasisilab/paint-workflowr</code> — the analysis website (built with the R tool <em>workflowr</em>), small data files, and scripts.</p></div>
       <div class="src"><span class="tag">Reviewed</span><h3>Thesis</h3><p>Lily's 41-page honors thesis (20 Apr 2026) — the completed first version of the work.</p></div>
-      <div class="src"><span class="tag">Inventoried</span><h3>Cluster</h3><p>110 GB on UMich "Great Lakes" — the full 19-job compute pipeline and all the large genomic files.</p></div>
+      <div class="src"><span class="tag">Inventoried</span><h3>Cluster</h3><p>110 GB on UMich "Great Lakes" — the full ~19-job compute pipeline and all the large genomic files. Full inventory: <code>plan/cluster_inventory.md</code> in the repo.</p></div>
     </div>
     <div class="callout">
       <h4>Datasets — already assembled, on hg38, in a public repo</h4>
@@ -354,6 +354,27 @@ pca_ancient.slurm:19: REF=".../reference/hg19.fa"   <span class="cmt"># referenc
   <!-- ANALYSIS -->
   <section id="analysis">
     <div class="sec-head"><span class="sec-num">06</span><h2>Analysis redesign</h2><span style="margin-left:auto;font-size:.8rem;color:var(--ink-3)">from the 17 Jun meeting</span></div>
+
+    <details class="ev" style="margin-top:16px">
+      <summary>The analyses we agreed on the 17 June call (transcript → item)</summary>
+      <ol style="margin:12px 0 4px; padding-left:22px; font-size:.9rem; color:var(--ink-2); line-height:1.7">
+        <li>Layered <strong>coverage</strong> of pigmentation loci across the four datasets (GWAS-only, then + CRISPR, + melanogenesis network, + cross-species) → <strong>B1</strong>.</li>
+        <li><strong>"What color were they?"</strong>: (a) GWAS betas → a <strong>directionality</strong> score (optionally skin-pigmentation and/or ≥2-hit SNPs); (b) the <strong>MC1R</strong> red-hair check → <strong>B3</strong>.</li>
+        <li><strong>PCA redone</strong> three ways (pigmentation SNPs / whole pigmentation genes / genome-wide) × two designs → <strong>B4</strong>.</li>
+        <li><strong>Missingness</strong> strategy (masking all → &lt;50 SNPs; focus high-coverage, move to gene level) → <strong>B5</strong>.</li>
+        <li>Keep <strong>genes vs SNPs</strong> distinct (network = genes; pull gene start/stop coordinates) → <strong>B6</strong>.</li>
+        <li><strong>Functional / exome</strong>: synonymous:non-synonymous ratio; annotate coding effects → <strong>B7</strong>.</li>
+        <li><strong>Skin-specific gene</strong> focus (TYR, OCA2, TYRP1, DCT, PMEL, MLANA) across moderns and archaics → <strong>B7</strong>.</li>
+        <li>Plus <strong>"normalize everything to hg38"</strong> → <strong>B2</strong> (also the fix for bug A2).</li>
+      </ol>
+    </details>
+
+    <div class="callout">
+      <h4>How the two kinds of dataset get used — directionality vs. genes-without-SNPs</h4>
+      <p><strong>SNP-level sources (GWAS Catalog, HIrisPlex-S)</strong> carry a signed effect per SNP (an effect allele + a direction), so they're the <strong>only</strong> sources that feed the directional score (B3): count each individual's copies (0/1/2) of the pigmentation-increasing allele and sum; the direction comes from the GWAS effect sign.</p>
+      <p><strong>Gene-level sources (melanogenesis network/Raghunath, Baxter, Bajpai, D'Arcy)</strong> are gene <em>regions</em>, not signed SNPs, so they <strong>can't</strong> enter the +1/−1 score. They're used as gene-region sets for the gene-level PCA (B4&nbsp;ii) and coverage (B1), and for functional interpretation (B7, via a variant-effect annotator) — kept descriptive.</p>
+      <p><strong>Bottom line:</strong> the directional score is SNP-only; gene lists drive the PCA, coverage, and functional annotation. Giving a gene a per-individual "direction" would need per-variant damage prediction (heavier, shaky on low-coverage ancient DNA) — optional, not part of the score.</p>
+    </div>
 
     <div class="item">
       <div class="ihead"><span class="idt">B2</span><h3>Put everything on one genome build (hg38) — do this first</h3><span class="who">🔴 TL/LH</span></div>

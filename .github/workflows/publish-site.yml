@@ -10,6 +10,9 @@
 # It also copies plan/*.html into /plan/ so the roadmap resolves at a direct link
 # (https://lasisilab.github.io/paint-workflowr/plan/) but is NOT in the site navbar.
 # The internal plan.md / changelog.md sources are deliberately NOT published.
+#
+# Action versions pinned to current Node-24 majors (checked 2026-07; GitHub is
+# deprecating Node 20 on runners). Bump these together if a Node-20 warning returns.
 name: Publish site
 
 on:
@@ -31,7 +34,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Assemble site (workflowr docs/ + plan/)
         run: |
@@ -46,13 +49,16 @@ jobs:
           # GitHub Pages must not run Jekyll (workflowr ships _files/ + site_libs/).
           touch _site/.nojekyll
 
-      - uses: actions/configure-pages@v5
+      - uses: actions/configure-pages@v6
         with:
-          # Self-provision Pages (source = GitHub Actions) on first run, so the
-          # step doesn't fail if Settings → Pages hasn't been set by hand yet.
+          # Self-provision Pages (source = GitHub Actions) if not already enabled.
+          # NOTE: an org repo's built-in Actions token may lack permission to CREATE
+          # the Pages site on the very first run; if so, enable it once by hand
+          # (Settings → Pages → Source = GitHub Actions, or `gh api -X POST
+          # repos/<owner>/<repo>/pages -f build_type=workflow`), then re-run.
           enablement: true
 
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v5
         with:
           path: _site
 
@@ -64,4 +70,4 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5

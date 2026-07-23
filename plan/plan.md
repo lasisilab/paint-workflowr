@@ -53,7 +53,7 @@ The recurring public question is "what did Neanderthals and Denisovans look like
 Three places hold the work, all now reviewed:
 - **The repo** `lasisilab/paint-workflowr` — the analysis website (built with the R tool *workflowr*), plus small data files and the analysis scripts.
 - **The thesis** — Lily's 41-page honors thesis (20 Apr 2026); the completed first version of this work.
-- **The cluster** — a 110 GB working directory on the University of Michigan "Great Lakes" system (`/nfs/turbo/lsa-tlasisi1/lheald_thesis/aDNA_data`) holding the full computational pipeline (19 batch jobs) and all the genomic data (the big files that are too large for the repo).
+- **The cluster** — a 110 GB working directory on the University of Michigan "Great Lakes" system (`/nfs/turbo/lsa-tlasisi1/lheald_thesis/aDNA_data`) holding the full computational pipeline (~19 batch jobs) and all the genomic data (the big files too large for the repo). **Full inventory:** [`cluster_inventory.md`](cluster_inventory.md) (directory layout, the pipeline stages, data products, access instructions).
 
 **Data-source decision:** the pigmentation datasets we want for the next phase already exist, all on the hg38 build, in the public repo `tinalasisi/pigmentation-gene-network` (details in §6). We use that repo; we do **not** use the older `melanogenesis-constraints` repo.
 
@@ -102,6 +102,22 @@ Every item here was reproduced with commands + real output — see [`verify/BUG_
 - [ ] **A6 · Repo tidy-ups** · ⚪ (LH). In the website source: `introduction.Rmd` says the panel is "395 SNPs" but it's 222 (fix the number); the "View genetic PCAs" link points to the old `analysis.html` (should be `pca.html`); the `LICENSE` file is empty (the license text only lives in `license.Rmd`); two built pages (`docs/analysis.html`, `docs/depth_spinoff.html`) have no source and should be removed; and `cleaning.Rmd` / `process_links.R` hard-code file paths from Lily's laptop, so they won't run elsewhere.
 
 ### B. Analysis redesign (the plan from the 17 June meeting)
+
+**The analyses agreed on the 17 June call** (source: meeting transcript) — each maps to an item below:
+1. Layered **coverage** of pigmentation loci across the four datasets (GWAS-only, then + CRISPR, + melanogenesis network, + cross-species) → **B1**.
+2. **"What color were they?"** in two steps: (a) GWAS betas → a **directionality** score (optionally restricted to skin-pigmentation and/or ≥2-hit SNPs); (b) the **MC1R** red-hair-variant check → **B3**.
+3. **PCA redone** three ways (pigmentation SNPs / whole pigmentation genes / genome-wide) × two designs (moderns + high-coverage archaics together; moderns-only with all ancients projected) → **B4**.
+4. **Missingness** strategy (full masking leaves <50 SNPs → focus high-coverage, move to gene level) → **B5**.
+5. Keep **genes vs SNPs** distinct (network = genes; pull gene start/stop coordinates) → **B6**.
+6. **Functional / exome:** synonymous:non-synonymous ratio; annotate coding effects → **B7**.
+7. **Skin-specific gene** focus (TYR, OCA2, TYRP1, DCT, PMEL, MLANA) across modern populations and archaics → **B7**.
+Plus the call's "normalize everything to hg38" → **B2** (which we now know is also the fix for bug A2).
+
+**How the two kinds of dataset are actually used — directionality vs. genes-without-SNPs** (the part that's been unclear):
+- **SNP-level sources (GWAS Catalog, HIrisPlex-S)** carry a *signed effect per SNP* — an effect allele and a known direction (increases or decreases pigmentation). These are the **only** sources that feed the directional polygenic score (**B3**): for each SNP, count the individual's copies (0/1/2) of the pigmentation-increasing allele and sum. The direction comes straight from the GWAS effect sign (already in the GWAS Catalog export's `or_beta` / `direction_raw` columns); a missing genotype means that SNP is skipped for that individual.
+- **Gene-level sources (melanogenesis network / Raghunath, Baxter, Bajpai, D'Arcy)** are lists of *genes* (regions), not signed SNPs, so they **cannot** go into the +1/−1 score — a gene region has no single effect allele. They're used instead as **gene-region sets** (take each gene's start/end coordinates and use *all* variants inside it), which feed the gene-level PCA (**B4 (ii)**) and the layered coverage (**B1**); and for **functional interpretation** (**B7**) — e.g. "does this archaic carry a protein-changing variant in a network gene?" — via a variant-effect annotator, kept descriptive.
+- **The bridge is optional and heavier:** to give a gene-level source a per-individual "direction" you'd need per-variant functional prediction (is *this* variant damaging?), not a GWAS effect size — shaky on low-coverage archaic data, so keep it descriptive (B7), not part of the score.
+- **Bottom line:** the directional score is **SNP-only**; the gene sources drive the gene-level PCA, coverage, and functional annotation. Don't force gene lists into the additive score.
 
 - [ ] **B1 · Base the coverage analysis on four pigmentation datasets, not just one** · 🔴 (TL builds, LH runs)
   - **What it is:** so far the pigmentation SNP list came from a single source (the GWAS Catalog). Broaden it to four complementary sources of pigmentation genes/SNPs (all already assembled in `pigmentation-gene-network`, see §6): the **GWAS Catalog**, a **CRISPR screen**, a **melanogenesis gene network**, and a **cross-species** gene set.

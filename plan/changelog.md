@@ -6,6 +6,14 @@ Legend: **DONE** = action taken · **FOUND** = finding/evidence · **DECIDED** =
 
 ---
 
+## 2026-07-22 — Pages live; Node-24 fix; cluster inventory; methods clarifications
+
+- **DONE** — Pushed to `main` and the site went **live** at `https://lasisilab.github.io/paint-workflowr/` (plan at `/plan/`). First deploy failed because the Actions token can't *create* the Pages site in an org repo ("Resource not accessible by integration"); enabled Pages once via `gh api -X POST repos/lasisilab/paint-workflowr/pages -f build_type=workflow`, re-ran → green. Future pushes auto-republish.
+- **DONE** — Fixed the Node 20 deprecation in `publish-site.yml` by bumping to verified Node-24 action majors (checked each `action.yml` `runs.using`, per prior breakage): `checkout@v5`, `configure-pages@v6`, `upload-pages-artifact@v5`, `deploy-pages@v5`.
+- **DONE** — Removed the stray `docs/.nojekyll 2` junk file (was tracked).
+- **DONE** — Wrote [`cluster_inventory.md`](cluster_inventory.md): the 110 GB Great Lakes layout by size, the ~19-job pipeline by stage, the 15 archaic BAMs, key derived products, and access/refresh instructions. Repo-only (not published to Pages, since it lists internal cluster paths).
+- **CLARIFIED (methods)** — Added to `plan.md` §4B and the HTML: (a) a transcript→item map of the exact analyses agreed on the 17 Jun call (toggle in the HTML); (b) how the two dataset types are used — the **directional polygenic score is SNP-only** (GWAS/HIrisPlex, where each SNP has a signed effect allele), while **gene-level sources (Raghunath network, Baxter, Bajpai, D'Arcy) can't enter the +1/−1 score** — they feed the gene-level PCA (B4 ii), coverage (B1), and functional annotation (B7) as gene-region sets. A per-gene "direction" would need per-variant damage prediction (optional, descriptive).
+
 ## 2026-07-22 — Self-containment rewrite (no assumed knowledge) + cold-reader audit
 
 - **DONE** — Rewrote the plan so every item stands alone: added a **Glossary** (hg19/hg38, SNP, panel, "the data", GWAS/GWAS Catalog, allele, kb, aligned/BAM, genotype calling, SLURM, liftOver, MC1R, HIrisPlex-S, exome, synonymous/non-synonymous, tissue-specific expression, the six skin genes, ploidy…) and gave every roadmap item a **What / Why / Do** structure. Applied to both `plan.md` and `paint-plan.html`.
