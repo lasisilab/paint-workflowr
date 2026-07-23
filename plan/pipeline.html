@@ -198,7 +198,7 @@
   <!-- WHAT THE PIPELINE DOES -->
   <section id="did">
     <div class="sec-head"><span class="sec-num">04</span><h2>What the pipeline does</h2></div>
-    <p class="lede">Left: what Lily's original pipeline did (and where the bugs entered). Right: what the rebuild does differently, with a QC gate at each stage. Full rebuild plan: <a href="https://github.com/lasisilab/paint-workflowr/blob/main/plan/rebuild_from_raw.md"><code>rebuild_from_raw.md</code></a>.</p>
+    <p class="lede">Left: what Lily's original pipeline did (and where the bugs entered). Right: what the rebuild does differently, with a QC gate at each stage. Full rebuild plan: <a href="https://github.com/lasisilab/paint-workflowr/blob/main/plan/rebuild_from_raw.md"><code>rebuild_from_raw.md</code></a> (incl. the per-genome <strong>reuse-vs-rerun</strong> matrix — the 5 high-coverage genomes are reused from published VCFs, only the ~8 low-coverage genomes are re-acquired and re-processed). What each published VCF's QC actually was: <a href="https://github.com/lasisilab/paint-workflowr/blob/main/plan/papers/PIPELINE_QC_BY_PAPER.md"><code>papers/PIPELINE_QC_BY_PAPER.md</code></a>.</p>
     <div class="table-scroll"><table>
       <thead><tr><th>Step</th><th>Lily's original</th><th>Rebuild (from raw)</th></tr></thead>
       <tbody>

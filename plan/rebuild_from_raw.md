@@ -19,6 +19,31 @@
 
 ---
 
+## Reuse vs. rerun — the decision, per genome
+
+**Principle.** For each genome, start from the *highest-quality product that already exists*, and rerun only what is needed to (a) fix the confirmed bugs (build A2, contig-naming A1, haploid A3, projection collapse) and (b) harmonize the independently-produced sources onto one comparable footing. Concretely: for **high-coverage** genomes the authors already did careful, damage-aware genotype calling (`snpAD`) that we cannot improve on at 30–52× — so we **reuse their published VCFs and do not re-call**. For **low-coverage** genomes hard calls neither exist nor are appropriate — so we **re-acquire the reads and compute genotype likelihoods ourselves (ANGSD)**. (The per-paper QC/pipeline each of these calls came from is documented in [`papers/PIPELINE_QC_BY_PAPER.md`](papers/PIPELINE_QC_BY_PAPER.md).)
+
+| Genome | Take (source of truth) | Re-call genotypes? | What we rerun | Why |
+|---|---|---|---|---|
+| Altai / Denisova 5, Vindija 33.19, Denisova 3 | published snpAD **genotype VCF** (2017 release, hg19) + its mappability mask | **No** | build/naming lint (Q2), apply + intersect masks to a common set, allele/REF harmonization (Q4), subset to panels, PCA | 52×/30× damage-aware calls; re-calling adds nothing and loses the authors' QC |
+| Chagyrskaya 8 | published snpAD VCF (`.noRB`) + `FilterBed` mask | **No** | as above (+ apply its own FilterBed before intersecting) | 27–28×, own release/mask |
+| Denisova 25 ⚠ | published VCF (`L35 MQ25 B30 map35_100`) + `FilterBed` | **No** (provisional) | as above; flag preprint | 24×, but preprint — mark provisional |
+| Vindija 87 | **the Vindija 33.19 VCF** (same individual) | **No** | none extra — use Vi 33.19 | Vi 87 is the same person; the 1.3× library adds nothing for genotypes |
+| Denisova 11 "Denny" | BAM (ENA PRJEB24663) | **No hard call → ANGSD GLs** | re-acquire reads, reheader, mapDamage, max-depth cap, ANGSD GLs at panels, het-vs-depth, PCAngsd | ~2.6× hybrid; too low for hard calls; no VCF exists |
+| Goyet, Les Cottés, Spy, Mez 2 | BAM (ENA, Hajdinjak 2018) | **No hard call → ANGSD GLs** | full low-cov path (as Denisova 11) | 1–2.7×; BAM-only |
+| Mezmaiskaya 1 | BAM (ENA PRJEB21195) | **No hard call → ANGSD GLs** | full low-cov path | ~1.9×; BAM-only |
+| Hohlenstein-Stadel, Scladina | BAM (ENA PRJEB29475) | **No hard call → ANGSD GLs** | full low-cov path; expect very few usable panel sites | ultra-low ~0.02–0.05× early Neanderthals |
+| El Sidrón 1253 | — | **Exclude** | (optional) check its exome VCF only for panel SNPs that fall in coding regions — most pigmentation SNPs are regulatory, so expect ~none | exome-capture only; no shotgun genome |
+| SGDP (15 moderns) | existing `pca/modern/sgdp.wg` (hg19, 9.2 M SNPs) | reuse | build/allele lint (Q2/Q4); subset to panels; positive-control PCA (Q3) | already on hg19 with the pigmentation SNPs by rsID; no re-acquisition |
+| **Pigmentation panel** | rsIDs (from `skin_pigmentation.tsv` / GWAS Catalog) | — | **lift to hg19 by rsID**, keep both builds; tracer lint (Q2) | fixes the root bug A2 |
+
+**Net rerun surface (much smaller than "redo everything"):**
+- **Re-acquire reads for ~8 low-coverage genomes only** (Tier B) — targeted extraction at the SNP positions; the 5 high-coverage genomes need **no re-acquisition and no re-calling** (download the published VCFs).
+- **Never re-run** the high-coverage genotype calling, the SGDP genotyping, or (for Vindija 87) a separate low-cov calling.
+- **Always re-run** (because they were bugged or absent): the panel→hg19 lift, contig-naming harmonization, allele lint, the depth/coverage QC, mapDamage + het-vs-depth on the low-cov reads, and the entire PCA/projection (PCAngsd, positive control, no-mean-imputation).
+
+---
+
 ## Genome-build decision (read first)
 The raw data is **hg19**, and — confirmed from the thesis §2.3 — the archaic data is distributed as **BAM files already mapped to GRCh37/hg19** (there is **no FASTQ**; Lily inherited the data producers' alignments and did no re-mapping). This makes the choice lopsided:
 - **Rebuild on hg19** (strongly recommended): the reads are already aligned to hg19, so we *move the panel to hg19* and keep everything native — no re-alignment, no FASTQ hunt, fewest moving parts, fastest to a correct answer. The four new pigmentation datasets (hg38) are lifted **down** to hg19 for integration, or handled in a later hg38 pass.
