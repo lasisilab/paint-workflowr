@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>PAINT — source-paper references &amp; data provenance (every genome)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<style>
+  :root {
+    --bg:#E8EAE6;--surface:#F6F7F4;--surface-2:#FCFDFB;--ink:#1A1E1C;--ink-2:#434A47;--ink-3:#6C736F;
+    --line:#D2D6CF;--line-2:#E1E4DD;--accent:#1E5A54;--accent-2:#2C7A70;--accent-soft:#DDE8E4;
+    --ok:#2F7D4F;--ok-soft:#DCEBE0;--warn:#8F6410;--warn-soft:#F0E6CE;--bad:#A5433A;--bad-soft:#F1DAD5;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  }
+  @media (prefers-color-scheme: dark){:root{
+    --bg:#12150F;--surface:#1A1E17;--surface-2:#20251D;--ink:#E7EAE4;--ink-2:#B0B7B0;--ink-3:#838A84;
+    --line:#2B3129;--line-2:#242A22;--accent:#63B6A9;--accent-2:#7FCBBE;--accent-soft:#182723;
+    --ok:#6FCB8F;--ok-soft:#16241A;--warn:#D6A63C;--warn-soft:#2A2312;--bad:#E28A7E;--bad-soft:#2C1815;}}
+  :root[data-theme="light"]{--bg:#E8EAE6;--surface:#F6F7F4;--surface-2:#FCFDFB;--ink:#1A1E1C;--ink-2:#434A47;--ink-3:#6C736F;--line:#D2D6CF;--line-2:#E1E4DD;--accent:#1E5A54;--accent-2:#2C7A70;--accent-soft:#DDE8E4;--ok:#2F7D4F;--ok-soft:#DCEBE0;--warn:#8F6410;--warn-soft:#F0E6CE;--bad:#A5433A;--bad-soft:#F1DAD5;}
+  :root[data-theme="dark"]{--bg:#12150F;--surface:#1A1E17;--surface-2:#20251D;--ink:#E7EAE4;--ink-2:#B0B7B0;--ink-3:#838A84;--line:#2B3129;--line-2:#242A22;--accent:#63B6A9;--accent-2:#7FCBBE;--accent-soft:#182723;--ok:#6FCB8F;--ok-soft:#16241A;--warn:#D6A63C;--warn-soft:#2A2312;--bad:#E28A7E;--bad-soft:#2C1815;}
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased;}
+  .docbar{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:10px 24px;font-family:var(--mono);font-size:.78rem;letter-spacing:.03em;}
+  .docbar a{color:var(--accent-2);text-decoration:none;} .docbar a:hover{text-decoration:underline;}
+  .docbar .b{color:var(--accent);font-weight:600;text-transform:uppercase;letter-spacing:.12em;}
+  main{max-width:900px;margin:0 auto;padding:14px 24px 90px;}
+  h1,h2,h3,h4{font-family:var(--serif);font-weight:600;line-height:1.15;letter-spacing:-.01em;}
+  h1{font-size:clamp(1.7rem,4vw,2.4rem);margin:24px 0 4px;}
+  h2{font-size:clamp(1.3rem,3vw,1.7rem);margin:34px 0 6px;padding-top:10px;border-top:1px solid var(--line-2);}
+  h3{font-size:1.15rem;margin:22px 0 4px;} h4{font-size:1rem;margin:16px 0 2px;}
+  p,li{max-width:80ch;} a{color:var(--accent-2);}
+  code{font-family:var(--mono);font-size:.85em;background:var(--surface-2);border:1px solid var(--line-2);padding:1px 5px;border-radius:5px;}
+  pre{overflow-x:auto;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-family:var(--mono);font-size:.8rem;line-height:1.5;}
+  pre code{background:none;border:none;padding:0;}
+  blockquote{margin:16px 0;padding:10px 16px;border-left:3px solid var(--accent);background:var(--accent-soft);border-radius:0 8px 8px 0;color:var(--ink-2);}
+  blockquote p{margin:6px 0;}
+  table{border-collapse:collapse;width:100%;font-size:.86rem;margin:16px 0;display:block;overflow-x:auto;}
+  th,td{padding:8px 11px;border:1px solid var(--line-2);text-align:left;vertical-align:top;}
+  thead th{background:var(--surface-2);font-family:var(--mono);font-size:.66rem;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-3);white-space:nowrap;}
+  hr{border:none;border-top:1px solid var(--line);margin:26px 0;}
+  ul,ol{padding-left:22px;} li{margin:3px 0;}
+  strong{color:var(--ink);}
+  .title{border-bottom:1px solid var(--line);padding-bottom:10px;}
+</style>
+</head>
+<body>
+<div class="docbar"><span class="b">PAINT</span> &nbsp;·&nbsp; <a href="../paint-plan.html">← roadmap</a> &nbsp;·&nbsp; <a href="../docs.html">all docs</a></div>
+<main>
+<h1 class="title">PAINT — source-paper references &amp; data provenance (every genome)</h1>
+<h1 id="paint--source-paper-references--data-provenance-every-genome">PAINT — source-paper references &amp; data provenance (every genome)</h1>
+<p>Provenance for <strong>every</strong> genome in the project, verified against MPI-EVA / ENA / the source papers (2026-07-23). This is the citation + data-source manifest; it feeds the Q1 provenance manifest.</p>
+<p><strong>On the PDFs.</strong> Actual paper PDFs are downloaded into <code>plan/papers/pdf/</code> <strong>which is git-ignored</strong> — the repo is public and most of these are paywalled (Nature/Science/PNAS), so committing them would redistribute copyrighted material. Open-access / author-copy / preprint PDFs were pulled automatically (marked ✅ local); paywalled ones are linked for download via institutional (UMich) access into the same folder (marked 🔒).</p>
+<p><strong>Two clarifications that matter for the reanalysis:</strong></p>
+<ul>
+<li>The MPI-EVA high-coverage VCFs are <strong>damage-aware <code>snpAD</code> <em>genotype</em> calls, not statistically phased</strong> haplotypes. "Phased VCF" = a downstream step we'd run ourselves if needed. QC details per release: <a href="VCF_QC.html"><code>VCF_QC.md</code></a>.</li>
+<li><strong>Vindija 87 is the same individual as Vindija 33.19</strong> (the 30× genome) — so called genotypes for it exist via the Vindija 33.19 VCF; the 1.3× "Vi87" BAM is a separate low-coverage library of the same person.</li>
+</ul>
+<hr />
+<h2 id="tier-a--high-coverage-archaics-use-the-published-snpad-genotype-vcfs-dont-re-call">Tier A — high-coverage archaics: <strong>use the published snpAD genotype VCFs</strong> (don't re-call)</h2>
+<table>
+<thead>
+<tr>
+<th>Genome</th>
+<th>Site · type</th>
+<th>Coverage</th>
+<th>Paper</th>
+<th>DOI</th>
+<th>Data (VCF / BAM)</th>
+<th>PDF</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Altai Neanderthal</strong> (= Denisova 5)</td>
+<td>Denisova Cave · Neanderthal</td>
+<td>~52×</td>
+<td>Prüfer et al. 2014, <em>Nature</em> 505:43–49</td>
+<td>10.1038/nature12886</td>
+<td>VCF (snpAD 2017 reprocess): <code>cdna.eva.mpg.de/neandertal/Vindija/VCF/Altai/chr{1..22,X}_mq25_mapab100.vcf.gz</code>; original: <code>cdna.eva.mpg.de/neandertal/altai/AltaiNeandertal/VCF/</code>; BAM: <code>.../AltaiNeandertal/bam/</code></td>
+<td>🔒 Nature</td>
+</tr>
+<tr>
+<td><strong>Vindija 33.19</strong></td>
+<td>Vindija Cave, Croatia · Neanderthal</td>
+<td>~30×</td>
+<td>Prüfer et al. 2017, <em>Science</em> 358:655–658</td>
+<td>10.1126/science.aao1887</td>
+<td>VCF: <code>cdna.eva.mpg.de/neandertal/Vindija/VCF/Vindija33.19/chr{1..22,X}_mq25_mapab100.vcf.gz</code>; ENA <strong>PRJEB21157</strong>; BAM under <code>ftp.eva.mpg.de/neandertal/Vindija/</code></td>
+<td>✅ <code>pruefer2017_vindija33_science.pdf</code></td>
+</tr>
+<tr>
+<td><strong>Chagyrskaya 8</strong></td>
+<td>Chagyrskaya Cave · Neanderthal</td>
+<td>~27–28×</td>
+<td>Mafessoni et al. 2020, <em>PNAS</em> 117:15132–15136</td>
+<td>10.1073/pnas.2004944117</td>
+<td>VCF: <code>ftp.eva.mpg.de/neandertal/Chagyrskaya/VCF/chr{1..22,X}.noRB.vcf.gz</code>; mask: <code>.../Chagyrskaya/FilterBed/</code>; BAM: <code>.../Chagyrskaya/BAM/</code></td>
+<td>🔒 PNAS (PMC likely OA)</td>
+</tr>
+<tr>
+<td><strong>Denisova 3</strong></td>
+<td>Denisova Cave · Denisovan</td>
+<td>~30×</td>
+<td>Meyer et al. 2012, <em>Science</em> 338:222–226</td>
+<td>10.1126/science.1224344</td>
+<td>VCF (snpAD 2017): <code>cdna.eva.mpg.de/neandertal/Vindija/VCF/Denisova/chr{1..22,X}_mq25_mapab100.vcf.gz</code>; original: <code>cdna.eva.mpg.de/denisova/VCF/human/</code>; BAM: <code>cdna.eva.mpg.de/denisova/BAM/</code></td>
+<td>🔒 Science</td>
+</tr>
+<tr>
+<td><strong>Denisova 25</strong> ⚠ preprint</td>
+<td>Denisova Cave (S. Chamber, ~200 ka molar) · Denisovan</td>
+<td>~24×</td>
+<td>Peyrégne et al. 2025, <em>bioRxiv</em></td>
+<td>10.1101/2025.10.20.683404</td>
+<td>VCF: <code>cdna.eva.mpg.de/denisova/Den25/VCF/chr{1..22,X,Y}.Den25.L35MQ25.B30.map35_100.vcf.gz</code>; mask: <code>.../Den25/FilterBed/</code>; BAM: <code>.../Den25/BAM/</code></td>
+<td>✅ <code>den25_peyregne2025_biorxiv.pdf</code></td>
+</tr>
+</tbody>
+</table>
+<p><em>The Altai + Vindija 33.19 + Denisova 3 VCFs share one 2017 <strong>snpAD</strong> release (same pipeline, reference, filters, one README) → most directly comparable, and the Mez1 low-cov snpAD calls sit in the same release tree. The <strong>original</strong> Altai (2014) and Denisova 3 (2012) releases are <strong>GATK UnifiedGenotyper</strong> calls — prefer the snpAD reprocess for a harmonized cohort. Chagyrskaya 8 and Denisova 25 are separate snpAD releases with their own masks — apply each release's FilterBed and harmonize before merging (see <code>VCF_QC.md</code>). Denisova 25 is a <strong>preprint</strong> whose data are <strong>not yet deposited</strong> → provisional. <strong>The published VCFs are not the final call set — the companion <code>FilterBed</code> mask (cov≥10, GC central-95%, tandem-repeats, indels) must be applied on top.</strong></em></p>
+<h2 id="tier-b--low-coverage-archaics-bam-only--angsd-genotype-likelihoods-no-published-vcf">Tier B — low-coverage archaics: <strong>BAM only → ANGSD genotype likelihoods</strong> (no published VCF)</h2>
+<table>
+<thead>
+<tr>
+<th>Genome</th>
+<th>Site · type</th>
+<th>Coverage</th>
+<th>Paper</th>
+<th>DOI</th>
+<th>Archive</th>
+<th>PDF</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Denisova 11 "Denny"</strong></td>
+<td>Denisova Cave · <strong>F1 hybrid</strong> (Nea mother × Den father)</td>
+<td>~2.6×</td>
+<td>Slon et al. 2018, <em>Nature</em> 561:113–116</td>
+<td>10.1038/s41586-018-0455-x</td>
+<td>ENA <strong>PRJEB24663</strong> (raw); BAM</td>
+<td>🔒 Nature</td>
+</tr>
+<tr>
+<td><strong>Goyet Q56-1</strong></td>
+<td>Goyet, Belgium · late Neanderthal</td>
+<td>2.2×</td>
+<td>Hajdinjak et al. 2018, <em>Nature</em> 555:652–656</td>
+<td>10.1038/nature26151</td>
+<td>ENA <strong>PRJEB21870</strong>; EVA <code>neandertal/GoyetQ56-1/</code></td>
+<td>🔒 (OA: PMC6485383)</td>
+</tr>
+<tr>
+<td><strong>Les Cottés Z4-1514</strong></td>
+<td>Les Cottés, France · late Neanderthal</td>
+<td>2.7×</td>
+<td>Hajdinjak et al. 2018</td>
+<td>10.1038/nature26151</td>
+<td>ENA <strong>PRJEB21875</strong>; EVA <code>LesCottes_Z4-1514/</code></td>
+<td>🔒 (OA: PMC6485383)</td>
+</tr>
+<tr>
+<td><strong>Spy 94a</strong></td>
+<td>Spy, Belgium · late Neanderthal</td>
+<td>1.0×</td>
+<td>Hajdinjak et al. 2018</td>
+<td>10.1038/nature26151</td>
+<td>ENA <strong>PRJEB21883</strong>; EVA <code>Spy94a/</code></td>
+<td>🔒 (OA: PMC6485383)</td>
+</tr>
+<tr>
+<td><strong>Mezmaiskaya 2</strong></td>
+<td>Mezmaiskaya, Russia · late Neanderthal (~44 ka)</td>
+<td>1.7×</td>
+<td>Hajdinjak et al. 2018</td>
+<td>10.1038/nature26151</td>
+<td>ENA <strong>PRJEB21881</strong>; EVA <code>Mezmaiskaya2/</code></td>
+<td>🔒 (OA: PMC6485383)</td>
+</tr>
+<tr>
+<td><strong>Vindija 87</strong> (= Vi 33.19 individual)</td>
+<td>Vindija, Croatia · late Neanderthal</td>
+<td>1.3×</td>
+<td>Hajdinjak et al. 2018</td>
+<td>10.1038/nature26151</td>
+<td>ENA <strong>PRJEB21882</strong>; EVA <code>Vindija87/</code>. <em>Called genotypes: use the Vi 33.19 VCF (Tier A).</em></td>
+<td>🔒 (OA: PMC6485383)</td>
+</tr>
+<tr>
+<td><strong>Mezmaiskaya 1</strong></td>
+<td>Mezmaiskaya, Russia · Neanderthal (~65 ka)</td>
+<td>~0.5× + 1.4× ≈ 1.9×</td>
+<td>Prüfer et al. 2017 (added); Prüfer 2014 (orig.)</td>
+<td>10.1126/science.aao1887</td>
+<td>ENA <strong>PRJEB21195</strong>; <strong>a low-cov snpAD VCF EXISTS: <code>cdna.eva.mpg.de/neandertal/Vindija/VCF/Mez1/</code></strong> (+ BAM <code>Mezmaiskaya1/</code>)</td>
+<td>✅ (Prüfer 2017 pdf)</td>
+</tr>
+<tr>
+<td><strong>Hohlenstein-Stadel</strong></td>
+<td>Hohlenstein-Stadel, Germany · <strong>early</strong> Neanderthal (~120 ka)</td>
+<td>~0.05× (168 Mbp)</td>
+<td>Peyrégne et al. 2019, <em>Sci. Adv.</em> 5:eaaw5873</td>
+<td>10.1126/sciadv.aaw5873</td>
+<td>ENA <strong>PRJEB29475</strong>; EVA <code>Hohlenstein-Stadel/BAM/All_sequences/L5386.bam</code></td>
+<td>✅ <code>peyregne2019_hst_scladina_sciadv.pdf</code></td>
+</tr>
+<tr>
+<td><strong>Scladina I-4A</strong></td>
+<td>Scladina, Belgium · <strong>early</strong> Neanderthal (~120 ka)</td>
+<td>~0.02–0.03× (78 Mbp)</td>
+<td>Peyrégne et al. 2019</td>
+<td>10.1126/sciadv.aaw5873</td>
+<td>ENA <strong>PRJEB29475</strong> (2° ERP111781); run <strong>ERR9741105</strong> = <code>G2160.bam</code>; EVA <code>Scladina/BAM/</code></td>
+<td>✅ (Peyrégne 2019 pdf)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="tier-c--no-usable-genome-wide-data-excluded--14-analyzed-not-15">Tier C — no usable genome-wide data (excluded → 14 analyzed, not 15)</h2>
+<table>
+<thead>
+<tr>
+<th>Genome</th>
+<th>Status</th>
+<th>Paper</th>
+<th>DOI</th>
+<th>Note</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>El Sidrón 1253</strong></td>
+<td><strong>exome-capture only</strong> (~12.5× over coding regions); <strong>no shotgun whole-genome</strong></td>
+<td>Castellano et al. 2014, <em>PNAS</em> 111:6666–6671</td>
+<td>10.1073/pnas.1405138111</td>
+<td>EVA <code>neandertal/exomes/</code> (BAM+VCF, coding only). Not comparable to the genome-wide panel → correctly excluded.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="modern-reference--methods">Modern reference &amp; methods</h2>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Paper</th>
+<th>DOI</th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>SGDP</strong> (15 moderns used)</td>
+<td>Mallick et al. 2016, <em>Nature</em> 538:201–206</td>
+<td>10.1038/nature18964</td>
+<td>Seven Bridges CGC, remapped to hs37d5/hg19 (<code>sgdp_merge</code> LP-IDs recorded in the Q1 manifest)</td>
+</tr>
+<tr>
+<td><strong>snpAD</strong> genotyper (the high-cov VCF caller)</td>
+<td>Prüfer 2018, <em>Bioinformatics</em> 34:4165–4171</td>
+<td>10.1093/bioinformatics/bty507</td>
+<td>damage-aware ancient-DNA genotyper</td>
+</tr>
+<tr>
+<td><strong>Reference genome</strong></td>
+<td>hs37d5 / GRCh37 (hg19)</td>
+<td>—</td>
+<td>1000 Genomes decoy build; all archaic BAMs and SGDP are aligned to it</td>
+</tr>
+</tbody>
+</table>
+<h2 id="flagged--unconfirmed">Flagged / unconfirmed</h2>
+<ul>
+<li><strong>Denisova 25</strong> — preprint (not yet peer-reviewed); EVA <code>Den25/</code> files are live but formal ENA/SRA accession not yet stated; treat as provisional.</li>
+<li><strong>El Sidrón exome ENA accession</strong> — unconfirmed; authoritative access is the EVA <code>exomes/</code> URL.</li>
+<li><strong>HST / Scladina fold-coverage</strong> — derived from the paper's Mbp figures (168 / 78 Mbp ÷ ~3.2 Gb), not stated as fold in the text.</li>
+<li><strong>Chagyrskaya <code>.noRB</code></strong> filename meaning — to confirm from the release README (likely "RepeatBed/reliable-blocks mask not yet applied" → apply <code>FilterBed/</code> yourself).</li>
+</ul>
+<p><em>PDFs downloaded locally: <code>den25_peyregne2025_biorxiv.pdf</code>, <code>pruefer2017_vindija33_science.pdf</code>, <code>peyregne2019_hst_scladina_sciadv.pdf</code>. Paywalled papers (Prüfer 2014, Meyer 2012, Slon 2018, Mafessoni 2020, Hajdinjak 2018, Castellano 2014, Mallick 2016) → download via UMich library into <code>plan/papers/pdf/</code> using the DOIs above.</em></p>
+</main>
+</body>
+</html>

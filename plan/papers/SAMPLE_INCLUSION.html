@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>PAINT — which archaic genomes to include, and why</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<style>
+  :root {
+    --bg:#E8EAE6;--surface:#F6F7F4;--surface-2:#FCFDFB;--ink:#1A1E1C;--ink-2:#434A47;--ink-3:#6C736F;
+    --line:#D2D6CF;--line-2:#E1E4DD;--accent:#1E5A54;--accent-2:#2C7A70;--accent-soft:#DDE8E4;
+    --ok:#2F7D4F;--ok-soft:#DCEBE0;--warn:#8F6410;--warn-soft:#F0E6CE;--bad:#A5433A;--bad-soft:#F1DAD5;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  }
+  @media (prefers-color-scheme: dark){:root{
+    --bg:#12150F;--surface:#1A1E17;--surface-2:#20251D;--ink:#E7EAE4;--ink-2:#B0B7B0;--ink-3:#838A84;
+    --line:#2B3129;--line-2:#242A22;--accent:#63B6A9;--accent-2:#7FCBBE;--accent-soft:#182723;
+    --ok:#6FCB8F;--ok-soft:#16241A;--warn:#D6A63C;--warn-soft:#2A2312;--bad:#E28A7E;--bad-soft:#2C1815;}}
+  :root[data-theme="light"]{--bg:#E8EAE6;--surface:#F6F7F4;--surface-2:#FCFDFB;--ink:#1A1E1C;--ink-2:#434A47;--ink-3:#6C736F;--line:#D2D6CF;--line-2:#E1E4DD;--accent:#1E5A54;--accent-2:#2C7A70;--accent-soft:#DDE8E4;--ok:#2F7D4F;--ok-soft:#DCEBE0;--warn:#8F6410;--warn-soft:#F0E6CE;--bad:#A5433A;--bad-soft:#F1DAD5;}
+  :root[data-theme="dark"]{--bg:#12150F;--surface:#1A1E17;--surface-2:#20251D;--ink:#E7EAE4;--ink-2:#B0B7B0;--ink-3:#838A84;--line:#2B3129;--line-2:#242A22;--accent:#63B6A9;--accent-2:#7FCBBE;--accent-soft:#182723;--ok:#6FCB8F;--ok-soft:#16241A;--warn:#D6A63C;--warn-soft:#2A2312;--bad:#E28A7E;--bad-soft:#2C1815;}
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased;}
+  .docbar{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:10px 24px;font-family:var(--mono);font-size:.78rem;letter-spacing:.03em;}
+  .docbar a{color:var(--accent-2);text-decoration:none;} .docbar a:hover{text-decoration:underline;}
+  .docbar .b{color:var(--accent);font-weight:600;text-transform:uppercase;letter-spacing:.12em;}
+  main{max-width:900px;margin:0 auto;padding:14px 24px 90px;}
+  h1,h2,h3,h4{font-family:var(--serif);font-weight:600;line-height:1.15;letter-spacing:-.01em;}
+  h1{font-size:clamp(1.7rem,4vw,2.4rem);margin:24px 0 4px;}
+  h2{font-size:clamp(1.3rem,3vw,1.7rem);margin:34px 0 6px;padding-top:10px;border-top:1px solid var(--line-2);}
+  h3{font-size:1.15rem;margin:22px 0 4px;} h4{font-size:1rem;margin:16px 0 2px;}
+  p,li{max-width:80ch;} a{color:var(--accent-2);}
+  code{font-family:var(--mono);font-size:.85em;background:var(--surface-2);border:1px solid var(--line-2);padding:1px 5px;border-radius:5px;}
+  pre{overflow-x:auto;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-family:var(--mono);font-size:.8rem;line-height:1.5;}
+  pre code{background:none;border:none;padding:0;}
+  blockquote{margin:16px 0;padding:10px 16px;border-left:3px solid var(--accent);background:var(--accent-soft);border-radius:0 8px 8px 0;color:var(--ink-2);}
+  blockquote p{margin:6px 0;}
+  table{border-collapse:collapse;width:100%;font-size:.86rem;margin:16px 0;display:block;overflow-x:auto;}
+  th,td{padding:8px 11px;border:1px solid var(--line-2);text-align:left;vertical-align:top;}
+  thead th{background:var(--surface-2);font-family:var(--mono);font-size:.66rem;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-3);white-space:nowrap;}
+  hr{border:none;border-top:1px solid var(--line);margin:26px 0;}
+  ul,ol{padding-left:22px;} li{margin:3px 0;}
+  strong{color:var(--ink);}
+  .title{border-bottom:1px solid var(--line);padding-bottom:10px;}
+</style>
+</head>
+<body>
+<div class="docbar"><span class="b">PAINT</span> &nbsp;·&nbsp; <a href="../paint-plan.html">← roadmap</a> &nbsp;·&nbsp; <a href="../docs.html">all docs</a></div>
+<main>
+<h1 class="title">PAINT — which archaic genomes to include, and why</h1>
+<h1 id="paint--which-archaic-genomes-to-include-and-why">PAINT — which archaic genomes to include, and why</h1>
+<p><strong>Decision goal (Tina, 2026-07-23):</strong> <em>not</em> to maximize the number of genomes, but to choose — and explicitly justify — the <strong>best subset that maximizes the number of pigmentation SNPs of interest we can genotype reliably.</strong> Anything that is not whole-genome shotgun (i.e. exome-capture), redundant, or too unreliable to contribute trustworthy calls at the panel is excluded, with the reason recorded here.</p>
+<h2 id="the-criteria">The criteria</h2>
+<ol type="1">
+<li><strong>C1 — whole-genome shotgun only.</strong> Exclude exome-capture data (covers ~coding regions only; most pigmentation SNPs are regulatory/non-coding).</li>
+<li><strong>C2 — non-redundant.</strong> Exclude a genome that is a lower-coverage library of an individual we already have at high coverage.</li>
+<li><strong>C3 — enough coverage to contribute reliable panel genotypes.</strong> Reliable <em>diploid</em> genotypes need ~≥10×; snpAD/GL genome-wide estimates ~≥4×; below that a covered site yields at most a single <strong>pseudo-haploid</strong> allele.</li>
+<li><strong>C4 — reliability at the SNPs of interest specifically.</strong> The panel is <strong>transition-heavy</strong> (of the 129 panel SNPs present in the modern reference, <strong>92 are transitions vs 37 transversions</strong>, and the headline loci — <strong>SLC24A5 rs1426654, HERC2 rs12913832, MC1R red-hair set — are all transitions</strong>). Ancient-DNA deamination damage (C→T, G→A) falls <strong>exactly on transition sites</strong>, so low-coverage genomes are <em>least</em> reliable precisely at the SNPs we care about; their trustworthy contribution is mostly the ~1/3 transversion SNPs. Contamination must also be low.</li>
+</ol>
+<h2 id="quantitative-basis--expected-usable-panel-snps-per-genome">Quantitative basis — expected usable panel SNPs per genome</h2>
+<p>Expected number of the 222 panel SNPs with ≥k reads, from each genome's <strong>published genome-wide coverage</strong> (Poisson, mean = coverage). "≥10×" ≈ reliable diploid call; "≥4×" ≈ snpAD/GL usable; "≥1×" = at most a pseudo-haploid allele (and damage-suspect at transitions).</p>
+<table>
+<thead>
+<tr>
+<th>Genome</th>
+<th>Cov (×)</th>
+<th>SNPs ≥1×</th>
+<th>SNPs ≥4×</th>
+<th>SNPs ≥10×</th>
+<th>Diploid-callable?</th>
+<th>VCF?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Altai / Denisova 5</td>
+<td>52</td>
+<td>222</td>
+<td>222</td>
+<td>222</td>
+<td>yes</td>
+<td>snpAD</td>
+</tr>
+<tr>
+<td>Vindija 33.19</td>
+<td>30</td>
+<td>222</td>
+<td>222</td>
+<td>222</td>
+<td>yes</td>
+<td>snpAD</td>
+</tr>
+<tr>
+<td>Denisova 3</td>
+<td>30</td>
+<td>222</td>
+<td>222</td>
+<td>222</td>
+<td>yes</td>
+<td>snpAD</td>
+</tr>
+<tr>
+<td>Chagyrskaya 8</td>
+<td>27.6</td>
+<td>222</td>
+<td>222</td>
+<td>222</td>
+<td>yes</td>
+<td>snpAD</td>
+</tr>
+<tr>
+<td>Denisova 25</td>
+<td>23.6</td>
+<td>222</td>
+<td>222</td>
+<td>222</td>
+<td>yes</td>
+<td>snpAD (preprint)</td>
+</tr>
+<tr>
+<td>Les Cottés Z4-1514</td>
+<td>2.7</td>
+<td>207</td>
+<td>63</td>
+<td>0</td>
+<td>no (pseudo-haploid/GL)</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Denisova 11 (hybrid)</td>
+<td>2.6</td>
+<td>206</td>
+<td>59</td>
+<td>0</td>
+<td>no</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Goyet Q56-1</td>
+<td>2.2</td>
+<td>197</td>
+<td>40</td>
+<td>0</td>
+<td>no</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Mezmaiskaya 1</td>
+<td>1.9</td>
+<td>189</td>
+<td>28</td>
+<td>0</td>
+<td>no</td>
+<td>snpAD (low-cov)</td>
+</tr>
+<tr>
+<td>Mezmaiskaya 2</td>
+<td>1.7</td>
+<td>181</td>
+<td>21</td>
+<td>0</td>
+<td>no</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Vindija 87</td>
+<td>1.3</td>
+<td>161</td>
+<td>10</td>
+<td>0</td>
+<td>no</td>
+<td>— (redundant)</td>
+</tr>
+<tr>
+<td>Spy 94a</td>
+<td>1.0</td>
+<td>140</td>
+<td>4</td>
+<td>0</td>
+<td>no</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Hohlenstein-Stadel</td>
+<td>0.05</td>
+<td>11</td>
+<td>0</td>
+<td>0</td>
+<td>no</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Scladina I-4A</td>
+<td>0.02</td>
+<td>4</td>
+<td>0</td>
+<td>0</td>
+<td>no</td>
+<td>—</td>
+</tr>
+<tr>
+<td>El Sidrón 1253</td>
+<td>exome</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>exome only</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Reading of the table:</strong> the five high-coverage genomes reliably genotype <strong>all 222</strong> SNPs (including transitions); every low-coverage genome yields <strong>0</strong> SNPs at diploid-callable depth and only pseudo-haploid alleles at ≥1×, concentrated (for reliability) on transversions. So the SNP-of-interest count is driven overwhelmingly by the high-coverage set; low-coverage genomes add <em>samples</em>, not <em>reliable SNPs of interest</em>.</p>
+<h2 id="the-subset">The subset</h2>
+<h3 id="tier-1--core-always-include-the-5-high-coverage-genomes--sgdp">Tier 1 — core (always include): the 5 high-coverage genomes + SGDP</h3>
+<p><strong>Altai / Denisova 5, Vindija 33.19, Denisova 3, Chagyrskaya 8, Denisova 25</strong>, plus the <strong>15 SGDP moderns</strong> (reference; verified — see below).
+<em>Justification:</em> ≥23× → the <strong>full 222-SNP panel, including the transition loci of interest, genotyped reliably</strong> with published, damage-aware <code>snpAD</code> calls. This set alone covers the entire panel of interest for both Neanderthals and Denisovans and is the backbone of every analysis.</p>
+<h3 id="tier-2--extended-include-with-explicit-caution-reported-separately-coverage--2-or-a-published-vcf">Tier 2 — extended (include with explicit caution, reported separately): coverage ≥ ~2× or a published VCF</h3>
+<p><strong>Les Cottés Z4-1514 (2.7×), Denisova 11 (2.6×, the F1 hybrid), Goyet Q56-1 (2.2×), Mezmaiskaya 1 (1.9×, has a low-cov snpAD VCF).</strong>
+<em>Justification:</em> each can contribute a pseudo-haploid allele at ~190–207 panel SNPs, but reliably mainly at <strong>transversion</strong> SNPs (transition calls are damage-suspect at this depth). Included for archaic <strong>diversity</strong> (esp. Denisova 11, the only hybrid) and to show low-coverage results honestly — but analysed by <strong>genotype likelihoods / pseudo-haploid</strong> with uncertainty reported, and never given equal weight to Tier 1. Mez1 can use its published VCF (with care) instead of re-acquisition.</p>
+<h3 id="excluded--with-reasons">Excluded — with reasons</h3>
+<table>
+<thead>
+<tr>
+<th>Genome</th>
+<th>Reason (criterion)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>El Sidrón 1253</strong></td>
+<td>C1 — exome-capture only, no shotgun genome</td>
+</tr>
+<tr>
+<td><strong>Vindija 87</strong></td>
+<td>C2 — redundant: <strong>verified same individual</strong> as Vindija 33.19 (use the 30× VCF)</td>
+</tr>
+<tr>
+<td><strong>Mezmaiskaya 2</strong> (1.7×)</td>
+<td>C3/C4 — below the ~2× bar, no VCF; few reliable panel SNPs</td>
+</tr>
+<tr>
+<td><strong>Spy 94a</strong> (1.0×)</td>
+<td>C3/C4 — 1.0×, and the highest contamination in its cohort (~4% qpAdm)</td>
+</tr>
+<tr>
+<td><strong>Hohlenstein-Stadel</strong> (0.05×)</td>
+<td>C3 — ultra-low: ~11 panel SNPs with any read, contamination-dominated</td>
+</tr>
+<tr>
+<td><strong>Scladina I-4A</strong> (0.02×)</td>
+<td>C3 — ultra-low: ~4 panel SNPs with any read; raw contamination 65%</td>
+</tr>
+</tbody>
+</table>
+<p><em>(The ~2× Tier-1/2 boundary is a documented, adjustable choice; the table above lets the PI move it. Mez2 at 1.7× is the closest call — promote it to Tier 2 if the extended analysis wants one more Neanderthal.)</em></p>
+<p><strong>Same-site ≠ same-individual — checked explicitly.</strong> The only redundancy is Vindija 87, which Hajdinjak et al. 2018 verify is the <em>same individual</em> as Vindija 33.19 (verbatim: <em>"the Vindija 87 specimen originates from the same individual as Vindija 33.19"</em>, from shared derived alleles). Every other pair from a shared site is a <strong>distinct individual</strong> and is kept separate: <strong>Mezmaiskaya 1 ≠ Mezmaiskaya 2</strong> (Hajdinjak 2018: Mez2 "shared more derived alleles with the other late Neanderthals than with Mezmaiskaya 1 … a population turnover"), and Denisova Cave yields <strong>four different individuals</strong> — Denisova 3 (Denisovan), Denisova 5 (the Altai Neanderthal), Denisova 11 (the F1 hybrid), Denisova 25 (a second, ~200 ka Denisovan). So Mez2's and the Denisovans' inclusion/exclusion decisions above are on <em>coverage/reliability</em> grounds, never redundancy.</p>
+<h2 id="consequences-for-acquisition--compute">Consequences for acquisition &amp; compute</h2>
+<ul>
+<li><strong>No read re-acquisition for Tier 1</strong> — download the published snpAD VCFs (+ FilterBed).</li>
+<li><strong>Targeted re-acquisition only for the Tier-2 BAM genomes: Les Cottés, Denisova 11, Goyet</strong> (stream reads at the panel + ancestry-SNP positions). <strong>Mezmaiskaya 1</strong> uses its VCF. So ~3 small targeted extractions — trivial compute.</li>
+<li><strong>SGDP: verify</strong> the existing <code>sgdp.wg</code> (hg19) — do not re-acquire.</li>
+<li>The 6 excluded genomes are not downloaded at all.</li>
+</ul>
+<h2 id="sgdp-verification-decided-verify-not-rebuild">SGDP verification (decided: verify, not rebuild)</h2>
+<p>Reuse the committed <code>pca/modern/sgdp.wg</code> (15 samples, hg19), gated by: the Q2 tracer-SNP/build lint (confirm hg19 + naming), the Q4 allele/REF check on the panel SNPs, and application of the SGDP universal mask + a chosen filter level (default 1; see <a href="PIPELINE_QC_BY_PAPER.html"><code>PIPELINE_QC_BY_PAPER.md</code></a> → Mallick 2016). Rebuild from source only if the lint fails.</p>
+<h2 id="bottom-line">Bottom line</h2>
+<p><strong>Primary analysis = 5 high-coverage archaics + SGDP</strong> (maximizes reliably-genotyped SNPs of interest, including the key transition loci). <strong>Extended/sensitivity = + Les Cottés, Denisova 11, Goyet (+ optionally Mez1/Mez2)</strong> with genotype-likelihood uncertainty, mainly at transversion SNPs. Six genomes excluded for exome-only, redundancy, or unreliability, each recorded above.</p>
+</main>
+</body>
+</html>

@@ -6,6 +6,12 @@ Legend: **DONE** = action taken · **FOUND** = finding/evidence · **DECIDED** =
 
 ---
 
+## 2026-07-23 — HTML for every doc + docs hub; verified the "redundant individual" claim
+
+- **VERIFIED (Tina's question — same site vs same individual)** — checked the only redundancy claim against Hajdinjak 2018: **Vindija 87 IS the same individual as Vindija 33.19** (verbatim: *"the Vindija 87 specimen originates from the same individual as Vindija 33.19"*), so excluding it is correct. Confirmed every other same-site pair is a **distinct individual** and is kept separate: **Mezmaiskaya 1 ≠ Mezmaiskaya 2** (population turnover), and Denisova Cave = **four different individuals** (Denisova 3 Denisovan, Denisova 5 = the Altai Neanderthal, Denisova 11 hybrid, Denisova 25 second Denisovan). So Mez2's and the Denisovans' decisions are on coverage/reliability grounds, never redundancy. Recorded the evidence in `papers/SAMPLE_INCLUSION.md`.
+- **DONE (HTML for everything — Tina prefers HTML over Markdown)** — Added a pandoc-based generator (`plan/build_docs.sh` + `plan/assets/doc-style.html`, `doc-template.html`) that renders every plan Markdown into a **styled, theme-aware, self-contained HTML** matching the roadmap's design system, with a back-to-roadmap bar and relative `.md`→`.html` links rewritten. Generated: `changelog.html`, `rebuild_from_raw.html`, `b2a_runbook.html`, `cluster_inventory.html`, `pipeline_workbook.html`, `evaluation_plan.html`, `papers/{REFERENCES,VCF_QC,PIPELINE_QC_BY_PAPER,SAMPLE_INCLUSION}.html`, `verify/BUG_EVIDENCE.html`. Built a **docs hub** (`plan/docs.html`) linking everything, added an "All docs" nav entry + hero pointer to `paint-plan.html` and `pipeline.html`, repointed their in-site GitHub `.md` links to the local `.html`, and updated `publish-site.yml` to deploy the `papers/` and `verify/` HTML. All 15 HTML pages cross-link with no broken internal links. (Markdown remains the source of truth; re-run `build_docs.sh` after edits.)
+- **NOTE** — the changelog *has* been updated every turn (18+ dated entries); it is now also available as `changelog.html`.
+
 ## 2026-07-23 — Decided sample subset (justified), targeted re-acquisition, verify SGDP
 
 - **DECIDED (Tina)** — targeted re-acquisition; verify SGDP (not rebuild); exclude non-whole-genome (exome) and unreliable genomes; goal = **maximize reliably-genotyped pigmentation SNPs of interest, not genome count**, with the subset justified explicitly.

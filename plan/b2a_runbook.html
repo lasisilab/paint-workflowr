@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>B2a runbook — put the pigmentation panel on hg19 (the fast, lossless build fix)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<style>
+  :root {
+    --bg:#E8EAE6;--surface:#F6F7F4;--surface-2:#FCFDFB;--ink:#1A1E1C;--ink-2:#434A47;--ink-3:#6C736F;
+    --line:#D2D6CF;--line-2:#E1E4DD;--accent:#1E5A54;--accent-2:#2C7A70;--accent-soft:#DDE8E4;
+    --ok:#2F7D4F;--ok-soft:#DCEBE0;--warn:#8F6410;--warn-soft:#F0E6CE;--bad:#A5433A;--bad-soft:#F1DAD5;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  }
+  @media (prefers-color-scheme: dark){:root{
+    --bg:#12150F;--surface:#1A1E17;--surface-2:#20251D;--ink:#E7EAE4;--ink-2:#B0B7B0;--ink-3:#838A84;
+    --line:#2B3129;--line-2:#242A22;--accent:#63B6A9;--accent-2:#7FCBBE;--accent-soft:#182723;
+    --ok:#6FCB8F;--ok-soft:#16241A;--warn:#D6A63C;--warn-soft:#2A2312;--bad:#E28A7E;--bad-soft:#2C1815;}}
+  :root[data-theme="light"]{--bg:#E8EAE6;--surface:#F6F7F4;--surface-2:#FCFDFB;--ink:#1A1E1C;--ink-2:#434A47;--ink-3:#6C736F;--line:#D2D6CF;--line-2:#E1E4DD;--accent:#1E5A54;--accent-2:#2C7A70;--accent-soft:#DDE8E4;--ok:#2F7D4F;--ok-soft:#DCEBE0;--warn:#8F6410;--warn-soft:#F0E6CE;--bad:#A5433A;--bad-soft:#F1DAD5;}
+  :root[data-theme="dark"]{--bg:#12150F;--surface:#1A1E17;--surface-2:#20251D;--ink:#E7EAE4;--ink-2:#B0B7B0;--ink-3:#838A84;--line:#2B3129;--line-2:#242A22;--accent:#63B6A9;--accent-2:#7FCBBE;--accent-soft:#182723;--ok:#6FCB8F;--ok-soft:#16241A;--warn:#D6A63C;--warn-soft:#2A2312;--bad:#E28A7E;--bad-soft:#2C1815;}
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased;}
+  .docbar{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:10px 24px;font-family:var(--mono);font-size:.78rem;letter-spacing:.03em;}
+  .docbar a{color:var(--accent-2);text-decoration:none;} .docbar a:hover{text-decoration:underline;}
+  .docbar .b{color:var(--accent);font-weight:600;text-transform:uppercase;letter-spacing:.12em;}
+  main{max-width:900px;margin:0 auto;padding:14px 24px 90px;}
+  h1,h2,h3,h4{font-family:var(--serif);font-weight:600;line-height:1.15;letter-spacing:-.01em;}
+  h1{font-size:clamp(1.7rem,4vw,2.4rem);margin:24px 0 4px;}
+  h2{font-size:clamp(1.3rem,3vw,1.7rem);margin:34px 0 6px;padding-top:10px;border-top:1px solid var(--line-2);}
+  h3{font-size:1.15rem;margin:22px 0 4px;} h4{font-size:1rem;margin:16px 0 2px;}
+  p,li{max-width:80ch;} a{color:var(--accent-2);}
+  code{font-family:var(--mono);font-size:.85em;background:var(--surface-2);border:1px solid var(--line-2);padding:1px 5px;border-radius:5px;}
+  pre{overflow-x:auto;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-family:var(--mono);font-size:.8rem;line-height:1.5;}
+  pre code{background:none;border:none;padding:0;}
+  blockquote{margin:16px 0;padding:10px 16px;border-left:3px solid var(--accent);background:var(--accent-soft);border-radius:0 8px 8px 0;color:var(--ink-2);}
+  blockquote p{margin:6px 0;}
+  table{border-collapse:collapse;width:100%;font-size:.86rem;margin:16px 0;display:block;overflow-x:auto;}
+  th,td{padding:8px 11px;border:1px solid var(--line-2);text-align:left;vertical-align:top;}
+  thead th{background:var(--surface-2);font-family:var(--mono);font-size:.66rem;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-3);white-space:nowrap;}
+  hr{border:none;border-top:1px solid var(--line);margin:26px 0;}
+  ul,ol{padding-left:22px;} li{margin:3px 0;}
+  strong{color:var(--ink);}
+  .title{border-bottom:1px solid var(--line);padding-bottom:10px;}
+</style>
+</head>
+<body>
+<div class="docbar"><span class="b">PAINT</span> &nbsp;·&nbsp; <a href="paint-plan.html">← roadmap</a> &nbsp;·&nbsp; <a href="docs.html">all docs</a></div>
+<main>
+<h1 class="title">B2a runbook — put the pigmentation panel on hg19 (the fast, lossless build fix)</h1>
+<h1 id="b2a-runbook--put-the-pigmentation-panel-on-hg19-the-fast-lossless-build-fix">B2a runbook — put the pigmentation panel on hg19 (the fast, lossless build fix)</h1>
+<p><strong>Goal.</strong> Fix the root bug (A2) the cheap way: the sequence data is already on <strong>hg19</strong>, so move the <strong>222-SNP pigmentation panel</strong> from hg38 → hg19 (instead of migrating 110 GB of data). In the same pass, fix Denisova 3's contig naming (<strong>A1</strong>) and the projection collapse (add <code>no-mean-imputation</code>, the <strong>Q5</strong> fix), then re-run the pigmentation arm — depth, PCA, projection — and regenerate the <strong>after</strong> figures for the before/after comparison. This validates the entire pigmentation story on the build the data already uses, at trivial compute.</p>
+<blockquote>
+<p>Scope note: B2a is the <strong>integrity fix + before/after</strong>. The heavier <strong>B2b</strong> (migrate the data up to hg38) is a <em>separate</em> later job, needed only when we bring in the four hg38 datasets (B1/B3/B4). B2a does <strong>not</strong> require B2b.</p>
+</blockquote>
+<hr />
+<h2 id="1-what-i-need-from-you">1. What I need from you</h2>
+<h3 id="11-cluster-access-the-one-real-dependency">1.1 Cluster access (the one real dependency)</h3>
+<p>Everything heavy runs on Great Lakes. I do <strong>not</strong> need — and will not accept — your UMich password or Duo code. The safe mechanism (the one that worked earlier this session):</p>
+<ul>
+<li><strong>You</strong> open an authenticated session in a terminal I can reach: <code>ssh greatlakes</code> (UMich Kerberos + Duo). That creates a reusable <strong>ControlMaster socket</strong>; while it's open I can run the commands/SLURM jobs below through it, and you stay in control of the credentials.</li>
+<li><strong>Or</strong>, if you'd rather not share a live session: I hand you the finished SLURM script (below) and the exact commands, <strong>you</strong> submit them, and paste back the small text outputs (eigenvalues, QC counts, depth summaries). That's enough for me to verify and to build the after-figures.</li>
+</ul>
+<p>Either way works. Tell me which you prefer.</p>
+<h3 id="12-confirm-these-cluster-parameters-fill-in--correct">1.2 Confirm these cluster parameters (fill in / correct)</h3>
+<p>These are not secrets — you can just confirm or edit this table and I'll bake them into the script.</p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Value I'll assume</th>
+<th>Confirm / correct</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SLURM account</td>
+<td><code>tlasisi0</code></td>
+<td>?</td>
+</tr>
+<tr>
+<td>Partition</td>
+<td><code>standard</code></td>
+<td>?</td>
+</tr>
+<tr>
+<td>Working dir (<code>$B</code>)</td>
+<td><code>/nfs/turbo/lsa-tlasisi1/lheald_thesis/aDNA_data</code></td>
+<td>?</td>
+</tr>
+<tr>
+<td>Scratch</td>
+<td><code>/scratch/tlasisi_root/tlasisi0/lheald</code></td>
+<td>?</td>
+</tr>
+<tr>
+<td>Reference (hg19)</td>
+<td><code>$B/reference/hs37d5.fa</code></td>
+<td>?</td>
+</tr>
+<tr>
+<td>Archaic BAMs</td>
+<td><code>$B/results/sorted/*_sorted.bam</code> (+ Denisova 3)</td>
+<td>?</td>
+</tr>
+<tr>
+<td>SGDP reference to use</td>
+<td>the <strong>15-sample</strong> merged VCF <code>$B/sgdp_merge/sgdp_merged.vcf.gz</code> (matches the thesis's committed PCA)</td>
+<td>?</td>
+</tr>
+<tr>
+<td>Modules</td>
+<td><code>Bioinformatics samtools/1.21 bcftools</code>, <code>plink/2.0</code>, <code>UCSC-utilities</code> (for <code>liftOver</code>)</td>
+<td>?</td>
+</tr>
+<tr>
+<td>Internet on login node</td>
+<td>yes (to fetch the UCSC chain file once)</td>
+<td>?</td>
+</tr>
+</tbody>
+</table>
+<h3 id="13-two-small-decisions-i-have-defaults-override-if-you-like">1.3 Two small decisions (I have defaults; override if you like)</h3>
+<ul>
+<li><strong>Lift method.</strong> Default: <code>liftOver</code> the 222 coordinates with the UCSC <code>hg38ToHg19</code> chain (offline once the chain is downloaded), <strong>and</strong> cross-check a sample by rsID against dbSNP. <em>(Alternative: re-pull every hg19 coord by rsID from dbSNP and store both builds — more robust but needs dbSNP access. Recommended as a follow-up, not a blocker.)</em></li>
+<li><strong>Depth quality filter.</strong> The original <code>samtools depth</code> used <strong>no</strong> <code>-q/-Q</code> filter. Default for B2a: run it <strong>both</strong> ways — raw (to match the thesis exactly for a clean before/after) <strong>and</strong> with <code>-q 30 -Q 30</code> (the correct definition) — and report the difference. Override if you want only one.</li>
+</ul>
+<h3 id="14-not-required-from-you">1.4 Not required from you</h3>
+<p>No datasets. The hg19 BAMs, the panel, and the SGDP data are all already on the cluster; the UCSC chain file and any dbSNP lookups are public. Lily/Yemko don't need to produce anything for B2a. (The A1 "was Denisova 3 naming accidental?" and A3 "was <code>--ploidy 1</code> intentional?" questions are courtesy confirmations for the write-up — they do <strong>not</strong> block B2a, and A3 doesn't even touch the pigmentation arm.)</p>
+<hr />
+<h2 id="2-compute-resources">2. Compute resources</h2>
+<p><strong>B2a is light.</strong> Every step is restricted to the 222 panel positions — there is no whole-genome operation. A single modest batch job covers the whole thing:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --job-name=paint_b2a</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --account=tlasisi0</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --partition=standard</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --cpus-per-task=8</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --mem=32G</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --time=02:00:00</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --output=b2a_%j.log</span></span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Resource</th>
+<th>Ask</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cores</td>
+<td>8 (most steps use 1–4)</td>
+<td><code>bcftools</code>/<code>plink2</code> threading on the SGDP subset</td>
+</tr>
+<tr>
+<td>Memory</td>
+<td>32 GB (generous)</td>
+<td>peak is the SGDP subset/merge + plink; realistically &lt; 8 GB</td>
+</tr>
+<tr>
+<td>Walltime</td>
+<td>2 h (generous)</td>
+<td>most steps run in seconds–minutes; the SGDP subset is the only I/O-bound one</td>
+</tr>
+<tr>
+<td>Scratch/disk</td>
+<td>~5 GB</td>
+<td>panel VCFs + per-sample intermediates (the big BAMs already exist)</td>
+</tr>
+<tr>
+<td>GPU / large-mem node</td>
+<td>none</td>
+<td>nothing here needs them</td>
+</tr>
+</tbody>
+</table>
+<p>If the SGDP genotypes must be re-subset from the 279 per-sample VCFs instead of the merged 15-sample VCF, make it a small <code>--array=1-279%20</code> job (each task is tiny, region-restricted) — still light, just more tasks. For the controlled before/after I recommend the <strong>15-sample</strong> merged VCF, which is a single fast subset.</p>
+<p><strong>Bottom line:</strong> you don't need to reserve anything special — one standard node, ~8 cores, ~32 GB, ~2 h, is comfortably more than enough.</p>
+<hr />
+<h2 id="3-step-by-step">3. Step-by-step</h2>
+<p><code>$B</code> = working dir (§1.2). Run from <code>$B</code> on a compute node unless noted.</p>
+<h3 id="step-0--setup--provenance-baseline-q1-slice-q10a">Step 0 — Setup &amp; provenance baseline (Q1 slice, Q10a)</h3>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">module</span> load Bioinformatics samtools/1.21 bcftools</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">module</span> load plink/2.0</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># record versions (Q10a)</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="ex">samtools</span> <span class="at">--version</span> <span class="kw">|</span> <span class="fu">head</span> <span class="at">-1</span><span class="kw">;</span>  <span class="ex">bcftools</span> <span class="at">--version</span> <span class="kw">|</span> <span class="fu">head</span> <span class="at">-1</span><span class="kw">;</span>  <span class="ex">plink2</span> <span class="at">--version</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># locate &amp; characterise the panel BED that fed the original run (Q1)</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> <span class="at">-l</span> /home/lheald/gwas_loci/snps.bed <span class="kw">&amp;&amp;</span> <span class="fu">head</span> <span class="at">-3</span> /home/lheald/gwas_loci/snps.bed</span></code></pre></div>
+<h3 id="step-1--lift-the-panel-hg38--hg19-the-fix">Step 1 — Lift the panel hg38 → hg19 (the fix)</h3>
+<p>Build the hg38 BED from the committed panel, add the <code>chr</code> prefix UCSC needs, lift, then strip <code>chr</code> back to the bare naming the data uses.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1a. hg38 BED from data/snps.txt  (format &#39;chr:pos::&#39; -&gt; chr, pos-1, pos, chr:pos)</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co">#     (copy data/snps.txt to the cluster, or regenerate from the repo)</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="at">-F:</span> <span class="st">&#39;NR&gt;1{printf &quot;chr%s\t%d\t%d\t%s:%s\n&quot;,$1,$2-1,$2,$1,$2}&#39;</span> snps.txt <span class="op">&gt;</span> panel.hg38.bed</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 1b. fetch the chain once (login node) and lift</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="fu">wget</span> <span class="at">-nc</span> https://hgdownload.soe.ucsc.edu/goldenPath/hg38/liftOver/hg38ToHg19.over.chain.gz</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="ex">liftOver</span> panel.hg38.bed hg38ToHg19.over.chain.gz panel.hg19.chr.bed panel.unmapped.bed</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 1c. strip &#39;chr&#39; -&gt; bare names (match hs37d5 / the BAMs); make a clean 3-col + id BED</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="fu">sed</span> <span class="st">&#39;s/^chr//&#39;</span> panel.hg19.chr.bed <span class="kw">|</span> <span class="fu">awk</span> <span class="st">&#39;BEGIN{OFS=&quot;\t&quot;}{print $1,$2,$3,$4}&#39;</span> <span class="op">&gt;</span> snps.hg19.bed</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;mapped: </span><span class="va">$(</span><span class="fu">wc</span> <span class="at">-l</span> <span class="op">&lt;</span> snps.hg19.bed<span class="va">)</span><span class="st"> / 222   unmapped: </span><span class="va">$(</span><span class="fu">grep</span> <span class="at">-vc</span> <span class="st">&#39;^#&#39;</span> panel.unmapped.bed<span class="va">)</span><span class="st">&quot;</span></span></code></pre></div>
+<p><strong>Q2 gate — tracer SNP must now be hg19:</strong></p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># SLC24A5 rs1426654: hg19 = 15:48426484, hg38 = 15:48134288</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">grep</span> <span class="at">-P</span> <span class="st">&#39;^15\t4842648&#39;</span> snps.hg19.bed <span class="kw">&amp;&amp;</span> <span class="bu">echo</span> <span class="st">&quot;OK: SLC24A5 on hg19&quot;</span> <span class="kw">||</span> <span class="bu">echo</span> <span class="st">&quot;FAIL: tracer not on hg19&quot;</span></span></code></pre></div>
+<p>Also spot-check ~5 rsIDs by cross-referencing <code>data/skin_pigmentation.tsv</code> (rsID ↔︎ coordinate) against dbSNP hg19 if internet is available.</p>
+<h3 id="step-2--fix-denisova-3-contig-naming-a1">Step 2 — Fix Denisova 3 contig naming (A1)</h3>
+<p>Reheader once, upstream, so both depth and calling use bare names.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="va">D3</span><span class="op">=</span><span class="va">$B</span>/results/sorted/Denisova3_sorted.bam</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="ex">samtools</span> view <span class="at">-H</span> <span class="st">&quot;</span><span class="va">$D3</span><span class="st">&quot;</span> <span class="kw">|</span> <span class="fu">sed</span> <span class="at">-E</span> <span class="st">&#39;s/SN:chr([0-9XYMT]+)/SN:\1/&#39;</span> <span class="op">&gt;</span> d3.hdr.sam</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="ex">samtools</span> reheader d3.hdr.sam <span class="st">&quot;</span><span class="va">$D3</span><span class="st">&quot;</span> <span class="op">&gt;</span> <span class="va">$B</span>/results/sorted/Denisova3_sorted.rehdr.bam</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="ex">samtools</span> index <span class="va">$B</span>/results/sorted/Denisova3_sorted.rehdr.bam</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co"># sanity: header now bare</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="ex">samtools</span> view <span class="at">-H</span> <span class="va">$B</span>/results/sorted/Denisova3_sorted.rehdr.bam <span class="kw">|</span> <span class="fu">grep</span> <span class="at">-m2</span> <span class="st">&#39;^@SQ&#39;</span></span></code></pre></div>
+<h3 id="step-3--re-extract-panel-depth-on-hg19-all-15-archaics">Step 3 — Re-extract panel depth on hg19 (all 15 archaics)</h3>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> depth_hg19</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> bam <span class="kw">in</span> <span class="va">$B</span>/results/sorted/<span class="pp">*</span>_sorted<span class="pp">*</span>.bam<span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="va">s</span><span class="op">=</span><span class="va">$(</span><span class="fu">basename</span> <span class="st">&quot;</span><span class="va">$bam</span><span class="st">&quot;</span> <span class="kw">|</span> <span class="fu">sed</span> <span class="st">&#39;s/_sorted.*//&#39;</span><span class="va">)</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="ex">samtools</span> depth <span class="at">-a</span> <span class="at">-b</span> snps.hg19.bed          <span class="st">&quot;</span><span class="va">$bam</span><span class="st">&quot;</span> <span class="op">&gt;</span> depth_hg19/<span class="va">${s}</span>.raw.txt      <span class="co"># matches thesis</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="ex">samtools</span> depth <span class="at">-a</span> <span class="at">-b</span> snps.hg19.bed <span class="at">-q30</span> <span class="at">-Q30</span> <span class="st">&quot;</span><span class="va">$bam</span><span class="st">&quot;</span> <span class="op">&gt;</span> depth_hg19/<span class="va">${s}</span>.q30.txt     <span class="co"># correct definition</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co"># quick per-sample summary (mean depth, covered/222)</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> f <span class="kw">in</span> depth_hg19/<span class="pp">*</span>.q30.txt<span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">awk</span> <span class="at">-v</span> s=<span class="st">&quot;</span><span class="va">$f</span><span class="st">&quot;</span> <span class="st">&#39;{n++;sum+=$3;if($3&gt;0)c++} END{printf &quot;%s\t%.2f\t%d/%d\n&quot;,s,sum/n,c,n}&#39;</span> <span class="st">&quot;</span><span class="va">$f</span><span class="st">&quot;</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span></code></pre></div>
+<p><strong>Q6 gate:</strong> Denisova 3 should now be in the high-coverage band (≫0.5×) alongside Vindija 33.19 / Chagyrskaya 8.</p>
+<h3 id="step-4--sgdp-moderns-at-the-hg19-panel--reference-pca-with-allele-weights">Step 4 — SGDP moderns at the hg19 panel + reference PCA (with allele weights)</h3>
+<div class="sourceCode" id="cb7"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> pca_hg19 <span class="kw">&amp;&amp;</span> <span class="bu">cd</span> pca_hg19</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 4a. subset the 15-sample SGDP merged VCF to the hg19 panel</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="ex">bcftools</span> view <span class="at">-R</span> ../snps.hg19.bed <span class="at">-m2</span> <span class="at">-M2</span> <span class="at">-v</span> snps <span class="at">-Oz</span> <span class="dt">\</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">-o</span> sgdp.pig.hg19.vcf.gz <span class="va">$B</span>/sgdp_merge/sgdp_merged.vcf.gz</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="ex">tabix</span> <span class="at">-p</span> vcf sgdp.pig.hg19.vcf.gz</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 4b. PLINK: make-pgen, deterministic IDs, dedup, biallelic</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="ex">plink2</span> <span class="at">--vcf</span> sgdp.pig.hg19.vcf.gz <span class="at">--set-all-var-ids</span> <span class="st">&#39;@:#:$r:$a&#39;</span> <span class="dt">\</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">--rm-dup</span> force-first <span class="at">--max-alleles</span> 2 <span class="at">--make-pgen</span> <span class="at">--out</span> sgdp.pig.hg19</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 4c. reference allele freqs + PCA with per-allele weights (the projection basis)</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="ex">plink2</span> <span class="at">--pfile</span> sgdp.pig.hg19 <span class="at">--freq</span> <span class="at">--out</span> sgdp.pig.hg19.freq</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="ex">plink2</span> <span class="at">--pfile</span> sgdp.pig.hg19 <span class="at">--read-freq</span> sgdp.pig.hg19.freq.afreq <span class="dt">\</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">--pca</span> 10 allele-wts <span class="at">--out</span> sgdp.pig.hg19.pca</span></code></pre></div>
+<p><strong>Q4 gate (allele/REF sanity):</strong> for each retained SNP, assert the reference base equals the panel/VCF REF (<code>samtools faidx $B/reference/hs37d5.fa &lt;chr:pos&gt;</code>), count ref/alt swaps and palindromes.
+<strong>Q5 gate (non-degeneracy):</strong> <code>cat sgdp.pig.hg19.pca.eigenval</code> should now show <strong>several</strong> non-zero eigenvalues (not one), i.e. the panel is polymorphic on the correct coordinates.</p>
+<h3 id="step-5--call-archaic-genotypes-at-the-hg19-panel--project-q5-fix">Step 5 — Call archaic genotypes at the hg19 panel + project (Q5 fix)</h3>
+<div class="sourceCode" id="cb8"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 5a. keep-all diploid calls at the hg19 panel across the 15 archaic BAMs</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co">#     (use the reheadered Denisova 3 from Step 2)</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="va">BAMS</span><span class="op">=</span><span class="va">$(</span><span class="fu">ls</span> <span class="va">$B</span>/results/sorted/<span class="pp">*</span>_sorted<span class="pp">*</span>.bam <span class="kw">|</span> <span class="fu">grep</span> <span class="at">-v</span> <span class="st">&#39;Denisova3_sorted.bam&#39;</span><span class="kw">;</span> <span class="bu">echo</span> <span class="va">$B</span>/results/sorted/Denisova3_sorted.rehdr.bam<span class="va">)</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="ex">bcftools</span> mpileup <span class="at">-f</span> <span class="va">$B</span>/reference/hs37d5.fa <span class="at">-R</span> ../snps.hg19.bed <span class="at">-q30</span> <span class="at">-Q30</span> <span class="at">-Ou</span> <span class="va">$BAMS</span> <span class="dt">\</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">|</span> <span class="ex">bcftools</span> call <span class="at">-c</span> <span class="at">-Oz</span> <span class="at">-o</span> ancient.pig.hg19.vcf.gz</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="ex">plink2</span> <span class="at">--vcf</span> ancient.pig.hg19.vcf.gz <span class="at">--set-all-var-ids</span> <span class="st">&#39;@:#:$r:$a&#39;</span> <span class="dt">\</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">--rm-dup</span> force-first <span class="at">--max-alleles</span> 2 <span class="at">--make-bed</span> <span class="at">--out</span> ancient.pig.hg19</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 5b. PROJECT with no-mean-imputation (THE Q5 fix) + variance-standardize</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="ex">plink2</span> <span class="at">--bfile</span> ancient.pig.hg19 <span class="at">--read-freq</span> sgdp.pig.hg19.freq.afreq <span class="dt">\</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">--score</span> sgdp.pig.hg19.pca.eigenvec.allele 2 5 header-read no-mean-imputation <span class="dt">\</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>          ignore-dup-ids list-variants <span class="at">--score-col-nums</span> 6-15 <span class="at">--variance-standardize</span> <span class="dt">\</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">--out</span> ancient.pig.hg19.projected</span></code></pre></div>
+<p><strong>Q5 gate (projection spread):</strong> <code>ancient.pig.hg19.projected.sscore</code> PC1 must now vary across samples (<code>sd(PC1) &gt; 0</code>, not one repeated value).</p>
+<h3 id="step-6--qc-summary-the-gates-one-place">Step 6 — QC summary (the gates, one place)</h3>
+<p>Emit a small table: tracer build (Q2), mapped/unmapped panel SNPs, REF-base mismatches + palindromes (Q4), eigenvalue spectrum (Q5), per-sample covered/222 with Denisova 3 flagged (Q6). This is the acceptance evidence that B2a worked.</p>
+<h3 id="step-7--after-figures--commit">Step 7 — After-figures + commit</h3>
+<p>Pull the corrected outputs to the laptop into <code>data/after/</code> (or overwrite with a git branch), then:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># rename to the names the figure script expects, or point it at data/after/</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Rscript</span> plan/figures/make_consequence_figures.R after</span></code></pre></div>
+<p>Commit <code>plan/figures/after_*.png</code> and add them beside the <code>before_*.png</code> in the HTML's Before/after section. Done: a real before → after comparison for coverage, projection, and scree.</p>
+<hr />
+<h2 id="4-acceptance-criteria-b2a-is-done-when-all-pass">4. Acceptance criteria (B2a is "done" when all pass)</h2>
+<ul class="task-list">
+<li><label><input type="checkbox" /><strong>Q2</strong> — tracer rs1426654 resolves to hg19 <code>15:48426484</code>; naming consistent; lint exits 0.</label></li>
+<li><label><input type="checkbox" /><strong>Q4</strong> — 0 REF-base mismatches on retained SNPs; palindromes flagged; funnel reported.</label></li>
+<li><label><input type="checkbox" /><strong>Q5</strong> — pigmentation eigenvalues are multi-dimensional (not rank-1); projected archaic PC1 has non-zero spread; <code>no-mean-imputation</code> present.</label></li>
+<li><label><input type="checkbox" /><strong>Q6</strong> — Denisova 3 recovers in the high-coverage band (not 0.5×).</label></li>
+<li><label><input type="checkbox" /><strong>after-figures</strong> rendered and visibly different from <code>before_*.png</code> (coverage: Denisova 3 up; projection: archaics spread; scree: multiple components).</label></li>
+</ul>
+<h2 id="5-what-b2a-does-not-cover-tracked-elsewhere">5. What B2a does NOT cover (tracked elsewhere)</h2>
+<ul>
+<li>The four hg38 datasets / gene-level PCA / directional score → need <strong>B2b</strong> (data → hg38) first; see <code>plan.md</code> §4 B2 / Phase 4.</li>
+<li>Whole-genome positive control (Q3), sample identity/sex/contamination (Q7), damage (Q8) → Phases 2–3, independent of B2a.</li>
+</ul>
+</main>
+</body>
+</html>

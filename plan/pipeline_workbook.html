@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>PAINT — bioinformatics pipeline workbook</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<style>
+  :root {
+    --bg:#E8EAE6;--surface:#F6F7F4;--surface-2:#FCFDFB;--ink:#1A1E1C;--ink-2:#434A47;--ink-3:#6C736F;
+    --line:#D2D6CF;--line-2:#E1E4DD;--accent:#1E5A54;--accent-2:#2C7A70;--accent-soft:#DDE8E4;
+    --ok:#2F7D4F;--ok-soft:#DCEBE0;--warn:#8F6410;--warn-soft:#F0E6CE;--bad:#A5433A;--bad-soft:#F1DAD5;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  }
+  @media (prefers-color-scheme: dark){:root{
+    --bg:#12150F;--surface:#1A1E17;--surface-2:#20251D;--ink:#E7EAE4;--ink-2:#B0B7B0;--ink-3:#838A84;
+    --line:#2B3129;--line-2:#242A22;--accent:#63B6A9;--accent-2:#7FCBBE;--accent-soft:#182723;
+    --ok:#6FCB8F;--ok-soft:#16241A;--warn:#D6A63C;--warn-soft:#2A2312;--bad:#E28A7E;--bad-soft:#2C1815;}}
+  :root[data-theme="light"]{--bg:#E8EAE6;--surface:#F6F7F4;--surface-2:#FCFDFB;--ink:#1A1E1C;--ink-2:#434A47;--ink-3:#6C736F;--line:#D2D6CF;--line-2:#E1E4DD;--accent:#1E5A54;--accent-2:#2C7A70;--accent-soft:#DDE8E4;--ok:#2F7D4F;--ok-soft:#DCEBE0;--warn:#8F6410;--warn-soft:#F0E6CE;--bad:#A5433A;--bad-soft:#F1DAD5;}
+  :root[data-theme="dark"]{--bg:#12150F;--surface:#1A1E17;--surface-2:#20251D;--ink:#E7EAE4;--ink-2:#B0B7B0;--ink-3:#838A84;--line:#2B3129;--line-2:#242A22;--accent:#63B6A9;--accent-2:#7FCBBE;--accent-soft:#182723;--ok:#6FCB8F;--ok-soft:#16241A;--warn:#D6A63C;--warn-soft:#2A2312;--bad:#E28A7E;--bad-soft:#2C1815;}
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased;}
+  .docbar{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:10px 24px;font-family:var(--mono);font-size:.78rem;letter-spacing:.03em;}
+  .docbar a{color:var(--accent-2);text-decoration:none;} .docbar a:hover{text-decoration:underline;}
+  .docbar .b{color:var(--accent);font-weight:600;text-transform:uppercase;letter-spacing:.12em;}
+  main{max-width:900px;margin:0 auto;padding:14px 24px 90px;}
+  h1,h2,h3,h4{font-family:var(--serif);font-weight:600;line-height:1.15;letter-spacing:-.01em;}
+  h1{font-size:clamp(1.7rem,4vw,2.4rem);margin:24px 0 4px;}
+  h2{font-size:clamp(1.3rem,3vw,1.7rem);margin:34px 0 6px;padding-top:10px;border-top:1px solid var(--line-2);}
+  h3{font-size:1.15rem;margin:22px 0 4px;} h4{font-size:1rem;margin:16px 0 2px;}
+  p,li{max-width:80ch;} a{color:var(--accent-2);}
+  code{font-family:var(--mono);font-size:.85em;background:var(--surface-2);border:1px solid var(--line-2);padding:1px 5px;border-radius:5px;}
+  pre{overflow-x:auto;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-family:var(--mono);font-size:.8rem;line-height:1.5;}
+  pre code{background:none;border:none;padding:0;}
+  blockquote{margin:16px 0;padding:10px 16px;border-left:3px solid var(--accent);background:var(--accent-soft);border-radius:0 8px 8px 0;color:var(--ink-2);}
+  blockquote p{margin:6px 0;}
+  table{border-collapse:collapse;width:100%;font-size:.86rem;margin:16px 0;display:block;overflow-x:auto;}
+  th,td{padding:8px 11px;border:1px solid var(--line-2);text-align:left;vertical-align:top;}
+  thead th{background:var(--surface-2);font-family:var(--mono);font-size:.66rem;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-3);white-space:nowrap;}
+  hr{border:none;border-top:1px solid var(--line);margin:26px 0;}
+  ul,ol{padding-left:22px;} li{margin:3px 0;}
+  strong{color:var(--ink);}
+  .title{border-bottom:1px solid var(--line);padding-bottom:10px;}
+</style>
+</head>
+<body>
+<div class="docbar"><span class="b">PAINT</span> &nbsp;·&nbsp; <a href="paint-plan.html">← roadmap</a> &nbsp;·&nbsp; <a href="docs.html">all docs</a></div>
+<main>
+<h1 class="title">PAINT — bioinformatics pipeline workbook</h1>
+<h1 id="paint--bioinformatics-pipeline-workbook">PAINT — bioinformatics pipeline workbook</h1>
+<p>A step-by-step, audit-oriented record of the PAINT pipeline: every step, its inputs and outputs (path · format · upstream source), the exact command + tool, key parameters, and what a reviewing bioinformatician should double-check. <strong>The goal is auditability</strong> — the "⚠ Verify" notes are the reviewer's worklist, and it is fine to change results as long as each step is done well.</p>
+<ul>
+<li><strong>Snapshot:</strong> 2026-07-23. Scripts read verbatim from the cluster (<code>/nfs/turbo/lsa-tlasisi1/lheald_thesis/aDNA_data</code>) and the repo (<code>analysis/</code>).</li>
+<li><strong>Repo-only:</strong> this file is not published to the website (it lists internal cluster paths).</li>
+<li><strong>Related:</strong> <a href="cluster_inventory.html"><code>cluster_inventory.md</code></a> (what's on disk), <a href="paint-plan.html"><code>plan.md</code></a> (roadmap), <a href="verify/BUG_EVIDENCE.html"><code>verify/BUG_EVIDENCE.md</code></a> (bug evidence).</li>
+</ul>
+<blockquote>
+<p><strong>Two-pipeline warning.</strong> Several stages have <strong>two competing implementations</strong> (an early/buggy one and a corrected twin, or an "Approach A" per-sample path and an "Approach B" merge-first path). They write overlapping filenames, so <em>the last one run wins</em>. Wherever this happens it's flagged, and §"Which scripts are canonical" summarizes the best current guess — <strong>but the reviewer must confirm from file timestamps / SLURM logs which script actually produced the thesis results.</strong></p>
+</blockquote>
+<hr />
+<h2 id="environment--traceability">Environment &amp; traceability</h2>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>What the scripts use</th>
+<th>Traceability</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Reference genome</td>
+<td><code>reference/hs37d5.fa</code> = <strong>GRCh37 / hg19</strong> (numeric contigs, <code>1</code>,<code>2</code>,…). <code>pca_ancient.slurm</code> alone references <code>hg19.fa</code> (chr-prefixed) — <strong>absent</strong>.</td>
+<td>⚠ The SNP panel is on <strong>hg38</strong> (see the build-mismatch issue) — panel and data are on <em>different builds</em>.</td>
+</tr>
+<tr>
+<td>samtools</td>
+<td><code>module load Bioinformatics samtools/1.21</code> (pinned in most scripts)</td>
+<td>✅ pinned</td>
+</tr>
+<tr>
+<td>bcftools</td>
+<td><code>module load Bioinformatics bcftools</code> (<strong>no version</strong>)</td>
+<td>⚠ version unrecorded</td>
+</tr>
+<tr>
+<td>PLINK</td>
+<td>mostly <code>module load Bioinformatics plink</code> (unversioned) but the <code>plink2</code> binary is invoked; <code>sgdp_merge_pca.slurm</code> pins <code>plink/2.0</code>; <code>pca_ancient.slurm</code> uses PLINK <strong>1.9</strong> (<code>plink</code>, different PCA algorithm)</td>
+<td>⚠ mixed / mostly unpinned</td>
+</tr>
+<tr>
+<td>Python</td>
+<td><code>pca_proj.py</code>, <code>pig_pca_proj.py</code>: stdlib only, call bare <code>plink2</code> on PATH</td>
+<td>⚠ no version capture</td>
+</tr>
+<tr>
+<td>R</td>
+<td>pages load ggplot2, tidyverse, data.table, sf, raster, rnaturalearth(data), ggspatial, viridis, ggrepel, reshape2, showtext, sysfonts, wesanderson, lme4, patchwork, readr, knitr, workflowr</td>
+<td>⚠ no <code>renv</code>/lockfile; <code>font_add_google</code> + one live URL need network</td>
+</tr>
+<tr>
+<td>Cluster</td>
+<td>UMich Great Lakes, SLURM account <code>tlasisi0</code>, scratch <code>/scratch/tlasisi_root/tlasisi0/lheald</code></td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>First thing a reviewer should do:</strong> capture versions on the cluster — <code>bcftools --version</code>, <code>plink2 --version</code>, <code>samtools --version</code> — and record the panel/BED provenance (see the depth step: the panel BED lives in a personal home dir).</p>
+<hr />
+<h2 id="data-flow-overview">Data-flow overview</h2>
+<pre class="mermaid"><code>flowchart TD
+  subgraph ARCHAIC[&quot;Archaic track (15 BAMs)&quot;]
+    A1[&quot;1. phased_get / sort_wget&lt;br/&gt;download + sort BAMs&lt;br/&gt;(MPI-EVA, EBI/ENA)&quot;]
+    A1 --&gt; A2[&quot;3. snp_subset&lt;br/&gt;samtools depth -a -b + view -L&lt;br/&gt;→ *_depth.txt, filtered_*.bam&quot;]
+    A1 --&gt; A3[&quot;4a. pig_call_miss (-c, keep all)&lt;br/&gt;pigmentation-panel calls&lt;br/&gt;→ ancient_pigmentation.vcf.gz&quot;]
+    A1 --&gt; A4[&quot;4c. ancient_wg (--ploidy 1, per-chr)&lt;br/&gt;WG-panel joint calls&lt;br/&gt;→ ancient_sgdp_wg.vcf.gz&quot;]
+  end
+  subgraph MODERN[&quot;Modern SGDP reference&quot;]
+    B1[&quot;2. process_links.R → wget_commands.txt&quot;]
+    B1 --&gt; B2[&quot;5a. sgdp_subset_array (×279)&lt;br/&gt;download + bcftools view -R&lt;br/&gt;→ per-sample _sgdp.bcf / _snps.bcf&quot;]
+    B2 --&gt; B3[&quot;5b. sgdp_merge_pca&lt;br/&gt;merge → PLINK → LD-prune → PCA allele-wts&lt;br/&gt;→ sgdp_pca.eigenvec(.allele), snps_pca&quot;]
+  end
+  A2 --&gt; R1[&quot;8c. depth.Rmd&lt;br/&gt;coverage/missingness + glmer&quot;]
+  A3 --&gt; C1[&quot;7. pca_proj.py&lt;br/&gt;plink2 --score (project ancient)&quot;]
+  B3 --&gt; C1
+  B3 --&gt; C2[&quot;6. modern_pca / pig_pca&lt;br/&gt;plink2 --pca&quot;]
+  C1 --&gt; R2[&quot;8d. pca.Rmd (PCA figures)&quot;]
+  C2 --&gt; R2</code></pre>
+<hr />
+<h1 id="stage-a--archaic-sample-track">Stage A — Archaic sample track</h1>
+<h2 id="a1-download--sort-archaic-bams--phased_getslurm-sort_wgetslurm">A1. Download &amp; sort archaic BAMs — <code>phased_get.slurm</code>, <code>sort_wget.slurm</code></h2>
+<p><strong>Purpose:</strong> fetch the archaic Neanderthal/Denisovan alignments and produce coordinate-sorted, indexed BAMs.</p>
+<ul>
+<li><strong><code>phased_get.slurm</code></strong> — Vindija 33.19 only. Downloads 24 per-chromosome BAMs from MPI-EVA (Prüfer et al. 2017), merges, sorts, indexes.
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="va">BASE_URL</span><span class="op">=</span><span class="st">&quot;http://ftp.eva.mpg.de/neandertal/Vindija/bam/Pruefer_etal_2017/Vindija33.19/&quot;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> chr <span class="kw">in</span> <span class="dt">{</span><span class="dv">1</span><span class="dt">..</span><span class="dv">22</span><span class="dt">}</span> X Y<span class="kw">;</span> <span class="cf">do</span> <span class="fu">wget</span> <span class="at">-nc</span> <span class="st">&quot;</span><span class="va">${BASE_URL}</span><span class="st">/Vi33.19.chr</span><span class="va">${chr}</span><span class="st">.indel_realn.bam&quot;</span><span class="kw">;</span> <span class="cf">done</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> bam <span class="kw">in</span> Vi33.19.chr<span class="pp">*</span>.indel_realn.bam<span class="kw">;</span> <span class="cf">do</span> <span class="ex">samtools</span> quickcheck <span class="at">-v</span> <span class="st">&quot;</span><span class="va">$bam</span><span class="st">&quot;</span><span class="kw">;</span> <span class="ex">samtools</span> index <span class="st">&quot;</span><span class="va">$bam</span><span class="st">&quot;</span><span class="kw">;</span> <span class="cf">done</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="ex">samtools</span> merge <span class="at">-o</span> vindija33.bam Vi33.19.chr<span class="pp">*</span>.indel_realn.bam</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="ex">samtools</span> sort <span class="at">-o</span> vindija33_sorted.bam vindija33.bam <span class="kw">&amp;&amp;</span> <span class="ex">samtools</span> index vindija33_sorted.bam</span></code></pre></div></li>
+<li><strong><code>sort_wget.slurm</code></strong> — 5 samples via hardcoded URL→name list: <code>den11</code> (ERR2273828), <code>scladina</code> (ERR9741105), <code>hst</code> (MPI-EVA L5386), <code>mez1</code> (ERR257722), <code>spy</code> (MPI-EVA A9416). For each: <code>wget -O</code>, <code>samtools index</code> (raw), <code>samtools sort</code>, <code>samtools index</code>.</li>
+<li><strong>Outputs:</strong> <code>results/sorted/&lt;sample&gt;_sorted.bam</code> (+ <code>.bai</code>); Vindija at repo-root <code>vindija33_sorted.bam</code>.</li>
+<li><strong>Tools:</strong> <code>samtools/1.21</code>, <code>wget</code>.</li>
+</ul>
+<p><strong>⚠ Verify:</strong></p>
+<ul>
+<li><strong>Sample identities are inferred from filenames/accessions</strong>, not labels in the script — confirm each ENA accession / MPI-EVA path is the intended individual (esp. <code>den11</code> = Denisova 11, a Neanderthal×Denisovan <strong>F1 hybrid</strong>, not a pure Denisovan).</li>
+<li><code>sort_wget.slurm</code> runs <code>samtools index</code> on the <strong>raw</strong> download <em>before</em> sorting — index requires a coordinate-sorted BAM, so under <code>set -euo pipefail</code> a non-pre-sorted input aborts the whole job; the raw index is also unused. Move index after sort.</li>
+<li>No checksums; <code>phased_get</code> uses <code>wget -nc</code> (won't re-validate an existing partial file); <code>sort_wget</code> uses <code>wget -O</code> (re-downloads all on restart). No aDNA damage handling (trimming / mapDamage / UDG masking) is visible in these scripts — confirm it was done during BAM prep.</li>
+<li><strong>Only 6 of the 15 archaic samples are covered by these two scripts.</strong> The other 9 (Chagyrskaya8, den5, den25, goyet, lesCottes, mez2, vindija87, Denisova3, Sid1253) were fetched by analogous scripts <strong>not present</strong> in the audit set — locate them. <strong>Denisova3's BAM uses <code>chr</code>-prefixed contigs</strong> while everything else is bare-named (root-cause of bug A1).</li>
+</ul>
+<h2 id="a3-depth--panel-filtered-bam--snp_subsetslurm-per-sample">A3. Depth &amp; panel-filtered BAM — <code>snp_subset.slurm</code> (per sample)</h2>
+<p><strong>Purpose:</strong> per-base coverage across the SNP panel, and a panel-only BAM. <strong>Runs one sample per submission</strong> (edit <code>BAM_PREFIX</code>; here <code>"goyet"</code>). No <code>--array</code>, no <code>set -euo pipefail</code>.</p>
+<ul>
+<li><strong>Inputs:</strong> <code>&lt;prefix&gt;.bam</code> (sorted archaic BAM); <strong>panel BED = <code>/home/lheald/gwas_loci/snps.bed</code></strong>.</li>
+<li><strong>Commands:</strong>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">samtools</span> index <span class="st">&quot;</span><span class="va">$BAM_FILE</span><span class="st">&quot;</span><span class="kw">;</span> <span class="ex">samtools</span> sort <span class="at">-o</span> <span class="st">&quot;</span><span class="va">$SORTED_BAM</span><span class="st">&quot;</span> <span class="st">&quot;</span><span class="va">$BAM_FILE</span><span class="st">&quot;</span><span class="kw">;</span> <span class="ex">samtools</span> index <span class="st">&quot;</span><span class="va">$SORTED_BAM</span><span class="st">&quot;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">samtools</span> depth <span class="at">-a</span> <span class="at">-b</span> <span class="st">&quot;</span><span class="va">$BED_FILE</span><span class="st">&quot;</span> <span class="st">&quot;</span><span class="va">$SORTED_BAM</span><span class="st">&quot;</span> <span class="op">&gt;</span> <span class="st">&quot;</span><span class="va">${prefix}</span><span class="st">_depth.txt&quot;</span>   <span class="co"># -a = report zero-coverage sites too</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="ex">samtools</span> view <span class="at">-L</span> <span class="st">&quot;</span><span class="va">$BED_FILE</span><span class="st">&quot;</span> <span class="at">-b</span> <span class="at">-o</span> <span class="st">&quot;filtered_</span><span class="va">${prefix}</span><span class="st">.bam&quot;</span> <span class="st">&quot;</span><span class="va">$SORTED_BAM</span><span class="st">&quot;</span><span class="kw">;</span> <span class="ex">samtools</span> index ...</span></code></pre></div></li>
+<li><strong>Outputs:</strong> <code>&lt;prefix&gt;_depth.txt</code> (TSV: chrom · 1-based pos · depth), <code>filtered_&lt;prefix&gt;.bam</code> (+ <code>.bai</code>).</li>
+</ul>
+<p><strong>⚠ Verify (high priority):</strong></p>
+<ul>
+<li><strong>The panel BED lives in a personal home dir (<code>/home/lheald/gwas_loci/snps.bed</code>)</strong> — not the shared project tree. Its contents, SNP count, <strong>genome build, and contig naming are undocumented</strong>. Locate it and confirm build/naming vs the BAMs — a mismatch makes <code>samtools depth</code> silently return 0 and <code>view -L</code> return an ~empty BAM (no error). This is the mechanism behind Denisova3's artifactual emptiness (A1).</li>
+<li><strong>No <code>-q</code>/<code>-Q</code> quality filtering</strong> on <code>samtools depth</code> → depths are raw pile counts including low-MAPQ/damaged aDNA reads; confirm this matches the intended definition of "coverage."</li>
+<li>Per-sample, not an array; <code>set -e</code> absent, so a failed sort/index doesn't halt the job.</li>
+</ul>
+<h2 id="a4-archaic-genotype-calling">A4. Archaic genotype calling</h2>
+<p>Two panels, and <strong>inconsistent calling choices</strong> between them.</p>
+<h3 id="a4a-pigmentation-panel-calls--pig_call_missslurm-keep-all--c-vs-pigmentation_ancient_callslurm--mv">A4a. Pigmentation-panel calls — <code>pig_call_miss.slurm</code> (keep-all, <code>-c</code>) vs <code>pigmentation_ancient_call.slurm</code> (<code>-mv</code>)</h3>
+<p>Both read <code>pca/pigmentation/pigmentation_snps.bim</code> (→ positions), <code>reference/hs37d5.fa</code>, and <code>results/filtered/*.bam</code>, and <strong>write the identical path</strong> <code>pca/pigmentation/ancient/ancient_pigmentation.vcf.gz</code>.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="st">&#39;{print $1&quot;\t&quot;$4&quot;\t&quot;$4}&#39;</span> <span class="va">$PCA_DIR</span>/pigmentation_snps.bim <span class="op">&gt;</span> <span class="va">$SNP_LIST</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="va">BAMS</span><span class="op">=</span><span class="va">$(</span><span class="fu">ls</span> <span class="va">$BAM_DIR</span>/<span class="pp">*</span>.bam <span class="kw">|</span> <span class="fu">tr</span> <span class="st">&#39;\n&#39;</span> <span class="st">&#39; &#39;</span><span class="va">)</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="ex">bcftools</span> mpileup <span class="at">-f</span> <span class="va">$REF</span> <span class="at">-R</span> <span class="va">$SNP_LIST</span> <span class="at">--threads</span> 6 <span class="va">$BAMS</span> <span class="kw">|</span> <span class="ex">bcftools</span> call <span class="at">-c</span>  <span class="at">-Oz</span> <span class="at">--threads</span> 6 <span class="at">-o</span> <span class="va">$VCF</span>   <span class="co"># pig_call_miss  (KEEP ALL SITES)</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="ex">bcftools</span> mpileup <span class="at">-f</span> <span class="va">$REF</span> <span class="at">-R</span> <span class="va">$SNP_LIST</span> <span class="at">--threads</span> 6 <span class="va">$BAMS</span> <span class="kw">|</span> <span class="ex">bcftools</span> call <span class="at">-mv</span> <span class="at">-Oz</span> <span class="at">--threads</span> 6 <span class="at">-o</span> <span class="va">$VCF</span>   <span class="co"># pigmentation_ancient_call (variants only)</span></span></code></pre></div>
+<ul>
+<li><strong>Diploid</strong> (no <code>--ploidy</code>), mpileup <strong>no <code>-q</code>/<code>-Q</code></strong> (defaults MQ0/BQ13).</li>
+</ul>
+<p><strong>⚠ Verify:</strong></p>
+<ul>
+<li><strong><code>-mv</code> drops every non-variant panel site</strong> → fewer than 222 SNPs, hom-ref genotypes lost, site set sample-dependent → biases the downstream projection. <code>pig_call_miss.slurm</code>'s <strong><code>-c</code> keep-all is the intended/corrected one</strong> (the committed output has all 222 records → <code>-c</code> is what ran). <strong>Delete the <code>-mv</code> script.</strong></li>
+<li>Same output path ⇒ overwrite collision; confirm via timestamps which produced the committed VCF.</li>
+<li>Diploid here but <strong>haploid in A4c</strong> for the same samples — reconcile the ploidy policy.</li>
+<li>No aDNA damage handling → deamination C&gt;T/G&gt;A can create false ALT alleles (worse under <code>-mv</code>).</li>
+</ul>
+<h3 id="a4c-whole-genome-panel-joint-calls--ancient_wgslurm">A4c. Whole-genome-panel joint calls — <code>ancient_wg.slurm</code></h3>
+<p><strong>Purpose:</strong> per-chromosome joint calling of <strong>15 named BAMs</strong> at the SGDP whole-genome panel, then concat.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="st">&#39;{print $1&quot;\t&quot;$2-1&quot;\t&quot;$2}&#39;</span> snps/sgdp.snps.pos <span class="kw">|</span> <span class="fu">sort</span> <span class="at">-k1,1</span> <span class="at">-k2,2n</span> <span class="op">&gt;</span> sgdp.snps.sorted.bed</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> chr <span class="kw">in</span> <span class="dt">{</span><span class="dv">1</span><span class="dt">..</span><span class="dv">22</span><span class="dt">}</span> X Y<span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="ex">bcftools</span> mpileup <span class="at">--threads</span> 3 <span class="at">-f</span> hs37d5.fa <span class="at">-T</span> sgdp.snps.sorted.bed <span class="at">-r</span> <span class="va">$chr</span> <span class="at">-q</span> 30 <span class="at">-Q</span> 30 <span class="at">-Ou</span> <span class="op">&lt;</span>15 BAMs<span class="op">&gt;</span> <span class="dt">\</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">|</span> <span class="ex">bcftools</span> call <span class="at">--threads</span> 8 <span class="at">-m</span> <span class="at">--ploidy</span> 1 <span class="at">-Ob</span> <span class="at">-o</span> ancient_sgdp_wg.chr<span class="va">${chr}</span>.bcf</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="ex">bcftools</span> concat <span class="at">-Ob</span> ancient_sgdp_wg.chr<span class="pp">*</span>.bcf <span class="at">-o</span> ancient_sgdp_wg.bcf</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="ex">bcftools</span> view <span class="at">-Oz</span> ancient_sgdp_wg.bcf <span class="at">-o</span> ancient_sgdp_wg.vcf.gz</span></code></pre></div>
+<ul>
+<li><strong><code>--ploidy 1</code> (haploid)</strong> on all chromosomes incl. autosomes; <code>-q 30 -Q 30</code>; keeps all target sites (no <code>-v</code>).</li>
+</ul>
+<p><strong>⚠ Verify:</strong></p>
+<ul>
+<li><strong><code>--ploidy 1</code> pseudo-haploidizes diploid archaic genomes</strong> — no heterozygous calls. Likely an intentional low-coverage aDNA choice, <strong>but</strong> it creates a ploidy mismatch when merged/compared with the diploid modern SGDP panel (plink/bcftools may mis-load). Confirm intent and that every downstream step handles mixed ploidy.</li>
+<li><code>concat ancient_sgdp_wg.chr*.bcf</code> expands <strong>lexicographically</strong> (chr1, chr10, chr11 … chr2 …) → contig blocks out of karyotype order (rely on the index, not file order).</li>
+<li>Output name <code>ancient_sgdp_wg.vcf.gz</code> does <strong>not</strong> match <code>ancient_merge.slurm</code>'s glob (see A4d).</li>
+</ul>
+<h3 id="a4d-ancient_mergeslurm--brokenorphan">A4d. <code>ancient_merge.slurm</code> — <strong>broken/orphan</strong></h3>
+<p><code>bcftools merge --threads 4 -Oz -o ancient_wholegenome.vcf.gz *.wg.vcf.gz</code> — the glob <code>*.wg.vcf.gz</code> matches <strong>nothing</strong> (real file is <code>ancient_sgdp_wg.vcf.gz</code>, <code>_wg</code> not <code>.wg</code>). Under <code>set -e</code> it aborts. Also <code>bcftools merge</code> is for <em>separate</em> samples, but A4c already emits one joint multisample VCF. <strong>Dead/contradictory — delete or fix.</strong></p>
+<hr />
+<h1 id="stage-b--modern-sgdp-reference-construction">Stage B — Modern SGDP reference construction</h1>
+<blockquote>
+<p><strong>Two approaches + two sample sets coexist.</strong> <em>Approach A</em> (279 samples): per-sample download+subset (<code>sgdp_subset_array</code>) → merge (<code>sgdp_merge_pca</code>). <em>Approach B</em> (15 samples, in <code>sgdp_merge/</code>): download (<code>vcf_wget</code>) → chromosome-wise merge (<code>merge_continue</code>) → subset (<code>subset_sgdp</code>). Plus <code>get_simons.slurm</code> (a third, streaming variant). <strong>Determine which reference actually fed the PCA.</strong></p>
+</blockquote>
+<h2 id="b1-build-the-download-list--analysisprocess_linksr-laptop">B1. Build the download list — <code>analysis/process_links.R</code> (laptop)</h2>
+<p>Turns <code>/Users/lilyheald/Desktop/download-links.txt</code> (SGDP presigned S3 links) into <code>wget_commands.txt</code> (<code>wget -c -O "&lt;file&gt;" "&lt;url&gt;"</code> per line). Base R only, hardcoded Desktop paths.</p>
+<p><strong>⚠ Verify:</strong> the <code>ifelse(grepl("^https:",links), links, paste0("https:",links))</code> logic only works if raw links are protocol-relative (<code>//host/…</code>); a bare <code>http://</code>/<code>ftp://</code> link is mangled. Filenames are the <strong>LP-DNA library IDs</strong>, not SGDP sample names (mapping needs the external CGC manifest). The downstream array assumes exactly <strong>2 lines per sample (VCF then TBI), 558 lines</strong> — this script preserves but does not validate that ordering.</p>
+<h2 id="b2b5a-per-sample-download--subset--sgdp_subset_arrayslurm-approach-a">B2/B5a. Per-sample download + subset — <code>sgdp_subset_array.slurm</code> (Approach A)</h2>
+<p>SLURM <code>--array=1-279%20</code>. Each task reads its 2 lines from <code>wget_commands.txt</code>, downloads VCF+TBI to scratch, then:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">bcftools</span> view <span class="at">--threads</span> 4 <span class="at">-R</span> snps/sgdp.snps.pos <span class="at">-O</span> b <span class="at">-o</span> sgdp/subsets/<span class="va">${BASE}</span>_sgdp.bcf  <span class="op">&lt;</span>vcf<span class="op">&gt;</span><span class="kw">;</span> <span class="ex">bcftools</span> index ...</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="ex">bcftools</span> view <span class="at">--threads</span> 4 <span class="at">-R</span> snps/snps.bed      <span class="at">-O</span> b <span class="at">-o</span> sgdp/subsets/<span class="va">${BASE}</span>_snps.bcf  <span class="op">&lt;</span>vcf<span class="op">&gt;</span><span class="kw">;</span> <span class="ex">bcftools</span> index ...</span></code></pre></div>
+<ul>
+<li>Idempotent (skips if both outputs exist); scratch cleaned only on success.</li>
+</ul>
+<p><strong>⚠ Verify:</strong></p>
+<ul>
+<li><strong>Coordinate-convention split:</strong> <code>sgdp.snps.pos</code> is used as a <strong>1-based</strong> <code>.pos</code> file here, but <code>get_simons.slurm</code> first converts the <em>same</em> file to <strong>0-based BED</strong>. Same panel, two interpretations → could shift captured sites by one. Confirm the panel's actual format.</li>
+<li>No biallelic/SNP-type filter here (Approach B's <code>subset_sgdp</code> adds <code>-m2 -M2 -v snps</code>).</li>
+<li><strong>Presigned S3 URLs are long expired</strong> (X-Amz-Date 2026-02, ~48 h TTL) → not re-runnable without regenerating links from CGC.</li>
+<li>Skip-logic treats any existing (even truncated) BCF as done.</li>
+</ul>
+<h2 id="b5b-merge--make-pca-ready--sgdp_merge_pcaslurm-approach-a-canonical-twin-vs-sgdp_merge_panelslurm-buggy">B5b. Merge + make PCA-ready — <code>sgdp_merge_pca.slurm</code> (Approach A, <strong>canonical twin</strong>) vs <code>sgdp_merge_panel.slurm</code> (buggy)</h2>
+<div class="sourceCode" id="cb7"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">bcftools</span> merge <span class="at">-l</span> <span class="op">&lt;</span>list of <span class="pp">*</span>_sgdp.bcf<span class="op">&gt;</span> -O b <span class="at">-o</span> sgdp/merged_sgdp_panel.bcf<span class="kw">;</span> <span class="ex">bcftools</span> index ...</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="ex">bcftools</span> merge <span class="at">-l</span> <span class="op">&lt;</span>list of <span class="pp">*</span>_snps.bcf<span class="op">&gt;</span> -O b <span class="at">-o</span> sgdp/merged_snps_panel.bcf<span class="kw">;</span> <span class="ex">bcftools</span> index ...</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="ex">plink2</span> <span class="at">--bcf</span> merged_sgdp_panel.bcf <span class="at">--make-bed</span> <span class="at">--out</span> sgdp_plink                 <span class="co"># ← present in _pca, MISSING in _panel (the bug)</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="ex">plink2</span> <span class="at">--bfile</span> sgdp_plink <span class="at">--indep-pairwise</span> 200 25 0.4 <span class="at">--out</span> sgdp_prune          <span class="co"># LD prune (r²&gt;0.4, 200-var window, step 25)</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="ex">plink2</span> <span class="at">--bfile</span> sgdp_plink <span class="at">--extract</span> sgdp_prune.prune.in <span class="at">--pca</span> 10 allele-wts <span class="at">--threads</span> 8 <span class="at">--out</span> sgdp_pca   <span class="co"># → sgdp_pca.eigenvec.allele</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="ex">plink2</span> <span class="at">--bcf</span> merged_snps_panel.bcf <span class="at">--make-bed</span> <span class="at">--out</span> snps_plink</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="ex">plink2</span> <span class="at">--bfile</span> snps_plink <span class="at">--pca</span> 10 <span class="at">--threads</span> 8 <span class="at">--out</span> snps_pca                    <span class="co"># pigment panel PCA (no pruning, no allele-wts)</span></span></code></pre></div>
+<p><strong>⚠ Verify:</strong> <code>sgdp_merge_panel.slurm</code> omits the <code>--make-bed</code> of the SGDP panel (so <code>--bfile sgdp_plink</code> fails unless it exists from a prior run) and uses <code>--pca 10</code> <strong>without</strong> <code>allele-wts</code> → no projection weights; <code>sgdp_merge_pca.slurm</code> is the fixed version and the <strong>only</strong> script pinning <code>plink/2.0</code>. <strong>Both write the same filenames — confirm which ran last.</strong> LD-prune (0.4) applied to the SGDP panel only; pigment panel intentionally unpruned. No missingness/MAF filter before PCA.</p>
+<h2 id="approach-b-15-sample-branch-sgdp_merge">Approach B (15-sample branch, <code>sgdp_merge/</code>)</h2>
+<ul>
+<li><strong><code>vcf_wget.slurm</code></strong> — ~12–15 hardcoded <code>wget -O &lt;SampleID&gt;.vcf.gz</code> from CGC presigned URLs; <strong>no <code>set -e</code>, no module load, no index</strong>. ⚠ Embeds an <strong>AWS access key ID</strong> in the URLs (<code>X-Amz-Credential AKIA…</code>) — expired, but scrub before publishing the scripts. Sample→LP mapping exists only in these lines.</li>
+<li><strong><code>vcf_merge.slurm</code></strong> — <strong>fatally broken</strong>: <code>VCFS=find . -type f -printf …</code> is not command substitution (parses as a <code>.</code>/source call); merges nothing. Superseded.</li>
+<li><strong><code>merge_continue.slurm</code></strong> — <strong>working</strong>: per-chromosome <code>bcftools merge -r ${chr}</code> over 15 hardcoded VCFs (chr 1–22 only, numeric contigs), then <code>bcftools concat</code> → <code>sgdp_merge/sgdp_merged.vcf.gz</code>. ⚠ inputs assumed pre-indexed; <code>-r</code> needs numeric contig names; only <strong>15 samples</strong> (not 279).</li>
+<li><strong><code>subset_sgdp.slurm</code></strong> — subsets <code>sgdp_merged.vcf.gz</code> to two panels with <strong>biallelic-SNP filtering</strong> (<code>-m2 -M2 -v snps</code>):
+<div class="sourceCode" id="cb8"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="st">&#39;{print $1 &quot;:&quot; $4 &quot;-&quot; $4}&#39;</span> snps/sgdp.bim <span class="op">&gt;</span> wg_snps.regions            <span class="co"># ← </span><span class="al">BUG</span><span class="co"> (see below)</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="ex">bcftools</span> view <span class="at">-R</span> wg_snps.regions <span class="at">-m2</span> <span class="at">-M2</span> <span class="at">-v</span> snps <span class="at">-Oz</span> <span class="at">-o</span> sgdp_wholegenome.snps.vcf.gz <span class="va">$VCF</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sed</span> <span class="st">&#39;s/^chr//&#39;</span> snps/snps.chr.bed <span class="op">&gt;</span> pigmentation.snps.bed</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="ex">bcftools</span> view <span class="at">-R</span> pigmentation.snps.bed <span class="at">-m2</span> <span class="at">-M2</span> <span class="at">-v</span> snps <span class="at">-Oz</span> <span class="at">-o</span> sgdp_pigmentation.snps.vcf.gz <span class="va">$VCF</span></span></code></pre></div>
+<strong>⚠ BUG:</strong> <code>wg_snps.regions</code> is written as <code>CHR:BP-BP</code> region-<em>strings</em>, but <code>bcftools view -R FILE</code> expects a <strong>tab-delimited</strong> <code>CHROM&lt;TAB&gt;POS</code> file or BED — it does <strong>not</strong> parse <code>chr:from-to</code> inside a <code>-R</code> file (that's only for command-line <code>-r</code>). So <code>sgdp_wholegenome.snps.vcf.gz</code> may capture the wrong sites / nothing. Verify. (The pigmentation <code>.bed</code> path is correctly formatted.)</li>
+</ul>
+<h2 id="get_simonsslurm-third-streaming-variant">get_simons.slurm (third, streaming variant)</h2>
+<p>Streams each VCF (<code>wget -q -O - | bcftools view -O b</code>) and incrementally merges. <strong>⚠ Likely broken against this <code>wget_commands.txt</code>:</strong> <code>awk '{print $4, $3}'</code> yields <code>filename -O</code> (should be <code>$5,$4</code> = url, filename), so <code>wget "$url"</code> fetches the literal filename. Also assumes 1 line/sample vs the array's 2 lines/sample. Treat as superseded unless proven otherwise.</p>
+<hr />
+<h1 id="stage-c--pca-6">Stage C — PCA (§6)</h1>
+<h2 id="c6a-modern-whole-genome-pca--modern_pcaslurm">C6a. Modern whole-genome PCA — <code>modern_pca.slurm</code></h2>
+<div class="sourceCode" id="cb9"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">plink2</span> <span class="at">--bfile</span> sgdp.wg <span class="at">--freq</span> <span class="at">--out</span> sgdp.wg</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="ex">plink2</span> <span class="at">--bfile</span> sgdp.wg <span class="at">--read-freq</span> sgdp.wg.afreq <span class="at">--pca</span> 20 <span class="at">--out</span> sgdp.wg.pca   <span class="co"># → sgdp.wg.pca.eigenvec/.eigenval</span></span></code></pre></div>
+<p>⚠ Comment says "n=15" but code is <strong><code>--pca 20</code></strong>; no LD pruning; input <code>sgdp.wg.{bed,bim,fam}</code> has <strong>no in-repo producer</strong> — trace its build. This eigenvec is what <code>pca.Rmd</code> reads for the whole-genome panel.</p>
+<h2 id="c6b-pigmentation-panel-pca--pig_pcaslurm">C6b. Pigmentation-panel PCA — <code>pig_pca.slurm</code></h2>
+<div class="sourceCode" id="cb10"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">bcftools</span> view <span class="at">-R</span> snps/snps.bed sgdp_merge/sgdp_merged.vcf.gz <span class="at">-Oz</span> <span class="at">-o</span> pigmentation_snps.vcf.gz<span class="kw">;</span> <span class="ex">tabix</span> <span class="at">-p</span> vcf ...</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="ex">plink2</span> <span class="at">--vcf</span> pigmentation_snps.vcf.gz <span class="at">--make-bed</span> <span class="at">--set-missing-var-ids</span> @:# <span class="at">--out</span> pigmentation_snps</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="ex">plink2</span> <span class="at">--bfile</span> pigmentation_snps <span class="at">--freq</span> <span class="at">--out</span> pigmentation_snps_freq</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="ex">plink2</span> <span class="at">--bfile</span> pigmentation_snps <span class="at">--read-freq</span> pigmentation_snps_freq.afreq <span class="at">--pca</span> 10 <span class="at">--out</span> pigmentation_snps_pca</span></code></pre></div>
+<p>⚠ <strong>Second, parallel</strong> pigmentation PCA (the other is <code>sgdp_merge_pca</code>'s <code>snps_pca</code>, from a different input). Determine which is reported. <code>--set-missing-var-ids @:#</code> (chr:pos) — confirm no multiallelic ID collisions.</p>
+<h2 id="c6c-sgdp_merge_pcaslurm-pca-portion--see-b5b-produces-the-projection-ready-sgdp_pcaeigenvecallele">C6c. <code>sgdp_merge_pca.slurm</code> PCA portion — see B5b (produces the projection-ready <code>sgdp_pca.eigenvec.allele</code>).</h2>
+<h2 id="c6d-pca_ancientslurm--dead-code">C6d. <code>pca_ancient.slurm</code> — <strong>DEAD CODE</strong></h2>
+<p>References <code>reference/hg19.fa</code> (<strong>missing</strong>) so <code>bcftools mpileup</code> aborts under <code>set -e</code>; its <code>pca_snps.pca.*</code> output is used nowhere; uses PLINK <strong>1.9</strong> <code>--pca 10</code> (different algorithm). Notable only because it contains the correct <strong><code>chr</code>-name reheader</strong> logic (<code>samtools reheader</code> with <code>sed 's/SN:\([0-9XYM]\+\)/SN:chr\1/g'</code>) that could be reused to fix Denisova3 (A1). Delete or repurpose.</p>
+<hr />
+<h1 id="stage-d--project-ancient-onto-modern-pca-7">Stage D — Project ancient onto modern PCA (§7)</h1>
+<h2 id="d7-analysispca_projpy--canonical-5-sub-steps">D7. <code>analysis/pca_proj.py</code> — <strong>canonical</strong> (5 sub-steps)</h2>
+<p>(<code>pig_pca_proj.py</code> is the non-canonical twin — its outputs are absent from <code>data/</code> and unread; it additionally <strong>omits <code>--variance-standardize</code></strong>, which would silently mis-scale the projection.)</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1  clean modern ref → pgen (dedup, biallelic, deterministic IDs)</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="ex">plink2</span> <span class="at">--vcf</span> data/pigmentation_snps.vcf.gz <span class="at">--set-all-var-ids</span> @:#:<span class="va">$r</span>:<span class="va">$a</span> <span class="at">--rm-dup</span> force-first <span class="at">--max-alleles</span> 2 <span class="at">--make-pgen</span> <span class="at">--out</span> data/pigmentation.cleaned</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 2  reference allele frequencies</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="ex">plink2</span> <span class="at">--pfile</span> data/pigmentation.cleaned <span class="at">--freq</span> <span class="at">--out</span> data/pigmentation.freq</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 3  reference PCA with per-allele weights</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="ex">plink2</span> <span class="at">--pfile</span> data/pigmentation.cleaned <span class="at">--read-freq</span> data/pigmentation.freq.afreq <span class="at">--pca</span> 10 allele-wts <span class="at">--out</span> data/pigmentation.pca</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 4  prepare ancient → bed (SAME var-id template)</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="ex">plink2</span> <span class="at">--vcf</span> data/ancient_pigmentation.vcf.gz <span class="at">--set-all-var-ids</span> @:#:<span class="va">$r</span>:<span class="va">$a</span> <span class="at">--rm-dup</span> force-first <span class="at">--max-alleles</span> 2 <span class="at">--make-bed</span> <span class="at">--out</span> data/ancient_pigment</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 5  PROJECT: score ancient genotypes against the reference loadings</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="ex">plink2</span> <span class="at">--bfile</span> data/ancient_pigment <span class="at">--read-freq</span> data/pigmentation.freq.afreq <span class="dt">\</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>       <span class="at">--score</span> data/pigmentation.pca.eigenvec.allele 2 5 header-read ignore-dup-ids list-variants <span class="dt">\</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">--score-col-nums</span> 6-15 <span class="at">--variance-standardize</span> <span class="at">--out</span> data/ancient.projected</span></code></pre></div>
+<ul>
+<li><code>--score … 2 5</code>: col 2 = variant ID, col 5 = A1/effect allele; <code>--score-col-nums 6-15</code> = the 10 PC weight columns → <code>PC1_AVG..PC10_AVG</code>. <code>--read-freq</code> uses <strong>modern</strong> reference frequencies (correct). Output <code>ancient.projected.sscore</code> (+ <code>.sscore.vars</code>), later re-saved as <code>data/ancient.projected.pig.sscore</code> (read by <code>pca.Rmd</code>).</li>
+</ul>
+<p><strong>⚠ Verify (this projection is currently degenerate — three compounding causes):</strong></p>
+<ol type="1">
+<li><strong>Missing <code>no-mean-imputation</code> (NEW, fixable):</strong> <code>plink2 --score</code> mean-imputes missing genotypes to the reference-freq mean; with <code>--variance-standardize</code> those impute to exactly 0. Ancient samples are largely missing at these SNPs, so nearly all standardized dosages → 0 and <strong>every sample collapses to the reference centroid</strong>. The committed <code>ancient.projected.pig.sscore</code> indeed gives <strong>byte-identical coordinates for all 15 samples</strong> (PC1_AVG=0.0335547 for every one). <strong>Add <code>no-mean-imputation</code> to the <code>--score</code> modifiers.</strong></li>
+<li><strong>Zero loadings / monomorphic panel:</strong> the retained <code>data/pigmentation_snps_pca.eigenvec.var</code> shows all-zero PC weights (e.g. <code>6:396322</code>, NONMAJ=<code>.</code>) — panel monomorphic in the reference → zero loadings → zero scores. This is the <strong>hg38-panel-vs-hg19-data build mismatch</strong> (see Known Issues) manifesting.</li>
+<li><strong>Malformed variant IDs:</strong> <code>ancient.projected.sscore.vars</code> IDs are <code>6:POS::</code> (empty REF/ALT), i.e. <code>@:#:$r:$a</code> resolved <code>$r/$a</code> to blank on the ancient input → the A1 column (score col 5) may be empty, breaking allele-aware scoring. Confirm <code>$r/$a</code> populate in this plink2 build.</li>
+</ol>
+<hr />
+<h1 id="stage-e--downstream-r-analysis--visualization-8">Stage E — Downstream R analysis / visualization (§8)</h1>
+<h2 id="e8a-cleaningrmd--derived-csvs">E8a. <code>cleaning.Rmd</code> → derived CSVs</h2>
+<p><code>read.csv(skin_pigmentation.tsv)</code> → keep only rows whose <code>riskAllele</code> matches <code>^rs\d+</code> → <code>write.csv(pigmentation_snps.csv)</code>; merge <code>simons_metadata.csv</code> + <code>simons_whole.csv</code> (dedup <code>slice(1)</code> per <code>sample_id</code>, inner <code>merge</code>) → <code>modern_metadata.csv</code>. Packages: data.table, stringr, tidyverse, readr, dplyr.
+<strong>⚠</strong> All paths hardcoded to <code>/Users/lilyheald/Documents/GitHub/PAINT/data/</code>; outputs written <strong>outside</strong> the repo <code>data/</code> → downstream relative reads can't find them, and <code>pigmentation_snps.csv</code>/<code>modern_metadata.csv</code> are <strong>absent from the repo</strong>. <code>simons_*</code> inputs missing/unreproducible. (Fixed to relative paths in the Quarto branch.)</p>
+<h2 id="e8b-introductionrmd--maps--snp-chart">E8b. <code>introduction.Rmd</code> → maps + SNP chart</h2>
+<p>Reads <code>data/neo_uvi.csv</code> (UV grid, <strong>missing</strong>), <code>data/pigmentation_snps.csv</code> (<strong>missing</strong>), and a <strong>live</strong> SGDP metadata URL (<code>sf-web-assets-prod.s3.amazonaws.com/…</code>). Packages incl. sf/raster/rnaturalearth (need GDAL). <code>target_genes = SLC24A5, SLC45A2, TYR, OCA2, HERC2, MC1R, ASIP, ADAMTS12</code>.
+<strong>⚠</strong> Live-URL fetch is non-reproducible; <strong>copy-paste bug</strong> <code>modern_sf &lt;- st_as_sf(sites,…)</code> uses the archaic <code>sites</code> frame (dead/misassigned — fixed on the Quarto branch); UV grid orientation assumed by hardcoded <code>seq()</code>. kable tables are hand-typed (editorial, not computed).</p>
+<h2 id="e8c-depthrmd--coveragemissingness--model">E8c. <code>depth.Rmd</code> → coverage/missingness + model</h2>
+<p>Reads <code>data/ancient_depth_clean.csv</code> (<strong>missing</strong>; long table: Position, Depth, Sample, Chromosome, Missing, Age_ka, Coverage — NOT the raw <code>*_depth.txt</code>, which ARE present; the combining step isn't in these pages). Two simulations + the model:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>simulate_confidence <span class="ot">&lt;-</span> <span class="cf">function</span>(depth, error_rate){ p<span class="ot">&lt;-</span><span class="dv">1</span><span class="sc">-</span>error_rate; k<span class="ot">&lt;-</span><span class="fu">floor</span>(depth<span class="sc">/</span><span class="dv">2</span>)<span class="sc">+</span><span class="dv">1</span>; <span class="dv">1</span> <span class="sc">-</span> <span class="fu">pbinom</span>(k<span class="dv">-1</span>, <span class="at">size=</span>depth, <span class="at">prob=</span>p) }  <span class="co"># IID majority-rule</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co"># position-dependent Monte Carlo: p_interior+(p_end-p_interior)*exp(-lambda*dist_to_end); rbinom; n_sim=1000</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>mod1 <span class="ot">&lt;-</span> <span class="fu">glmer</span>(Missing <span class="sc">~</span> <span class="fu">factor</span>(Chromosome) <span class="sc">+</span> age_scaled <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>Coverage) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>Sample), <span class="at">data=</span>ancient_depth, <span class="at">family=</span>binomial)  <span class="co"># age_scaled=scale(Age_ka)</span></span></code></pre></div>
+<p><strong>⚠</strong> (corrected 2026-07-23 after inspecting the rendered <code>docs/depth.html</code>): the fit is <strong>not</strong> singular, but <code>(1|Coverage)</code> is a <strong>2-level grouping</strong> (<code>groups: Sample, 13; Coverage, 2</code>) whose random-intercept variance (<strong>13.0</strong>) is estimated from just 2 groups (statistically unidentifiable) and <strong>dwarfs</strong> the Sample variance (0.99) — a degenerate variance component; make Coverage a fixed effect or drop it. The Monte Carlo has no in-<code>Rmd</code> <code>set.seed</code>, <strong>but</strong> workflowr injects <code>set.seed(20251106)</code> from <code>_workflowr.yml</code>, so the committed Fig 6 <strong>is</strong> reproducible as built (it would only drift if knitted outside workflowr). The prose coefficients (age β=1.34; chr β=−0.02, p=0.03) <strong>describe a different model than this page runs</strong> — they match the numeric-<code>Chromosome</code> model in <code>depth_spinoff</code>, not the <code>factor(Chromosome)</code> model here (which gives age β=1.36 and 20 chromosome coefficients; and chr5 is p=0.094, <em>not</em> significant, though the thesis lists it as significant). <code>Missing</code> is assumed present in the CSV (not derived here). <code>Position_bin=round(Position/500000)</code> runs arithmetic on a factor (harmless, unused). <code>library(shiny)</code> unused.</p>
+<h2 id="e8d-pcarmd--pca-figures">E8d. <code>pca.Rmd</code> → PCA figures</h2>
+<p><code>fread</code> <code>sgdp.wg.pca.eigenvec</code> + <code>ancient.projected.sgdp.sscore</code> (+ pigmentation pair) — <strong>present</strong>; joins <code>modern_metadata.csv</code> (<strong>missing</strong>). Labels ancient by ID (<code>Denisova3/25</code>→Denisovan, <code>Denisova11</code>→Hybrid, else Neanderthal). Plots PC1–2 &amp; PC3–4 per panel (patchwork), modern shape 16 / ancient shape 4, color by Region.
+<strong>⚠</strong> <strong>Hardcoded row-index label suppression</strong> <code>df[20:30,]$labels&lt;-NA; df[19,]$labels&lt;-NA</code> (both chunks) — brittle to row order/count; key on IID instead. Missing <code>modern_metadata.csv</code> → all-NA Region → moderns dropped/uncolored. Legend titled "Population" but colors encode Region. <strong>No % variance shown</strong> though eigenval files exist.</p>
+<hr />
+<h2 id="which-scripts-are-canonical-best-current-guess--confirm-with-timestampslogs">Which scripts are canonical (best current guess — confirm with timestamps/logs)</h2>
+<table>
+<thead>
+<tr>
+<th>Purpose</th>
+<th>✅ Use</th>
+<th>✗ Ignore / delete</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ancient pigmentation calls</td>
+<td><code>pig_call_miss.slurm</code> (<code>-c</code>)</td>
+<td><code>pigmentation_ancient_call.slurm</code> (<code>-mv</code>)</td>
+<td>committed VCF has all 222 sites</td>
+</tr>
+<tr>
+<td>SGDP merge+PCA</td>
+<td><code>sgdp_merge_pca.slurm</code></td>
+<td><code>sgdp_merge_panel.slurm</code></td>
+<td>latter misses <code>--make-bed</code>, no <code>allele-wts</code></td>
+</tr>
+<tr>
+<td>SGDP merge (Approach B)</td>
+<td><code>merge_continue.slurm</code></td>
+<td><code>vcf_merge.slurm</code></td>
+<td>latter's <code>find</code> substitution is broken</td>
+</tr>
+<tr>
+<td>Ancient projection</td>
+<td><code>pca_proj.py</code></td>
+<td><code>pig_pca_proj.py</code></td>
+<td>canonical outputs are in <code>data/</code>; twin omits <code>--variance-standardize</code></td>
+</tr>
+<tr>
+<td>WG ancient calls</td>
+<td><code>ancient_wg.slurm</code></td>
+<td><code>ancient_merge.slurm</code></td>
+<td>latter's glob matches nothing</td>
+</tr>
+<tr>
+<td>—</td>
+<td>—</td>
+<td><code>pca_ancient.slurm</code></td>
+<td>dead (missing <code>hg19.fa</code>)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Unresolved:</strong> whether the modern reference used for the reported PCA came from <strong>Approach A (279 samples)</strong> or <strong>Approach B (15 samples)</strong> — they use different panels (<code>sgdp.snps.pos</code> vs <code>sgdp.bim</code>; <code>snps.bed</code> vs <code>snps.chr.bed</code>) and different sample counts. This is the biggest thing to pin down.</p>
+<h2 id="known-correctness-issues-mapped-to-steps">Known correctness issues (mapped to steps)</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Issue</th>
+<th>Step</th>
+<th>Severity</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>Genome-build mismatch</strong> — panel hg38 vs data hg19 → monomorphic panel → degenerate pigmentation PCA + off-target depth</td>
+<td>A3, B, C6b, D7</td>
+<td>🔴</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>Projection collapse</strong> — <code>--score</code> mean-imputation (no <code>no-mean-imputation</code>) + <code>--variance-standardize</code> → all ancients at centroid</td>
+<td>D7</td>
+<td>🔴</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>Denisova 3 chr-naming</strong> — only chr-prefixed BAM vs bare ref/panels → under-recovered</td>
+<td>A1, A3</td>
+<td>🔴</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong><code>--ploidy 1</code></strong> haploid autosomal calling; ploidy inconsistent with pigmentation calls</td>
+<td>A4c</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong><code>subset_sgdp</code> <code>-R</code> region-string bug</strong> — <code>chr:from-to</code> file not parsed by <code>view -R</code></td>
+<td>B (subset_sgdp)</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>Coordinate-convention split</strong> — <code>sgdp.snps.pos</code> used 1-based vs 0-based across scripts</td>
+<td>B2, get_simons</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td>7</td>
+<td><strong>glmer degenerate random effect + stale prose</strong> — fit is not singular, but Coverage is a 2-group random intercept whose variance (13.0, from 2 groups) is unidentifiable and dwarfs Sample (0.99); and the page's prose coefficients come from a different model (numeric Chromosome) than the factor model it fits</td>
+<td>E8c</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Competing/dead scripts (<code>-mv</code>, <code>sgdp_merge_panel</code>, <code>vcf_merge</code>, <code>ancient_merge</code>, <code>pca_ancient</code>, <code>pig_pca_proj</code>)</td>
+<td>many</td>
+<td>⚪ cleanup</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Hardcoded laptop paths; missing derived CSVs; hardcoded PCA label rows</td>
+<td>E8a/b/d</td>
+<td>⚪</td>
+</tr>
+<tr>
+<td>10</td>
+<td>No version pinning (bcftools/plink2/R); no aDNA damage handling visible. (Seeds ARE injected by workflowr <code>_workflowr.yml</code> <code>seed: 20251106</code>, so committed figures reproduce as built — there is just no explicit <code>set.seed</code> in the Rmd)</td>
+<td>all</td>
+<td>⚪ traceability</td>
+</tr>
+</tbody>
+</table>
+<h2 id="reviewer-audit-checklist">Reviewer audit checklist</h2>
+<ol type="1">
+<li><strong>Locate &amp; characterize the panel BED</strong> <code>/home/lheald/gwas_loci/snps.bed</code> (SNP count, <strong>build</strong>, contig naming). Reconcile the hg38-vs-hg19 mismatch (issue 1) — this is upstream of almost everything pigmentation.</li>
+<li><strong>Fix the projection</strong> (issue 2): add <code>no-mean-imputation</code>; re-run <code>pca_proj.py</code>; confirm samples no longer collapse.</li>
+<li><strong>Fix Denisova 3</strong> (issue 3): harmonize contig names (reuse <code>pca_ancient.slurm</code>'s reheader), re-run A3+A4.</li>
+<li><strong>Pin down which SGDP reference</strong> (Approach A vs B) produced the reported PCA; delete the losing/dead scripts (issue 8).</li>
+<li>Decide <strong>ploidy</strong> (issue 4) and <strong>coverage as fixed vs random</strong> (issue 7).</li>
+<li>Capture tool versions; add <code>set.seed</code>; document/collect the missing derived CSVs; confirm aDNA damage handling.</li>
+</ol>
+<h2 id="reproduce-from-scratch-order">Reproduce-from-scratch order</h2>
+<p><code>process_links.R</code> → <code>sgdp_subset_array</code> (or Approach B) → <code>sgdp_merge_pca</code> → <code>modern_pca</code> / <code>pig_pca</code>; in parallel <code>sort_wget</code>/<code>phased_get</code> (+ the 9 missing acquisition scripts) → <code>snp_subset</code> (per sample) → <code>pig_call_miss</code> and <code>ancient_wg</code>; then <code>pca_proj.py</code> (project); then the R pages (<code>cleaning</code> → <code>introduction</code>/<code>depth</code>/<code>pca</code>).</p>
+</main>
+</body>
+</html>

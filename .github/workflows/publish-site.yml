@@ -51,6 +51,13 @@ jobs:
             mkdir -p _site/plan/figures
             cp plan/figures/*.png _site/plan/figures/ 2>/dev/null || true
           fi
+          # 3b) generated doc HTML that lives in sub-folders (papers/, verify/).
+          for sub in papers verify; do
+            if ls plan/$sub/*.html >/dev/null 2>&1; then
+              mkdir -p _site/plan/$sub
+              cp plan/$sub/*.html _site/plan/$sub/
+            fi
+          done
           # GitHub Pages must not run Jekyll (workflowr ships _files/ + site_libs/).
           touch _site/.nojekyll
 

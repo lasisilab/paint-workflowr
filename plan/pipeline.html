@@ -92,7 +92,7 @@
   <nav>
     <a href="#what">BAM vs VCF</a><a href="#raw">Raw data</a><a href="#flow">Flow</a>
     <a href="#did">What the pipeline does</a><a href="#same">Are they the same?</a><a href="#log">Run log</a>
-    <a href="paint-plan.html">← Roadmap</a>
+    <a href="docs.html">All docs</a><a href="paint-plan.html">← Roadmap</a>
   </nav>
 </div></div>
 
@@ -101,7 +101,7 @@
     <p class="eyebrow">Living record · started 23 Jul 2026</p>
     <h1 class="title">The data, and what we do to it</h1>
     <p class="subtitle">What the raw archaic data actually is, the difference between reads (BAM) and genotype calls (VCF), what the pipeline transforms, and a running log we update as we rebuild.</p>
-    <div style="margin-top:16px;font-size:.85rem;color:var(--ink-3)">Companion to the <a href="paint-plan.html">roadmap</a>. Full audit of the original pipeline: <code>plan/pipeline_workbook.md</code>. Bug evidence: <a href="https://github.com/lasisilab/paint-workflowr/blob/main/plan/verify/BUG_EVIDENCE.md">BUG_EVIDENCE.md</a>. Rebuild plan: <a href="https://github.com/lasisilab/paint-workflowr/blob/main/plan/rebuild_from_raw.md">rebuild_from_raw.md</a>.</div>
+    <div style="margin-top:16px;font-size:.85rem;color:var(--ink-3)">Companion to the <a href="paint-plan.html">roadmap</a>. Full audit of the original pipeline: <code>plan/pipeline_workbook.md</code>. Bug evidence: <a href="verify/BUG_EVIDENCE.html">BUG_EVIDENCE.md</a>. Rebuild plan: <a href="rebuild_from_raw.html">rebuild_from_raw.md</a>.</div>
   </header>
 
   <!-- BAM VS VCF -->
@@ -140,7 +140,7 @@
         <tr><td>El Sidrón 1253</td><td>Neanderthal</td><td>exome only</td><td>EVA exomes/</td><td>Castellano 2014, PNAS</td><td><strong>no shotgun genome — exome-capture only (~12.5× over coding)</strong> → excluded; 14 analyzed, not 15</td></tr>
       </tbody>
     </table></div>
-    <div class="callout"><h4>Full verified provenance — every genome</h4><p>Source paper, DOI, published coverage, exact VCF/BAM/ENA URLs, and data tier for <strong>all 15 archaic genomes + SGDP</strong>: <a href="https://github.com/lasisilab/paint-workflowr/blob/main/plan/papers/REFERENCES.md"><code>plan/papers/REFERENCES.md</code></a>. What QC each published VCF already carries (snpAD, MQ25, 35-mer mappability, FilterBed masks): <a href="https://github.com/lasisilab/paint-workflowr/blob/main/plan/papers/VCF_QC.md"><code>plan/papers/VCF_QC.md</code></a>. Two findings from the search: <strong>Vindija 87 is the same individual as Vindija 33.19</strong> (so a genotype VCF exists for it), and <strong>El Sidrón 1253 has only exome-capture data</strong>, which is exactly why the thesis found no usable genome-wide nuclear data. (PDFs live in the git-ignored <code>plan/papers/pdf/</code> — paywalled ones aren't redistributed on this public repo.)</p></div>
+    <div class="callout"><h4>Full verified provenance — every genome</h4><p>Source paper, DOI, published coverage, exact VCF/BAM/ENA URLs, and data tier for <strong>all 15 archaic genomes + SGDP</strong>: <a href="papers/REFERENCES.html"><code>plan/papers/REFERENCES.md</code></a>. What QC each published VCF already carries (snpAD, MQ25, 35-mer mappability, FilterBed masks): <a href="papers/VCF_QC.html"><code>plan/papers/VCF_QC.md</code></a>. Two findings from the search: <strong>Vindija 87 is the same individual as Vindija 33.19</strong> (so a genotype VCF exists for it), and <strong>El Sidrón 1253 has only exome-capture data</strong>, which is exactly why the thesis found no usable genome-wide nuclear data. (PDFs live in the git-ignored <code>plan/papers/pdf/</code> — paywalled ones aren't redistributed on this public repo.)</p></div>
     <p style="font-size:.82rem;color:var(--ink-3);margin-top:10px">Modern comparison: the <strong>Simons Genome Diversity Project</strong> (SGDP), 15 individuals, downloaded as whole-genome <strong>VCFs</strong> on hg19 (thesis: a 34.4 M-SNP whole-genome panel; <code>pca/modern/sgdp.wg</code> on the cluster — verified hg19, contains the pigmentation SNPs by rsID).</p>
 
     <h3 style="font-size:1.1rem;margin:26px 0 4px">Coverage — exact, current</h3>
@@ -198,7 +198,7 @@
   <!-- WHAT THE PIPELINE DOES -->
   <section id="did">
     <div class="sec-head"><span class="sec-num">04</span><h2>What the pipeline does</h2></div>
-    <p class="lede">Left: what Lily's original pipeline did (and where the bugs entered). Right: what the rebuild does differently, with a QC gate at each stage. Full rebuild plan: <a href="https://github.com/lasisilab/paint-workflowr/blob/main/plan/rebuild_from_raw.md"><code>rebuild_from_raw.md</code></a> (incl. the per-genome <strong>reuse-vs-rerun</strong> matrix — the 5 high-coverage genomes are reused from published VCFs; only 3 low-coverage genomes are targeted-re-acquired). The <strong>justified sample subset</strong> (maximize reliable pigmentation SNPs, not genome count) is in <a href="https://github.com/lasisilab/paint-workflowr/blob/main/plan/papers/SAMPLE_INCLUSION.md"><code>papers/SAMPLE_INCLUSION.md</code></a>. What each published VCF's QC actually was: <a href="https://github.com/lasisilab/paint-workflowr/blob/main/plan/papers/PIPELINE_QC_BY_PAPER.md"><code>papers/PIPELINE_QC_BY_PAPER.md</code></a>.</p>
+    <p class="lede">Left: what Lily's original pipeline did (and where the bugs entered). Right: what the rebuild does differently, with a QC gate at each stage. Full rebuild plan: <a href="rebuild_from_raw.html"><code>rebuild_from_raw.md</code></a> (incl. the per-genome <strong>reuse-vs-rerun</strong> matrix — the 5 high-coverage genomes are reused from published VCFs; only 3 low-coverage genomes are targeted-re-acquired). The <strong>justified sample subset</strong> (maximize reliable pigmentation SNPs, not genome count) is in <a href="papers/SAMPLE_INCLUSION.html"><code>papers/SAMPLE_INCLUSION.md</code></a>. What each published VCF's QC actually was: <a href="papers/PIPELINE_QC_BY_PAPER.html"><code>papers/PIPELINE_QC_BY_PAPER.md</code></a>.</p>
     <div class="table-scroll"><table>
       <thead><tr><th>Step</th><th>Lily's original</th><th>Rebuild (from raw)</th></tr></thead>
       <tbody>

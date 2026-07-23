@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>PAINT — cluster inventory</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<style>
+  :root {
+    --bg:#E8EAE6;--surface:#F6F7F4;--surface-2:#FCFDFB;--ink:#1A1E1C;--ink-2:#434A47;--ink-3:#6C736F;
+    --line:#D2D6CF;--line-2:#E1E4DD;--accent:#1E5A54;--accent-2:#2C7A70;--accent-soft:#DDE8E4;
+    --ok:#2F7D4F;--ok-soft:#DCEBE0;--warn:#8F6410;--warn-soft:#F0E6CE;--bad:#A5433A;--bad-soft:#F1DAD5;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  }
+  @media (prefers-color-scheme: dark){:root{
+    --bg:#12150F;--surface:#1A1E17;--surface-2:#20251D;--ink:#E7EAE4;--ink-2:#B0B7B0;--ink-3:#838A84;
+    --line:#2B3129;--line-2:#242A22;--accent:#63B6A9;--accent-2:#7FCBBE;--accent-soft:#182723;
+    --ok:#6FCB8F;--ok-soft:#16241A;--warn:#D6A63C;--warn-soft:#2A2312;--bad:#E28A7E;--bad-soft:#2C1815;}}
+  :root[data-theme="light"]{--bg:#E8EAE6;--surface:#F6F7F4;--surface-2:#FCFDFB;--ink:#1A1E1C;--ink-2:#434A47;--ink-3:#6C736F;--line:#D2D6CF;--line-2:#E1E4DD;--accent:#1E5A54;--accent-2:#2C7A70;--accent-soft:#DDE8E4;--ok:#2F7D4F;--ok-soft:#DCEBE0;--warn:#8F6410;--warn-soft:#F0E6CE;--bad:#A5433A;--bad-soft:#F1DAD5;}
+  :root[data-theme="dark"]{--bg:#12150F;--surface:#1A1E17;--surface-2:#20251D;--ink:#E7EAE4;--ink-2:#B0B7B0;--ink-3:#838A84;--line:#2B3129;--line-2:#242A22;--accent:#63B6A9;--accent-2:#7FCBBE;--accent-soft:#182723;--ok:#6FCB8F;--ok-soft:#16241A;--warn:#D6A63C;--warn-soft:#2A2312;--bad:#E28A7E;--bad-soft:#2C1815;}
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased;}
+  .docbar{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:10px 24px;font-family:var(--mono);font-size:.78rem;letter-spacing:.03em;}
+  .docbar a{color:var(--accent-2);text-decoration:none;} .docbar a:hover{text-decoration:underline;}
+  .docbar .b{color:var(--accent);font-weight:600;text-transform:uppercase;letter-spacing:.12em;}
+  main{max-width:900px;margin:0 auto;padding:14px 24px 90px;}
+  h1,h2,h3,h4{font-family:var(--serif);font-weight:600;line-height:1.15;letter-spacing:-.01em;}
+  h1{font-size:clamp(1.7rem,4vw,2.4rem);margin:24px 0 4px;}
+  h2{font-size:clamp(1.3rem,3vw,1.7rem);margin:34px 0 6px;padding-top:10px;border-top:1px solid var(--line-2);}
+  h3{font-size:1.15rem;margin:22px 0 4px;} h4{font-size:1rem;margin:16px 0 2px;}
+  p,li{max-width:80ch;} a{color:var(--accent-2);}
+  code{font-family:var(--mono);font-size:.85em;background:var(--surface-2);border:1px solid var(--line-2);padding:1px 5px;border-radius:5px;}
+  pre{overflow-x:auto;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-family:var(--mono);font-size:.8rem;line-height:1.5;}
+  pre code{background:none;border:none;padding:0;}
+  blockquote{margin:16px 0;padding:10px 16px;border-left:3px solid var(--accent);background:var(--accent-soft);border-radius:0 8px 8px 0;color:var(--ink-2);}
+  blockquote p{margin:6px 0;}
+  table{border-collapse:collapse;width:100%;font-size:.86rem;margin:16px 0;display:block;overflow-x:auto;}
+  th,td{padding:8px 11px;border:1px solid var(--line-2);text-align:left;vertical-align:top;}
+  thead th{background:var(--surface-2);font-family:var(--mono);font-size:.66rem;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-3);white-space:nowrap;}
+  hr{border:none;border-top:1px solid var(--line);margin:26px 0;}
+  ul,ol{padding-left:22px;} li{margin:3px 0;}
+  strong{color:var(--ink);}
+  .title{border-bottom:1px solid var(--line);padding-bottom:10px;}
+</style>
+</head>
+<body>
+<div class="docbar"><span class="b">PAINT</span> &nbsp;·&nbsp; <a href="paint-plan.html">← roadmap</a> &nbsp;·&nbsp; <a href="docs.html">all docs</a></div>
+<main>
+<h1 class="title">PAINT — cluster inventory</h1>
+<h1 id="paint--cluster-inventory">PAINT — cluster inventory</h1>
+<p>A snapshot of everything on the cluster, so the compute side is accounted for in the repo. <strong>Not published to the website</strong> (this is a <code>.md</code>; the Pages workflow only serves <code>plan/*.html</code>) because it lists internal cluster paths.</p>
+<ul>
+<li><strong>Location:</strong> <code>/nfs/turbo/lsa-tlasisi1/lheald_thesis/aDNA_data</code> on the University of Michigan <strong>Great Lakes</strong> HPC system (Turbo storage).</li>
+<li><strong>Size:</strong> ~110 GB. <strong>Snapshot date:</strong> 2026-07-22.</li>
+<li><strong>Access:</strong> SSH to <code>greatlakes</code> (needs a UMich Kerberos password + Duo two-factor; no key-only login). Reuse an authenticated session via a ControlMaster socket, then <code>ssh greatlakes "&lt;cmd&gt;"</code>. Scratch working area: <code>/scratch/tlasisi_root/tlasisi0/lheald/</code>. SLURM account <code>tlasisi0</code>.</li>
+<li><strong>Reference genome:</strong> <code>reference/hs37d5.fa</code> = <strong>GRCh37 / hg19</strong> (this is the build all the sequence data is on — see the build-mismatch bug A2 in <code>plan.md</code>). A <code>hg19.fa</code> is referenced by one script but is <strong>absent</strong>.</li>
+<li><strong>To refresh this inventory:</strong> <code>ssh greatlakes "du -sh /nfs/turbo/lsa-tlasisi1/lheald_thesis/aDNA_data/*/"</code> etc. Keep cluster commands <strong>text-only</strong> (<code>ls</code>, <code>du</code>, <code>grep</code>, <code>samtools view -H</code>, <code>bcftools view -H</code>) — never <code>cat</code>/<code>head</code> a <code>.bcf</code>/<code>.bam</code> (binary → scrambles the terminal).</li>
+</ul>
+<h2 id="directory-layout-by-size">Directory layout (by size)</h2>
+<table>
+<thead>
+<tr>
+<th>Directory</th>
+<th style="text-align: right;">Size</th>
+<th>Contents</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sgdp/subsets/</code></td>
+<td style="text-align: right;">102 GB</td>
+<td>326 per-sample SGDP (modern reference) BCF subsets — two SNP-panel subsets per sample. The bulk of the store.</td>
+</tr>
+<tr>
+<td><code>ancient_wholegenome/</code></td>
+<td style="text-align: right;">4.5 GB</td>
+<td>Merged archaic genotype calls at the whole-genome SNP panel (<code>ancient_sgdp_wg.bcf</code> / <code>.vcf.gz</code>).</td>
+</tr>
+<tr>
+<td><code>pca/</code></td>
+<td style="text-align: right;">1.8 GB</td>
+<td><code>modern/</code> (SGDP whole-genome PLINK files + PCA eigen-outputs) and <code>pigmentation/</code> (pigmentation-panel PLINK + PCA + an <code>ancient/</code> subdir with the ancient pigmentation calls).</td>
+</tr>
+<tr>
+<td><code>reference/</code></td>
+<td style="text-align: right;">1.4 GB</td>
+<td><code>hs37d5.fa</code> (+ <code>.fai</code>) — the GRCh37/hg19 reference.</td>
+</tr>
+<tr>
+<td><code>snps/</code></td>
+<td style="text-align: right;">928 MB</td>
+<td>SNP-panel definitions: <code>snps.bed</code> (bare-named), <code>snps.chr.bed</code> (chr-prefixed), <code>sgdp.snps.pos</code>, <code>sgdp.bim</code>.</td>
+</tr>
+<tr>
+<td><code>results/</code></td>
+<td style="text-align: right;">5.7 MB</td>
+<td><code>depth/</code> — 15 <code>*_depth.txt</code> per-sample depth tables (one, <code>Sid1253</code>, is empty); <code>filtered/</code> — 15 panel-filtered BAMs.</td>
+</tr>
+<tr>
+<td><code>sgdp_merge/</code></td>
+<td style="text-align: right;">112 KB</td>
+<td>Alternate SGDP merge scripts (<code>vcf_wget</code>, <code>vcf_merge</code>, <code>merge_continue</code>).</td>
+</tr>
+<tr>
+<td><code>work/</code></td>
+<td style="text-align: right;">64 KB</td>
+<td><code>bamlist.txt</code> and scratch bits.</td>
+</tr>
+<tr>
+<td>(root)</td>
+<td style="text-align: right;">—</td>
+<td>~15 <code>*.slurm</code> scripts + <code>wget_commands.txt</code> (558 lines = 279 SGDP samples × 2).</td>
+</tr>
+</tbody>
+</table>
+<h2 id="the-pipeline-19-slurm-jobs-by-stage">The pipeline (~19 SLURM jobs), by stage</h2>
+<ol type="1">
+<li><strong>Acquire archaic BAMs</strong> — <code>sort_wget.slurm</code>, <code>phased_get.slurm</code> (download 15 archaic genomes from MPI-EVA &amp; EBI/ENA; merge per-chromosome, sort, index).</li>
+<li><strong>Depth &amp; filtering</strong> — <code>snp_subset.slurm</code> (<code>samtools depth -a -b snps.bed</code> → per-sample depth tables; <code>samtools view -L</code> → panel-filtered BAMs).</li>
+<li><strong>Ancient genotype calling</strong> — <code>ancient_wg.slurm</code> (whole-genome panel, per chromosome; note the <code>--ploidy 1</code> bug A3); <code>pig_call_miss.slurm</code> (pigmentation panel, keeps all sites — the one used); <code>pigmentation_ancient_call.slurm</code> (pigmentation panel, variants-only — unused; bug A4).</li>
+<li><strong>Acquire &amp; subset SGDP</strong> — <code>sgdp_subset_array.slurm</code> (279-task array: download each modern VCF, subset to both panels); alternates <code>get_simons.slurm</code>, <code>sgdp_merge/vcf_wget.slurm</code>.</li>
+<li><strong>Merge + modern PCA</strong> — <code>sgdp_merge_pca.slurm</code> / <code>sgdp_merge_panel.slurm</code> (merge subsets → PLINK → LD-prune → PCA with allele weights); <code>modern_pca.slurm</code>; <code>pig_pca.slurm</code> (pigmentation PCA); <code>subset_sgdp.slurm</code>.</li>
+<li><strong>Project archaics onto modern PCA</strong> — <code>analysis/pca_proj.py</code> &amp; <code>analysis/pig_pca_proj.py</code> in the repo (plink2 <code>--score</code>); <code>pca_ancient.slurm</code> on the cluster is dead code referencing the missing <code>hg19.fa</code> (bug A5).</li>
+</ol>
+<p><strong>Tools:</strong> <code>bcftools</code>, <code>samtools</code>, <code>plink</code>/<code>plink2</code>, <code>tabix</code>, <code>eigensoft</code>, <code>wget</code>.</p>
+<h2 id="archaic-samples-15-bams-14-analyzed">Archaic samples (15 BAMs; 14 analyzed)</h2>
+<p><code>Chagyrskaya8</code>, <code>Denisova3</code>, <code>den11</code> (Denisova 11 / "Denny"), <code>den25</code> (Denisova 25), <code>den5</code> (Denisova 5), <code>goyet</code>, <code>hst</code> (Hohlenstein-Stadel), <code>lesCottes</code>, <code>mez1</code> (Mezmaiskaya 1), <code>mez2</code> (Mezmaiskaya 2), <code>scladina</code>, <code>Sid1253</code> (El Sidrón — depth file empty, not analyzed), <code>spy</code>, <code>vindija33</code> (Vindija 33.19), <code>vindija87</code> (Vindija 87).
+Note: <code>Denisova3</code>'s BAM uses <code>chr</code>-prefixed contigs while all others (and the reference) are bare-named — see bug A1.</p>
+<h2 id="key-derived-products-expensive-to-regenerate--back-these-up-item-c3">Key derived products (expensive to regenerate → back these up, item C3)</h2>
+<ul>
+<li><code>ancient_wholegenome/ancient_sgdp_wg.bcf</code> / <code>.vcf.gz</code> — the merged archaic genotype call set at the whole-genome SNP panel.</li>
+<li><code>sgdp/merged_sgdp_panel.bcf</code>, <code>sgdp/merged_snps_panel.bcf</code> — the merged modern SGDP reference panels.</li>
+<li><code>pca/modern/sgdp.wg.pca.*</code>, <code>pca/pigmentation/pigmentation_snps_pca.*</code> — the PCA eigen-outputs (these are what got copied into the repo's <code>data/</code>).</li>
+<li><code>results/depth/*_depth.txt</code> — the per-sample depth tables (also copied into the repo's <code>data/</code>).</li>
+</ul>
+<p>The raw archaic BAMs are re-downloadable from MPI-EVA (<code>ftp.eva.mpg.de/neandertal</code>) and EBI/ENA, so they're lower priority to preserve than the derived products above.</p>
+</main>
+</body>
+</html>

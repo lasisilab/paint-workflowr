@@ -45,13 +45,15 @@ Expected number of the 222 panel SNPs with ≥k reads, from each genome's **publ
 | Genome | Reason (criterion) |
 |---|---|
 | **El Sidrón 1253** | C1 — exome-capture only, no shotgun genome |
-| **Vindija 87** | C2 — redundant: same individual as Vindija 33.19 (use the 30× VCF) |
+| **Vindija 87** | C2 — redundant: **verified same individual** as Vindija 33.19 (use the 30× VCF) |
 | **Mezmaiskaya 2** (1.7×) | C3/C4 — below the ~2× bar, no VCF; few reliable panel SNPs |
 | **Spy 94a** (1.0×) | C3/C4 — 1.0×, and the highest contamination in its cohort (~4% qpAdm) |
 | **Hohlenstein-Stadel** (0.05×) | C3 — ultra-low: ~11 panel SNPs with any read, contamination-dominated |
 | **Scladina I-4A** (0.02×) | C3 — ultra-low: ~4 panel SNPs with any read; raw contamination 65% |
 
 *(The ~2× Tier-1/2 boundary is a documented, adjustable choice; the table above lets the PI move it. Mez2 at 1.7× is the closest call — promote it to Tier 2 if the extended analysis wants one more Neanderthal.)*
+
+**Same-site ≠ same-individual — checked explicitly.** The only redundancy is Vindija 87, which Hajdinjak et al. 2018 verify is the *same individual* as Vindija 33.19 (verbatim: *"the Vindija 87 specimen originates from the same individual as Vindija 33.19"*, from shared derived alleles). Every other pair from a shared site is a **distinct individual** and is kept separate: **Mezmaiskaya 1 ≠ Mezmaiskaya 2** (Hajdinjak 2018: Mez2 "shared more derived alleles with the other late Neanderthals than with Mezmaiskaya 1 … a population turnover"), and Denisova Cave yields **four different individuals** — Denisova 3 (Denisovan), Denisova 5 (the Altai Neanderthal), Denisova 11 (the F1 hybrid), Denisova 25 (a second, ~200 ka Denisovan). So Mez2's and the Denisovans' inclusion/exclusion decisions above are on *coverage/reliability* grounds, never redundancy.
 
 ## Consequences for acquisition & compute
 - **No read re-acquisition for Tier 1** — download the published snpAD VCFs (+ FilterBed).

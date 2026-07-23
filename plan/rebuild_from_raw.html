@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Rebuild from raw — the clean-slate pipeline</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<style>
+  :root {
+    --bg:#E8EAE6;--surface:#F6F7F4;--surface-2:#FCFDFB;--ink:#1A1E1C;--ink-2:#434A47;--ink-3:#6C736F;
+    --line:#D2D6CF;--line-2:#E1E4DD;--accent:#1E5A54;--accent-2:#2C7A70;--accent-soft:#DDE8E4;
+    --ok:#2F7D4F;--ok-soft:#DCEBE0;--warn:#8F6410;--warn-soft:#F0E6CE;--bad:#A5433A;--bad-soft:#F1DAD5;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  }
+  @media (prefers-color-scheme: dark){:root{
+    --bg:#12150F;--surface:#1A1E17;--surface-2:#20251D;--ink:#E7EAE4;--ink-2:#B0B7B0;--ink-3:#838A84;
+    --line:#2B3129;--line-2:#242A22;--accent:#63B6A9;--accent-2:#7FCBBE;--accent-soft:#182723;
+    --ok:#6FCB8F;--ok-soft:#16241A;--warn:#D6A63C;--warn-soft:#2A2312;--bad:#E28A7E;--bad-soft:#2C1815;}}
+  :root[data-theme="light"]{--bg:#E8EAE6;--surface:#F6F7F4;--surface-2:#FCFDFB;--ink:#1A1E1C;--ink-2:#434A47;--ink-3:#6C736F;--line:#D2D6CF;--line-2:#E1E4DD;--accent:#1E5A54;--accent-2:#2C7A70;--accent-soft:#DDE8E4;--ok:#2F7D4F;--ok-soft:#DCEBE0;--warn:#8F6410;--warn-soft:#F0E6CE;--bad:#A5433A;--bad-soft:#F1DAD5;}
+  :root[data-theme="dark"]{--bg:#12150F;--surface:#1A1E17;--surface-2:#20251D;--ink:#E7EAE4;--ink-2:#B0B7B0;--ink-3:#838A84;--line:#2B3129;--line-2:#242A22;--accent:#63B6A9;--accent-2:#7FCBBE;--accent-soft:#182723;--ok:#6FCB8F;--ok-soft:#16241A;--warn:#D6A63C;--warn-soft:#2A2312;--bad:#E28A7E;--bad-soft:#2C1815;}
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased;}
+  .docbar{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:10px 24px;font-family:var(--mono);font-size:.78rem;letter-spacing:.03em;}
+  .docbar a{color:var(--accent-2);text-decoration:none;} .docbar a:hover{text-decoration:underline;}
+  .docbar .b{color:var(--accent);font-weight:600;text-transform:uppercase;letter-spacing:.12em;}
+  main{max-width:900px;margin:0 auto;padding:14px 24px 90px;}
+  h1,h2,h3,h4{font-family:var(--serif);font-weight:600;line-height:1.15;letter-spacing:-.01em;}
+  h1{font-size:clamp(1.7rem,4vw,2.4rem);margin:24px 0 4px;}
+  h2{font-size:clamp(1.3rem,3vw,1.7rem);margin:34px 0 6px;padding-top:10px;border-top:1px solid var(--line-2);}
+  h3{font-size:1.15rem;margin:22px 0 4px;} h4{font-size:1rem;margin:16px 0 2px;}
+  p,li{max-width:80ch;} a{color:var(--accent-2);}
+  code{font-family:var(--mono);font-size:.85em;background:var(--surface-2);border:1px solid var(--line-2);padding:1px 5px;border-radius:5px;}
+  pre{overflow-x:auto;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-family:var(--mono);font-size:.8rem;line-height:1.5;}
+  pre code{background:none;border:none;padding:0;}
+  blockquote{margin:16px 0;padding:10px 16px;border-left:3px solid var(--accent);background:var(--accent-soft);border-radius:0 8px 8px 0;color:var(--ink-2);}
+  blockquote p{margin:6px 0;}
+  table{border-collapse:collapse;width:100%;font-size:.86rem;margin:16px 0;display:block;overflow-x:auto;}
+  th,td{padding:8px 11px;border:1px solid var(--line-2);text-align:left;vertical-align:top;}
+  thead th{background:var(--surface-2);font-family:var(--mono);font-size:.66rem;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-3);white-space:nowrap;}
+  hr{border:none;border-top:1px solid var(--line);margin:26px 0;}
+  ul,ol{padding-left:22px;} li{margin:3px 0;}
+  strong{color:var(--ink);}
+  .title{border-bottom:1px solid var(--line);padding-bottom:10px;}
+</style>
+</head>
+<body>
+<div class="docbar"><span class="b">PAINT</span> &nbsp;·&nbsp; <a href="paint-plan.html">← roadmap</a> &nbsp;·&nbsp; <a href="docs.html">all docs</a></div>
+<main>
+<h1 class="title">Rebuild from raw — the clean-slate pipeline</h1>
+<h1 id="rebuild-from-raw--the-clean-slate-pipeline">Rebuild from raw — the clean-slate pipeline</h1>
+<p><strong>Decision (2026-07-23).</strong> Given the confirmed QC failures in the existing pipeline — the hg38/hg19 build mismatch (A2), the Denisova 3 contig-naming bug (A1), haploid autosomal calling (A3), the projection collapse, and the fact that the full sorted BAMs are no longer on the cluster (only wrong-region <code>filtered_*.bam</code> + already-called VCFs remain) — we do <strong>not</strong> trust Lily's derived data. We rebuild the pipeline <strong>from the raw, public, re-downloaded BAMs</strong>, with a QC gate at every stage. This is the scientifically defensible path: every number in the paper will trace to raw data through a re-runnable, verified pipeline.</p>
+<blockquote>
+<p>This plan supersedes the "patch the panel from the existing VCFs" quick route in <a href="b2a_runbook.html"><code>b2a_runbook.md</code></a>. That VCF-only route stays available as an <em>optional 1-hour preview</em> to sanity-check the corrected panel while the re-download runs — but it is not the deliverable.</p>
+</blockquote>
+<p><strong>How this maps to the roadmap.</strong> This is Phases 0–4 of <a href="paint-plan.html"><code>plan.md</code></a> executed <em>from raw</em>, in order, so the QC items (<code>Q1</code>–<code>Q9</code>) are gates rather than afterthoughts, and the bug fixes (A1/A2/A3 + the projection fix) fall out of doing it right the first time.</p>
+<hr />
+<h2 id="what-we-keep-vs-re-derive">What we keep vs. re-derive</h2>
+<table>
+<thead>
+<tr>
+<th>Keep (re-fetch from source of truth)</th>
+<th>Re-derive (discard the existing copy)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>The <strong>raw public archaic BAMs</strong> (re-downloaded + checksummed)</td>
+<td>Lily's sorted/filtered BAMs, <code>ancient_pigmentation.vcf.gz</code>, <code>ancient_sgdp_wg.vcf.gz</code></td>
+</tr>
+<tr>
+<td>The <strong>SNP panel definition</strong> (rsIDs + source), re-pulled and put on ONE build</td>
+<td>The committed <code>snps.txt</code> / <code>snps.chr.bed</code> coordinates (hg38-on-hg19)</td>
+</tr>
+<tr>
+<td>The <strong>SGDP modern genotypes</strong> (re-fetch or re-verify <code>sgdp.wg</code>)</td>
+<td><code>pca/*</code> eigenvec/eigenval/sscore and every downstream figure</td>
+</tr>
+<tr>
+<td>Tool/reference provenance</td>
+<td>any hand-typed number in the thesis prose</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="reuse-vs-rerun--the-decision-per-genome">Reuse vs. rerun — the decision, per genome</h2>
+<p><strong>Principle.</strong> For each genome, start from the <em>highest-quality product that already exists</em>, and rerun only what is needed to (a) fix the confirmed bugs (build A2, contig-naming A1, haploid A3, projection collapse) and (b) harmonize the independently-produced sources onto one comparable footing. Concretely: for <strong>high-coverage</strong> genomes the authors already did careful, damage-aware genotype calling (<code>snpAD</code>) that we cannot improve on at 30–52× — so we <strong>reuse their published VCFs and do not re-call</strong>. For <strong>low-coverage</strong> genomes hard calls neither exist nor are appropriate — so we <strong>re-acquire the reads and compute genotype likelihoods ourselves (ANGSD)</strong>. (The per-paper QC/pipeline each of these calls came from is documented in <a href="papers/PIPELINE_QC_BY_PAPER.html"><code>papers/PIPELINE_QC_BY_PAPER.md</code></a>.)</p>
+<p><strong>Finalized sample subset (2026-07-23) — full justification in <a href="papers/SAMPLE_INCLUSION.html"><code>papers/SAMPLE_INCLUSION.md</code></a>.</strong> The goal is to maximize <em>reliably-genotyped pigmentation SNPs of interest</em>, not genome count. <strong>Tier 1 (core):</strong> the 5 high-coverage genomes (Altai/Denisova 5, Vindija 33.19, Denisova 3, Chagyrskaya 8, Denisova 25) + SGDP — they cover all 222 panel SNPs incl. the transition loci reliably. <strong>Tier 2 (extended, with GL uncertainty):</strong> Les Cottés, Denisova 11 (hybrid), Goyet, and Mezmaiskaya 1 (its snpAD VCF). <strong>Excluded, with reasons:</strong> El Sidrón (exome-only), Vindija 87 (redundant = Vi 33.19 individual), Mezmaiskaya 2 (1.7×, no VCF), Spy 94a (1.0× + ~4% contamination), Hohlenstein-Stadel &amp; Scladina (ultra-low ~0.02–0.05× → only ~4–11 panel SNPs, contamination-dominated). So <strong>targeted read re-acquisition is needed for just 3 genomes</strong> (Les Cottés, Denisova 11, Goyet).</p>
+<table>
+<thead>
+<tr>
+<th>Genome</th>
+<th>Take (source of truth)</th>
+<th>Re-call genotypes?</th>
+<th>What we rerun</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Altai / Denisova 5, Vindija 33.19, Denisova 3</td>
+<td>published snpAD <strong>genotype VCF</strong> (2017 release, hg19) + its mappability mask</td>
+<td><strong>No</strong></td>
+<td>build/naming lint (Q2), apply + intersect masks to a common set, allele/REF harmonization (Q4), subset to panels, PCA</td>
+<td>52×/30× damage-aware calls; re-calling adds nothing and loses the authors' QC</td>
+</tr>
+<tr>
+<td>Chagyrskaya 8</td>
+<td>published snpAD VCF (<code>.noRB</code>) + <code>FilterBed</code> mask</td>
+<td><strong>No</strong></td>
+<td>as above (+ apply its own FilterBed before intersecting)</td>
+<td>27–28×, own release/mask</td>
+</tr>
+<tr>
+<td>Denisova 25 ⚠</td>
+<td>published VCF (<code>L35 MQ25 B30 map35_100</code>) + <code>FilterBed</code></td>
+<td><strong>No</strong> (provisional)</td>
+<td>as above; flag preprint</td>
+<td>24×, but preprint — mark provisional</td>
+</tr>
+<tr>
+<td>Vindija 87</td>
+<td><strong>the Vindija 33.19 VCF</strong> (same individual)</td>
+<td><strong>No</strong></td>
+<td>none extra — use Vi 33.19</td>
+<td>Vi 87 is the same person; the 1.3× library adds nothing for genotypes</td>
+</tr>
+<tr>
+<td>Denisova 11 "Denny"</td>
+<td>BAM (ENA PRJEB24663)</td>
+<td><strong>No hard call → ANGSD GLs</strong></td>
+<td>re-acquire reads, reheader, mapDamage, max-depth cap, ANGSD GLs at panels, het-vs-depth, PCAngsd</td>
+<td>~2.6× hybrid; too low for hard calls; no VCF exists</td>
+</tr>
+<tr>
+<td>Goyet, Les Cottés, Spy, Mez 2</td>
+<td>BAM (ENA, Hajdinjak 2018)</td>
+<td><strong>No hard call → ANGSD GLs</strong></td>
+<td>full low-cov path (as Denisova 11)</td>
+<td>1–2.7×; BAM-only</td>
+</tr>
+<tr>
+<td>Mezmaiskaya 1</td>
+<td><strong>low-cov snpAD VCF</strong> (<code>…/Vindija/VCF/Mez1/</code>) or BAM</td>
+<td>reuse VCF (low-cov, with care) or GLs</td>
+<td>apply FilterBed + lint; or GL path</td>
+<td>~1.9×; a snpAD VCF <em>does</em> exist (correction)</td>
+</tr>
+<tr>
+<td>Hohlenstein-Stadel, Scladina</td>
+<td>BAM (ENA PRJEB29475)</td>
+<td><strong>No hard call → ANGSD GLs</strong></td>
+<td>full low-cov path; expect very few usable panel sites</td>
+<td>ultra-low ~0.02–0.05× early Neanderthals</td>
+</tr>
+<tr>
+<td>El Sidrón 1253</td>
+<td>—</td>
+<td><strong>Exclude</strong></td>
+<td>(optional) check its exome VCF only for panel SNPs that fall in coding regions — most pigmentation SNPs are regulatory, so expect ~none</td>
+<td>exome-capture only; no shotgun genome</td>
+</tr>
+<tr>
+<td>SGDP (15 moderns)</td>
+<td>existing <code>pca/modern/sgdp.wg</code> (hg19, 9.2 M SNPs)</td>
+<td>reuse</td>
+<td>build/allele lint (Q2/Q4); subset to panels; positive-control PCA (Q3)</td>
+<td>already on hg19 with the pigmentation SNPs by rsID; no re-acquisition</td>
+</tr>
+<tr>
+<td><strong>Pigmentation panel</strong></td>
+<td>rsIDs (from <code>skin_pigmentation.tsv</code> / GWAS Catalog)</td>
+<td>—</td>
+<td><strong>lift to hg19 by rsID</strong>, keep both builds; tracer lint (Q2)</td>
+<td>fixes the root bug A2</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Two method notes from the per-paper QC extraction</strong> (<a href="papers/PIPELINE_QC_BY_PAPER.html"><code>papers/PIPELINE_QC_BY_PAPER.md</code></a>):</p>
+<ul>
+<li><em>Reused VCFs need their FilterBed.</em> Every published snpAD VCF carries only <code>mq25</code>+<code>map35_100</code>; the min-cov-10, GC-corrected central-95% (the max-depth cap), tandem-repeat, and indel filters ship as a <strong>separate companion <code>FilterBed</code> mask that we must apply</strong>, then intersect across genomes to a common site set. Prefer the <strong>2017 snpAD reprocess</strong> for Altai/Vindija/Denisova (the originals are GATK).</li>
+<li><em>Tier-B calling choice.</em> The low-coverage papers (Hajdinjak 2018, Peyrégne 2019, Slon 2018) did <strong>not</strong> genotype — they used <strong>pseudo-haploid random single-read sampling + a deamination filter + transversions</strong> (heffalump). Our default is <strong>ANGSD genotype likelihoods</strong> (retains more information at these depths), but we will <strong>cross-check against the pseudo-haploid approach</strong> since it is the field-validated method for these exact genomes; and for HST/Scladina the <strong>deamination filter is load-bearing</strong> (raw contamination 22.9%/64.8% → 2.0%/5.5%).</li>
+</ul>
+<p><strong>Net rerun surface (much smaller than "redo everything"):</strong></p>
+<ul>
+<li><strong>Re-acquire reads for just 3 genomes</strong> (Les Cottés, Denisova 11, Goyet) — <strong>targeted</strong> extraction at the SNP positions; the 5 high-coverage genomes need <strong>no re-acquisition and no re-calling</strong> (download the published VCFs), Mezmaiskaya 1 uses its VCF, and 6 genomes are excluded (see <code>SAMPLE_INCLUSION.md</code>).</li>
+<li><strong>Never re-run</strong> the high-coverage genotype calling, the SGDP genotyping, or (for Vindija 87) a separate low-cov calling.</li>
+<li><strong>Always re-run</strong> (because they were bugged or absent): the panel→hg19 lift, contig-naming harmonization, allele lint, the depth/coverage QC, mapDamage + het-vs-depth on the low-cov reads, and the entire PCA/projection (PCAngsd, positive control, no-mean-imputation).</li>
+</ul>
+<hr />
+<h2 id="genome-build-decision-read-first">Genome-build decision (read first)</h2>
+<p>The raw data is <strong>hg19</strong>, and — confirmed from the thesis §2.3 — the archaic data is distributed as <strong>BAM files already mapped to GRCh37/hg19</strong> (there is <strong>no FASTQ</strong>; Lily inherited the data producers' alignments and did no re-mapping). This makes the choice lopsided:</p>
+<ul>
+<li><strong>Rebuild on hg19</strong> (strongly recommended): the reads are already aligned to hg19, so we <em>move the panel to hg19</em> and keep everything native — no re-alignment, no FASTQ hunt, fewest moving parts, fastest to a correct answer. The four new pigmentation datasets (hg38) are lifted <strong>down</strong> to hg19 for integration, or handled in a later hg38 pass.</li>
+<li><strong>Rebuild on hg38</strong>: would require going back to <strong>FASTQ</strong> (raw reads) and re-running the full aDNA read-processing chain — adapter removal, read collapsing, alignment to GRCh38, damage-aware post-processing — for every sample. FASTQ exists at ENA for some accessions but the MPI-EVA genomes are published only as processed BAMs, so this is both the heaviest option <em>and</em> partly blocked by data availability. Only worth it if hg38 becomes the committed project standard.</li>
+</ul>
+<p><strong>Default: rebuild on hg19</strong> (lift panels to match). The BAM-only reality makes this the practical as well as the cheap choice.</p>
+<hr />
+<h2 id="stages-each-ends-with-a-qc-gate-that-must-pass-before-the-next">Stages (each ends with a QC gate that must pass before the next)</h2>
+<h3 id="stage-0--provenance--environment--gate-every-input-traced-q1-q10a">Stage 0 — Provenance &amp; environment · gate: every input traced (Q1, Q10a)</h3>
+<ul>
+<li>Build <code>qc/manifest.tsv</code>: one row per input (raw BAM, panel, SGDP, reference) with <code>path · sha256 · source(accession/URL) · build · N · date</code>.</li>
+<li>Pin the environment (conda env / container) and record versions of <code>samtools</code>, <code>bcftools</code>, <code>plink2</code>, <strong><code>ANGSD</code></strong>, <strong><code>PCAngsd</code></strong>, <strong><code>mapDamage</code></strong>, and <code>R</code>. (ANGSD + PCAngsd are the primary genotype-likelihood engine — see Stage 4/6 — and are conda-installable: <code>conda install -c bioconda angsd pcangsd mapdamage2</code>.)</li>
+<li><strong>Recover the acquisition URLs for all 15 samples.</strong> Known so far (from <code>sort_wget.slurm</code>/<code>phased_get.slurm</code>): Denisova 11 = ENA <code>ERR2273828</code>; Scladina = ENA <code>ERR9741105</code>; Hohlenstein-Stadel = MPI-EVA <code>L5386.bam</code>; Mezmaiskaya 1 = ENA <code>ERR257722</code>; Spy = MPI-EVA <code>A9416</code>; Vindija 33.19 = MPI-EVA Prüfer 2017 per-chromosome. <strong>Still to locate (9):</strong> Chagyrskaya 8, Denisova 5 (Altai), Denisova 25, Denisova 3, Goyet, Les Cottés, Mezmaiskaya 2, Vindija 87, El Sidrón — from the missing acquisition scripts on the cluster or the source papers (MPI-EVA <code>ftp.eva.mpg.de</code>, ENA <code>ftp.sra.ebi.ac.uk</code>).</li>
+<li><strong>Gate:</strong> every sample has a documented, resolvable source + expected coverage; no <code>unknown</code>.</li>
+</ul>
+<h3 id="stage-1--re-acquire-the-source-data--gate-checksums-match-headers-sane">Stage 1 — Re-acquire the source data · gate: checksums match, headers sane</h3>
+<p><strong>Data-form choice per sample (Tina's point — "or phased VCFs?").</strong> Provenance search result (verified against the MPI-EVA servers, 2026-07-23): the high-coverage archaics are published by Max Planck as <strong>damage-aware diploid <em>genotype</em> VCFs</strong> (called with <code>snpAD</code>, an aDNA-damage-aware genotyper) — <strong>not statistically phased haplotype VCFs</strong> (if we ever need phased haplotypes, phasing is a separate downstream step we run ourselves). For the high-coverage genomes these published, carefully-called VCFs are a <em>better</em> source of truth than re-calling from reads. So:</p>
+<ul>
+<li><strong>High-coverage genomes — use the published snpAD genotype VCFs</strong> (hg19): <strong>Altai / Denisova 5</strong>, <strong>Vindija 33.19</strong>, <strong>Denisova 3</strong> (all three in the shared 2017 snpAD release at <code>cdna.eva.mpg.de/neandertal/Vindija/VCF/{Altai,Vindija33.19,Denisova}/</code>, <code>chrN_mq25_mapab100.vcf.gz</code> — same pipeline/reference/filters ⇒ most directly comparable), <strong>Chagyrskaya 8</strong> (<code>ftp.eva.mpg.de/neandertal/Chagyrskaya/VCF/</code>, <code>.noRB.vcf.gz</code> — its own mask), and <strong>Denisova 25</strong> (<code>cdna.eva.mpg.de/denisova/Den25/VCF/</code> — a ~24× Denisovan from Peyrégne et al. 2025, currently a <strong>preprint</strong>, so mark provisional). Verify build + lint each; re-call from BAM only as a cross-check. Each release has its own README/filter-mask — check before merging across releases.</li>
+<li><strong>Correction (important):</strong> <strong>Denisova 11 "Denny" is low-coverage (~2.6×)</strong>, an F1 hybrid, and has <strong>no</strong> genotype VCF — only raw sequences in ENA <strong>PRJEB24663</strong>. It belongs in the low-coverage BAM→GL tier below, <em>not</em> the high-coverage-VCF tier. (Lily's realized panel depth for it, 1.25×, is consistent with this.)</li>
+<li><strong>Low-coverage genomes</strong> (Denisova 11, the Hajdinjak-2018 late Neanderthals, HST, Scladina, Mez1, …): BAMs → <strong>ANGSD genotype likelihoods</strong> (Stage 4). Hard-called VCFs generally don't exist for these, and shouldn't — the coverage can't support hard calls.</li>
+<li>Whichever form, record source + checksum in the manifest (Q1). Full per-genome URL/accession table is compiled in the provenance manifest (both provenance searches feed it).</li>
+</ul>
+<p>Two read-acquisition modes for the BAM route — pick per the compute you want to spend (see §Compute):</p>
+<ul>
+<li><strong>1a. Targeted (recommended):</strong> download only the reads overlapping the SNP positions we need, by streaming from the remote indexed BAMs: <code>samtools view -b &lt;remote-or-local&gt;.bam -L targets.hg19.bed</code>. Targets = the ~9.2M whole-genome ancestry SNPs ∪ the pigmentation panel windows. This cuts hundreds of GB of whole genomes down to tens of GB of relevant reads, and is enough for depth, calling, ancestry PCA, and (representatively) mapDamage.</li>
+<li><strong>1b. Full genomes:</strong> download the complete BAMs (needed only if we later want genome-wide analyses beyond the SNP panels). Heaviest.</li>
+<li>Sort, index, and <strong>harmonize contig naming to bare <code>1..22,X,Y</code></strong> for <em>every</em> sample as they land (<code>samtools reheader</code>) — this fixes A1 for the whole set at the source, not as a special case.</li>
+<li><strong>Gate:</strong> <code>sha256</code> matches the manifest (1b) or read counts are sane per region (1a); every BAM header is bare-named and matches <code>hs37d5.fa</code>.</li>
+</ul>
+<h3 id="stage-2--raw-data-qc--gate-authentic-correctly-labelled-damage-characterized-q6-q7-q8">Stage 2 — Raw-data QC · gate: authentic, correctly labelled, damage-characterized (Q6, Q7, Q8)</h3>
+<ul>
+<li><strong>Coverage vs expectation (Q6):</strong> realized depth per sample vs its published coverage; the 5 declared high-coverage genomes (incl. Denisova 3, now correctly named) must land in the high band.</li>
+<li><strong>Sex &amp; contamination (Q7):</strong> X/Y depth-ratio sex check; X-chromosome / mtDNA contamination estimate; assert &lt; threshold.</li>
+<li><strong>Damage / authenticity (Q8):</strong> <strong>mapDamage</strong> per sample → 5′ C&gt;T / 3′ G&gt;A misincorporation curves; record UDG status; this is what your mapDamage request feeds.</li>
+<li><strong>Genetic diversity — individual heterozygosity vs depth (Tina's request):</strong> estimate per-individual <strong>heterozygosity</strong> the depth-aware way, from genotype likelihoods, <strong>ANGSD → <code>realSFS</code></strong> (per-sample folded site-frequency spectrum → heterozygosity = the proportion of heterozygous sites), <em>not</em> from hard calls. Then <strong>plot individual heterozygosity against individual depth.</strong> This is a double-duty diagnostic: (1) it is a real diversity metric (Neanderthals are expected to have <em>low</em> heterozygosity from small long-term population size), and (2) the het-vs-depth plot exposes confounding — at low depth heterozygosity is systematically <em>under</em>-called (missed hets) while <strong>modern contamination or damage <em>inflates</em> it</strong>, so a sample sitting off the expected het-vs-depth trend is a red flag (feeds Q7). Report it as a labelled scatter (one point per individual, het on y, mean depth on x, expected-range band).</li>
+<li><strong>Gate:</strong> damage in the authentic-aDNA range; contamination below threshold; coverage matches expectation (Denisova 3 no longer sparse); heterozygosity-vs-depth reviewed — no sample is an unexplained outlier (high het at low depth ⇒ suspect contamination/damage; investigate before use).</li>
+</ul>
+<h3 id="stage-3--one-build--a-verified-harmonized-panel--gate-build-lint--allele-check-q2-q4">Stage 3 — One build + a verified, harmonized panel · gate: build lint + allele check (Q2, Q4)</h3>
+<ul>
+<li>Put the pigmentation panel on <strong>hg19</strong> by rsID (re-pull hg19 coordinates for each panel rsID; keep both builds in the manifest so the bug cannot recur). Reconcile the panel-size mess (committed 222 vs cluster 395-line BED vs 225 unique rsIDs vs 129 overlapping the modern reference) — settle on one documented analysis panel.</li>
+<li><strong>Tracer-SNP lint (Q2):</strong> rs1426654 → <code>15:48426484</code>, rs12913832 → <code>15:28365618</code>; all inputs one build, one naming.</li>
+<li><strong>Allele harmonization (Q4):</strong> REF base at each panel position == panel/VCF REF (<code>samtools faidx</code>); effect allele ∈ {REF,ALT}; <strong>flag palindromes</strong>; decide policy.</li>
+<li><strong>Gate:</strong> lint exits 0; 0 REF mismatches on retained SNPs.</li>
+</ul>
+<h3 id="stage-4--genotype-likelihoods-not-hard-calls--gate-gls-sane-damage-aware">Stage 4 — Genotype <strong>likelihoods</strong> (not hard calls) · gate: GLs sane, damage-aware</h3>
+<p><strong>Design change (2026-07-23, Tina):</strong> the samples are mostly <strong>low coverage</strong> — 10 of the 14 are under ~3.2× at the panel and several are &lt;1× (exact table in <code>coverage_current.tsv</code>). <strong>Hard-calling with VCF tools is the wrong tool here</strong>: forcing a definite genotype from 1–2 reads either invents a call or drops the site, and it bakes in aDNA damage as false alleles. So the primary engine is <strong>genotype likelihoods via ANGSD</strong>, which keep the per-genotype probability and propagate uncertainty; hard calls are reserved for the few high-coverage genomes and for specific per-SNP <em>reporting</em> (e.g. does a high-coverage archaic carry an MC1R red-hair allele).</p>
+<ul>
+<li><strong>Primary — ANGSD genotype likelihoods</strong> at the SNP panels (<code>-GL 1|2 -doGlf</code>, <code>-sites</code> = the panel positions, <code>-minMapQ 30 -minQ 20</code>), from the mapDamage-rescaled BAMs. No hard genotype is committed; the downstream PCA (Stage 6, PCAngsd) consumes the GLs directly.</li>
+<li><strong>Diploid model</strong> (fix A3): ANGSD models autosomes as diploid; the old <code>--ploidy 1</code> haploid autosomal calling is not reproduced. (X/Y handled by sex from Stage 2.)</li>
+<li><strong>Max-depth cap</strong> (Tina's request): impose a per-sample depth ceiling to reject pileup artifacts — the current data already shows these (e.g. <strong>Vindija 87 mean 3.2× but max 147×; Scladina mean 1.9× but max 91×</strong> — collapsed/repetitive regions). ANGSD <code>-setMaxDepth</code> (and <code>-setMinDepth</code>) drop sites outside a sane band; set the ceiling from each sample's depth distribution (e.g. a high percentile or a multiple of the mode), and log how many sites are dropped.</li>
+<li><strong>Damage handling</strong> (Tina's request, applied per analysis):
+<ul>
+<li><strong>mapDamage <code>--rescale</code></strong> the base qualities so likely-deaminated bases are down-weighted — keeps the transition SNPs while mitigating damage. ANGSD can additionally <code>-trim</code> read ends and <code>-noTrans 1</code> where wanted.</li>
+<li><strong>Transversion policy — important:</strong> a blanket <em>transversion-only</em> filter would delete ~71% of the pigmentation panel, <strong>including SLC24A5 (rs1426654) and HERC2 (rs12913832)</strong> (transitions; measured 92 Ti / 37 Tv among the 129 panel SNPs in the reference, and the MC1R red-hair set is transitions too). So use <strong>transversion-only (<code>-noTrans 1</code>) for the whole-genome ancestry PCA</strong> (standard, damage-robust) but <strong>keep transitions for the pigmentation panel</strong>, leaning on rescaling + GL uncertainty + the high-coverage samples. Report both.</li>
+</ul></li>
+<li><strong>Hard calls — secondary, high-coverage only:</strong> for the 4–5 high-coverage genomes, <code>bcftools mpileup | bcftools call -m</code> (diploid, keep-all) at the panel gives a conventional VCF for per-SNP reporting and cross-checking against published archaic genotypes (Q9). These are <em>not</em> the basis of the low-coverage PCA.</li>
+<li><strong>Gate:</strong> GLs produced at the panels with documented quality/depth/damage filters; max-depth ceiling applied (dropped-site counts logged); transition-kept vs transversion-only GL sets both available; high-coverage hard-call VCF produced for reporting only.</li>
+</ul>
+<h3 id="stage-5--modern-reference--gate-sgdp-verified-or-rebuilt">Stage 5 — Modern reference · gate: SGDP verified or rebuilt</h3>
+<ul>
+<li>Verify the existing <code>sgdp.wg</code> (15 samples, 9.2M hg19 SNPs — confirmed hg19, contains the pigmentation SNPs by rsID) via the Stage-3 lint + a checksum, OR rebuild it from the SGDP source if provenance can't be established (Q1). Decide 15-sample (matches the thesis) vs expanding to the 279-sample set.</li>
+<li><strong>Gate:</strong> modern reference passes the same build/allele lint as the archaic data.</li>
+</ul>
+<h3 id="stage-6--pca--projection-gl-based--gate-positive-control--non-degeneracy-q3-q5">Stage 6 — PCA + projection (GL-based) · gate: positive control + non-degeneracy (Q3, Q5)</h3>
+<ul>
+<li><strong>Primary — PCAngsd on the genotype likelihoods</strong> from Stage 4: this is the low-coverage-appropriate PCA (covariance estimated from GLs with per-sample uncertainty), for both the ancestry (whole-genome) and pigmentation panels. It replaces the old <code>plink2 --pca</code> + <code>--score</code> hard-genotype projection that produced the collapse.</li>
+<li><strong>Positive control (Q3):</strong> the whole-genome PCAngsd run must reproduce known structure (Africans separate on PC1; archaics among non-Africans). If it can't, stop.</li>
+<li><strong>Non-degeneracy (Q5):</strong> the pigmentation PCA is multi-dimensional (not rank-1) and samples spread out — the collapse was a symptom of hard-call mean-imputation on a monomorphic (wrong-build) panel; GL-based PCA on the corrected hg19 panel should not collapse. (If a plink hard-genotype projection is run at all — high-coverage only — it must use <code>no-mean-imputation</code>.)</li>
+<li><strong>Three panels × two designs (B4):</strong> pigmentation SNPs / whole pigmentation genes / genome-wide × (high-coverage-together, moderns-with-all-projected). Low-coverage samples enter via GLs (PCAngsd), not forced hard calls.</li>
+<li><strong>Gate:</strong> control reproduces known structure; no collapse; before/after figures rendered (<code>make_consequence_figures.R after</code>).</li>
+</ul>
+<h3 id="stage-7--science-on-the-clean-base--b3-b7">Stage 7 — Science on the clean base · (B3, B7)</h3>
+<ul>
+<li>Directional pigmentation score + <strong>MC1R</strong> red-hair check (B3); functional / skin-specific-gene profile (B7). Cross-validate against published archaic genotypes (Q9).</li>
+</ul>
+<h3 id="stage-8--reproducibility--q10">Stage 8 — Reproducibility · (Q10)</h3>
+<ul>
+<li>Encode the whole thing as a <strong>Snakemake/Nextflow DAG</strong> (auto-generates the flow figure), seed all simulations, pin the env, add a CI fixture test. Now the paper's numbers regenerate from raw with one command.</li>
+</ul>
+<hr />
+<h2 id="compute-resources">Compute resources</h2>
+<p>The dominant cost is <strong>Stage 1 (re-acquisition)</strong>; everything else is modest. You said compute isn't a constraint, so any of these is fine — the table is to set expectations and to choose targeted vs full download.</p>
+<table>
+<thead>
+<tr>
+<th>Stage</th>
+<th>Job shape</th>
+<th>Cores / Mem</th>
+<th>Walltime</th>
+<th>Disk</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0 provenance/env</td>
+<td>login + tiny</td>
+<td>1 / 2 GB</td>
+<td>minutes</td>
+<td>—</td>
+<td>conda solve needs internet (login node)</td>
+</tr>
+<tr>
+<td><strong>1a targeted re-acquire</strong></td>
+<td><code>--array=1-15</code></td>
+<td>2 / 8 GB each</td>
+<td>~1–4 h total</td>
+<td>~10–50 GB</td>
+<td>streams only SNP-overlapping reads; <strong>recommended</strong></td>
+</tr>
+<tr>
+<td><strong>1b full genomes</strong></td>
+<td><code>--array=1-15</code></td>
+<td>4 / 16 GB each</td>
+<td>many hours–~1 day</td>
+<td>~0.5–1 TB</td>
+<td>whole BAMs; bandwidth-bound from MPI-EVA/ENA</td>
+</tr>
+<tr>
+<td>2 QC (mapDamage/sex/contam)</td>
+<td><code>--array=1-15</code></td>
+<td>4 / 16 GB each</td>
+<td>~15 min–1 h each</td>
+<td>small</td>
+<td>mapDamage is the heaviest here</td>
+</tr>
+<tr>
+<td>3 panel/build lint</td>
+<td>single</td>
+<td>1 / 4 GB</td>
+<td>minutes</td>
+<td>tiny</td>
+<td>222-site scale</td>
+</tr>
+<tr>
+<td>4 re-call genotypes</td>
+<td><code>--array</code> by sample or chr</td>
+<td>4–8 / 16–32 GB</td>
+<td>~1–3 h</td>
+<td>~10 GB</td>
+<td>region-restricted mpileup</td>
+</tr>
+<tr>
+<td>5 SGDP verify/rebuild</td>
+<td>single (verify) / array (rebuild)</td>
+<td>8 / 32 GB</td>
+<td>minutes (verify)</td>
+<td>reuse</td>
+<td>rebuild only if provenance fails</td>
+</tr>
+<tr>
+<td>6 PCA/projection</td>
+<td>single</td>
+<td>4 / 16 GB</td>
+<td>minutes</td>
+<td>tiny</td>
+<td>plink2</td>
+</tr>
+<tr>
+<td>7 score/functional</td>
+<td>single</td>
+<td>2 / 8 GB</td>
+<td>minutes</td>
+<td>tiny</td>
+<td></td>
+</tr>
+<tr>
+<td>8 DAG/CI</td>
+<td>dev</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>one-time setup</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Bottom line:</strong> with <strong>targeted re-acquisition (1a)</strong> the whole rebuild is roughly a <strong>half-day of mostly-download wall-clock</strong> on a single standard node + a couple of small array jobs — no GPU, no large-memory node, well within Turbo's 8.7 TB free / scratch's 300 TB. Full-genome download (1b) turns it into a ~1-day job. Recommend <strong>1a</strong> unless you specifically need whole genomes.</p>
+<hr />
+<h2 id="what-i-need-from-you">What I need from you</h2>
+<ol type="1">
+<li><strong>Confirm the two decisions:</strong> rebuild on <strong>hg19</strong> (default) vs hg38; and <strong>targeted (1a)</strong> vs <strong>full (1b)</strong> re-acquisition.</li>
+<li><strong>The 9 missing acquisition sources</strong> (Stage 0) — I'll hunt the cluster for the other acquisition scripts first; if they're not there I'll pull standard accessions from the source papers for you to confirm.</li>
+<li><strong>Keep the authenticated Great Lakes session open</strong> (as now) so I can run the SLURM jobs, or run them and paste back the QC summaries.</li>
+<li>Nothing else — no data from Lily/Yemko; the raw archives, the SGDP data, and the reference are all public/present.</li>
+</ol>
+<h2 id="decision-points-recorded">Decision points recorded</h2>
+<ul>
+<li>Build: hg19 (default) | hg38.</li>
+<li>Acquisition: targeted 1a (default) | full 1b.</li>
+<li>SGDP: verify existing 15-sample (default) | rebuild | expand to 279.</li>
+<li>Transversion policy: transitions kept for pigmentation + transversion-only for ancestry (default) | stricter (not recommended — drops SLC24A5/HERC2).</li>
+</ul>
+</main>
+</body>
+</html>

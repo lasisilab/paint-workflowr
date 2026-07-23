@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>PAINT — All documents</title>
+<style>
+  :root{--bg:#E8EAE6;--surface:#F6F7F4;--surface-2:#FCFDFB;--ink:#1A1E1C;--ink-2:#434A47;--ink-3:#6C736F;--line:#D2D6CF;--line-2:#E1E4DD;--accent:#1E5A54;--accent-2:#2C7A70;--accent-soft:#DDE8E4;--shadow:0 1px 2px rgba(20,30,26,.06),0 6px 18px rgba(20,30,26,.05);--serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;--sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;--mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;}
+  @media (prefers-color-scheme:dark){:root{--bg:#12150F;--surface:#1A1E17;--surface-2:#20251D;--ink:#E7EAE4;--ink-2:#B0B7B0;--ink-3:#838A84;--line:#2B3129;--line-2:#242A22;--accent:#63B6A9;--accent-2:#7FCBBE;--accent-soft:#182723;--shadow:0 1px 2px rgba(0,0,0,.4),0 6px 20px rgba(0,0,0,.35);}}
+  :root[data-theme="light"]{--bg:#E8EAE6;--surface:#F6F7F4;--surface-2:#FCFDFB;--ink:#1A1E1C;--ink-2:#434A47;--ink-3:#6C736F;--line:#D2D6CF;--line-2:#E1E4DD;--accent:#1E5A54;--accent-2:#2C7A70;--accent-soft:#DDE8E4;}
+  :root[data-theme="dark"]{--bg:#12150F;--surface:#1A1E17;--surface-2:#20251D;--ink:#E7EAE4;--ink-2:#B0B7B0;--ink-3:#838A84;--line:#2B3129;--line-2:#242A22;--accent:#63B6A9;--accent-2:#7FCBBE;--accent-soft:#182723;}
+  *{box-sizing:border-box;} body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1000px;margin:0 auto;padding:0 24px;}
+  header.hero{padding:46px 0 22px;border-bottom:1px solid var(--line);}
+  .eyebrow{font-family:var(--mono);text-transform:uppercase;letter-spacing:.18em;font-size:.72rem;color:var(--accent);margin:0 0 10px;}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(2rem,5vw,3rem);margin:0;letter-spacing:-.01em;}
+  .sub{font-family:var(--serif);font-style:italic;color:var(--ink-2);font-size:1.15rem;margin:10px 0 0;}
+  h2{font-family:var(--serif);font-weight:600;font-size:1.3rem;margin:34px 0 4px;}
+  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:12px;}
+  @media (max-width:680px){.grid{grid-template-columns:1fr;}}
+  a.card{display:block;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;box-shadow:var(--shadow);text-decoration:none;color:inherit;}
+  a.card:hover{border-color:var(--accent-2);}
+  a.card .t{font-family:var(--serif);font-weight:600;font-size:1.05rem;color:var(--accent-2);}
+  a.card .d{font-size:.85rem;color:var(--ink-2);margin-top:3px;}
+  a.card .f{font-family:var(--mono);font-size:.66rem;color:var(--ink-3);margin-top:6px;}
+  footer{padding:30px 0 70px;color:var(--ink-3);font-size:.82rem;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <p class="eyebrow">PAINT · document index</p>
+    <h1>All documents</h1>
+    <p class="sub">Everything as HTML — the plan, the data &amp; pipeline record, the rebuild, and the per-genome evidence. Source of truth remains the Markdown in the repo; these are generated renderings (except the two hand-built pages).</p>
+  </header>
+
+  <h2>Start here</h2>
+  <div class="grid">
+    <a class="card" href="paint-plan.html"><div class="t">Roadmap &amp; plan →</div><div class="d">The single phased plan: bugs, analysis redesign, QC (Q1–Q10), infra, writing. Hand-built.</div><div class="f">paint-plan.html · from plan.md</div></a>
+    <a class="card" href="pipeline.html"><div class="t">Data &amp; pipeline (living) →</div><div class="d">BAM vs VCF, the raw data, the data-flow, exact coverage, and the run log we update as we go. Hand-built.</div><div class="f">pipeline.html</div></a>
+    <a class="card" href="changelog.html"><div class="t">Changelog &amp; decision log →</div><div class="d">Dated record of everything done / found / decided (18+ entries).</div><div class="f">changelog.html · from changelog.md</div></a>
+  </div>
+
+  <h2>Rebuild &amp; execution</h2>
+  <div class="grid">
+    <a class="card" href="rebuild_from_raw.html"><div class="t">Rebuild from raw →</div><div class="d">The clean-slate, QC-gated pipeline (Stages 0–8), reuse-vs-rerun matrix, compute estimates.</div><div class="f">rebuild_from_raw.html</div></a>
+    <a class="card" href="b2a_runbook.html"><div class="t">B2a runbook →</div><div class="d">The fast build fix (panel→hg19): step-by-step commands, SLURM, compute/access needs.</div><div class="f">b2a_runbook.html</div></a>
+  </div>
+
+  <h2>Which genomes, and why (provenance &amp; QC)</h2>
+  <div class="grid">
+    <a class="card" href="papers/SAMPLE_INCLUSION.html"><div class="t">Sample inclusion →</div><div class="d">The justified subset — criteria + Poisson table; maximize reliable SNPs, not genome count.</div><div class="f">papers/SAMPLE_INCLUSION.html</div></a>
+    <a class="card" href="papers/REFERENCES.html"><div class="t">References &amp; provenance →</div><div class="d">Per-genome source paper, DOI, coverage, exact VCF/BAM/ENA URLs, data tier.</div><div class="f">papers/REFERENCES.html</div></a>
+    <a class="card" href="papers/PIPELINE_QC_BY_PAPER.html"><div class="t">Per-paper QC &amp; pipeline →</div><div class="d">What each source actually did (verbatim params, adversarially verified).</div><div class="f">papers/PIPELINE_QC_BY_PAPER.html</div></a>
+    <a class="card" href="papers/VCF_QC.html"><div class="t">Published-VCF QC →</div><div class="d">What QC each published VCF already carries + the harmonization we must add.</div><div class="f">papers/VCF_QC.html</div></a>
+  </div>
+
+  <h2>Evidence &amp; audit</h2>
+  <div class="grid">
+    <a class="card" href="verify/BUG_EVIDENCE.html"><div class="t">Bug evidence log →</div><div class="d">Every bug reproduced + traced to its downstream consequence (demonstrated/none/latent).</div><div class="f">verify/BUG_EVIDENCE.html</div></a>
+    <a class="card" href="pipeline_workbook.html"><div class="t">Pipeline audit workbook →</div><div class="d">Step-by-step audit of the original pipeline (per-step I/O, commands, known issues). Lists cluster paths.</div><div class="f">pipeline_workbook.html</div></a>
+    <a class="card" href="cluster_inventory.html"><div class="t">Cluster inventory →</div><div class="d">The 110 GB Great Lakes layout, the ~19-job pipeline, data products, access. Lists cluster paths.</div><div class="f">cluster_inventory.html</div></a>
+    <a class="card" href="evaluation_plan.html"><div class="t">Evaluation plan (retired) →</div><div class="d">The QC items now tracked as Q1–Q10 in the roadmap; kept as a pointer.</div><div class="f">evaluation_plan.html</div></a>
+  </div>
+
+  <footer>Generated HTML renderings of the repo's Markdown (rebuild with <code>bash plan/build_docs.sh</code>); <a href="paint-plan.html">paint-plan.html</a> and <a href="pipeline.html">pipeline.html</a> are hand-built. If a page and the Markdown disagree, the Markdown wins.</footer>
+</div>
+</body>
+</html>

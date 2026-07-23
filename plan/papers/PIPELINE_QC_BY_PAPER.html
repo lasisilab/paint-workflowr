@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>PAINT — per-paper QC &amp; pipeline (what each source actually did)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<style>
+  :root {
+    --bg:#E8EAE6;--surface:#F6F7F4;--surface-2:#FCFDFB;--ink:#1A1E1C;--ink-2:#434A47;--ink-3:#6C736F;
+    --line:#D2D6CF;--line-2:#E1E4DD;--accent:#1E5A54;--accent-2:#2C7A70;--accent-soft:#DDE8E4;
+    --ok:#2F7D4F;--ok-soft:#DCEBE0;--warn:#8F6410;--warn-soft:#F0E6CE;--bad:#A5433A;--bad-soft:#F1DAD5;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  }
+  @media (prefers-color-scheme: dark){:root{
+    --bg:#12150F;--surface:#1A1E17;--surface-2:#20251D;--ink:#E7EAE4;--ink-2:#B0B7B0;--ink-3:#838A84;
+    --line:#2B3129;--line-2:#242A22;--accent:#63B6A9;--accent-2:#7FCBBE;--accent-soft:#182723;
+    --ok:#6FCB8F;--ok-soft:#16241A;--warn:#D6A63C;--warn-soft:#2A2312;--bad:#E28A7E;--bad-soft:#2C1815;}}
+  :root[data-theme="light"]{--bg:#E8EAE6;--surface:#F6F7F4;--surface-2:#FCFDFB;--ink:#1A1E1C;--ink-2:#434A47;--ink-3:#6C736F;--line:#D2D6CF;--line-2:#E1E4DD;--accent:#1E5A54;--accent-2:#2C7A70;--accent-soft:#DDE8E4;--ok:#2F7D4F;--ok-soft:#DCEBE0;--warn:#8F6410;--warn-soft:#F0E6CE;--bad:#A5433A;--bad-soft:#F1DAD5;}
+  :root[data-theme="dark"]{--bg:#12150F;--surface:#1A1E17;--surface-2:#20251D;--ink:#E7EAE4;--ink-2:#B0B7B0;--ink-3:#838A84;--line:#2B3129;--line-2:#242A22;--accent:#63B6A9;--accent-2:#7FCBBE;--accent-soft:#182723;--ok:#6FCB8F;--ok-soft:#16241A;--warn:#D6A63C;--warn-soft:#2A2312;--bad:#E28A7E;--bad-soft:#2C1815;}
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased;}
+  .docbar{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:10px 24px;font-family:var(--mono);font-size:.78rem;letter-spacing:.03em;}
+  .docbar a{color:var(--accent-2);text-decoration:none;} .docbar a:hover{text-decoration:underline;}
+  .docbar .b{color:var(--accent);font-weight:600;text-transform:uppercase;letter-spacing:.12em;}
+  main{max-width:900px;margin:0 auto;padding:14px 24px 90px;}
+  h1,h2,h3,h4{font-family:var(--serif);font-weight:600;line-height:1.15;letter-spacing:-.01em;}
+  h1{font-size:clamp(1.7rem,4vw,2.4rem);margin:24px 0 4px;}
+  h2{font-size:clamp(1.3rem,3vw,1.7rem);margin:34px 0 6px;padding-top:10px;border-top:1px solid var(--line-2);}
+  h3{font-size:1.15rem;margin:22px 0 4px;} h4{font-size:1rem;margin:16px 0 2px;}
+  p,li{max-width:80ch;} a{color:var(--accent-2);}
+  code{font-family:var(--mono);font-size:.85em;background:var(--surface-2);border:1px solid var(--line-2);padding:1px 5px;border-radius:5px;}
+  pre{overflow-x:auto;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-family:var(--mono);font-size:.8rem;line-height:1.5;}
+  pre code{background:none;border:none;padding:0;}
+  blockquote{margin:16px 0;padding:10px 16px;border-left:3px solid var(--accent);background:var(--accent-soft);border-radius:0 8px 8px 0;color:var(--ink-2);}
+  blockquote p{margin:6px 0;}
+  table{border-collapse:collapse;width:100%;font-size:.86rem;margin:16px 0;display:block;overflow-x:auto;}
+  th,td{padding:8px 11px;border:1px solid var(--line-2);text-align:left;vertical-align:top;}
+  thead th{background:var(--surface-2);font-family:var(--mono);font-size:.66rem;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-3);white-space:nowrap;}
+  hr{border:none;border-top:1px solid var(--line);margin:26px 0;}
+  ul,ol{padding-left:22px;} li{margin:3px 0;}
+  strong{color:var(--ink);}
+  .title{border-bottom:1px solid var(--line);padding-bottom:10px;}
+</style>
+</head>
+<body>
+<div class="docbar"><span class="b">PAINT</span> &nbsp;·&nbsp; <a href="../paint-plan.html">← roadmap</a> &nbsp;·&nbsp; <a href="../docs.html">all docs</a></div>
+<main>
+<h1 class="title">PAINT — per-paper QC &amp; pipeline (what each source actually did)</h1>
+<h1 id="paint--per-paper-qc--pipeline-what-each-source-actually-did">PAINT — per-paper QC &amp; pipeline (what each source actually did)</h1>
+<p>For every genome, this records <strong>what the source authors report doing for QC and their bioinformatic pipeline</strong> — extracted from each paper's Methods <strong>and</strong> Supplementary, with load-bearing parameters quoted verbatim, then <strong>adversarially verified</strong> (a second agent re-read each source; all 11 verdicts were SOLID). Evidence base for the "reuse vs. rerun" decision in <a href="../rebuild_from_raw.html"><code>../rebuild_from_raw.md</code></a>. Provenance/URLs: <a href="REFERENCES.html"><code>REFERENCES.md</code></a>; baked-in VCF QC summary: <a href="VCF_QC.html"><code>VCF_QC.md</code></a>.</p>
+<h2 id="cross-cutting-findings-read-first">Cross-cutting findings (read first)</h2>
+<ul>
+<li><strong>Two caller generations.</strong> The <em>original</em> high-coverage VCFs — <strong>Altai/Denisova 5 (Prüfer 2014)</strong> and <strong>Denisova 3 (Meyer 2012)</strong> — are <strong>GATK UnifiedGenotyper v1.3</strong>, EMIT_ALL_SITES, diploid, with <strong>UDG+EndoVIII</strong> libraries + a <strong>2 bp terminal base-quality→2</strong> damage mask, <strong>MQ≥30</strong>. The <em>reprocessed</em> <strong>2017 snpAD release</strong> (Prüfer 2017) re-genotyped Vindija 33.19 <strong>+ Altai + Denisova 3 (+ Mezmaiskaya 1)</strong> with the damage-aware <strong>snpAD</strong> caller at <strong>MQ≥25, BQ≥30, map35_100</strong>. <strong>For a harmonized cohort, use the 2017 snpAD reprocess</strong> (same caller/reference/filters across those four), not the original GATK calls.</li>
+<li><strong>The published VCF is NOT the final filtered call set.</strong> The snpAD VCFs carry only <code>mq25</code> + <code>map35_100</code> (in the filename). The <strong>min-coverage-10 + GC-corrected central-95% (the effective max-depth cap) + Tandem-Repeats-Finder + GATK-indel</strong> filters ship as a <strong>separate companion <code>FilterBed</code> mask</strong> (e.g. <code>cdna.eva.mpg.de/neandertal/Vindija/FilterBed/</code>). You <strong>must apply FilterBed</strong>, then <strong>intersect across genomes</strong> to a common site set before comparing.</li>
+<li><strong>Correction — Mezmaiskaya 1 has a snpAD VCF.</strong> <code>cdna.eva.mpg.de/neandertal/Vindija/VCF/Mez1/chr*_mq25_mapab100.vcf.gz</code> exists (a ~1.9× snpAD call set), even though the README lists only Vindija/Altai/Denisova. So Mez1 can be reused as a (low-coverage) VCF, not only as a BAM.</li>
+<li><strong>The low-coverage genomes were never diploid-genotyped.</strong> Hajdinjak 2018 (Goyet/Les Cottés/Spy/Mez2/Vi87), Peyrégne 2019 (HST/Scladina), and Slon 2018 (Denisova 11) all used <strong>pseudo-haploid random single-read sampling</strong> (heffalump), restricted to <strong>deaminated fragments + transversions</strong>, with a <strong>strand-orientation filter</strong> — <em>not</em> genotype calls. For our rebuild this means Tier B has two defensible routes: <strong>(a) reproduce their pseudo-haploid + deamination-filter approach</strong> (field standard, well-validated), or <strong>(b) ANGSD genotype likelihoods</strong> (retains more information). We default to ANGSD GLs but will cross-check against the pseudo-haploid approach.</li>
+<li><strong>Damage is handled by the caller, not by trimming, in the modern MPI pipeline.</strong> snpAD models position/orientation-dependent error; the non-UDG single-stranded libraries are called directly. Only the GATK-era genomes used UDG + terminal masking.</li>
+<li><strong>Contamination is uniformly low for the high-coverage genomes (&lt;1–~1%)</strong> but <strong>~3.2% for Denisova 25</strong> and <strong>very high on the raw ultra-low-coverage data</strong> (HST 22.9%, Scladina 64.8%) — where the <strong>deamination filter is load-bearing</strong> (drops those to 2.0% / 5.5%).</li>
+<li><strong>Denisova 25 data are not public yet</strong> (preprint; "will be deposited" in ENA) — provisional, can't download today.</li>
+</ul>
+<hr />
+<h2 id="tier-a--high-coverage-reuse-published-genotype-vcfs">Tier A — high-coverage (reuse published genotype VCFs)</h2>
+<h3 id="prüfer-et-al-2017-science--vindija-3319-30-mezmaiskaya-1-14--the-snpad-release">Prüfer et al. 2017, <em>Science</em> — Vindija 33.19 (~30×); Mezmaiskaya 1 (+1.4×) — the snpAD release</h3>
+<ul>
+<li><strong>Build:</strong> hg19/GRCh37 = hs37d5 (1000G decoy + ΦX174 + HHV4). <strong>Read proc:</strong> <code>leeHom --ancientdna</code> (adapter-trim + mate-merge) → deML demux → <strong>BWA <code>-n 0.01 -o 2 -l 16500</code></strong> (network-aware-bwa 0.5.10-evan; <code>-l 16500</code> disables seeding) → drop &lt;35 bp → GATK 1.3.14 indel-realign. <strong>Dedup:</strong> <code>bam-rmdup 0.6.3</code>. <strong>Filters:</strong> MQ≥25, <strong>fixed BQ≥30</strong> (base-Q not otherwise used in calling), length≥35.</li>
+<li><strong>Damage:</strong> ~76% of Vindija + all Mez1 libraries <strong>non-UDG</strong> (single-stranded); <strong>no trimming/rescaling</strong> — snpAD absorbs damage via a position+orientation error profile (15 5′ + 15 3′ + interior bases).</li>
+<li><strong>Calling:</strong> <strong>snpAD</strong>, diploid, highest-likelihood genotype per site; GQ = log-likelihood-ratio best/2nd; unphased. <strong>Masks:</strong> filename = <code>mq25</code> + <code>map35_100</code> only; <strong>companion FilterBed</strong> adds cov&lt;10 removed, GC-corrected 2.5% tails removed, TRF simple-repeats, GATK indels (<code>…/Vindija/FilterBed/…/chr*_mask.bed.gz</code>, BED = passing).</li>
+<li><strong>Contam:</strong> mt 1.6%, Y 0.74%, ML-nuclear 0.18–0.23% (Vindija; &lt;1%). <strong>Sex:</strong> female (X≈autosomes). <strong>Coverage:</strong> 30× / 1.4×.</li>
+<li><strong>Reuse:</strong> Vindija 33.19 VCF as-is <strong>+ apply FilterBed</strong>. <strong>Mez1 VCF exists</strong> (<code>…/VCF/Mez1/</code>, ~1.9× — low-cov, use with care or prefer GLs).</li>
+</ul>
+<h3 id="prüfer-et-al-2014-nature--altai-neanderthal--denisova-5-52">Prüfer et al. 2014, <em>Nature</em> — Altai Neanderthal = Denisova 5 (~52×)</h3>
+<ul>
+<li><strong>Build:</strong> GRCh37 (+ panTro2 in parallel). <strong>Read proc:</strong> Ibis 1.1.6 base-call → overlap-merge (≥11 nt) → <strong>BWA 0.5.10 <code>-n 0.01 -o 2 -l 16500</code></strong> → drop &lt;35 bp → GATK 1.3.14 indel-realign; edit-distance &gt;20% removed. <strong>Dedup:</strong> per-library consensus collapse (outer-coordinate). <strong>Filters:</strong> <strong>MQ≥30</strong> (note: 30, not 25), BQ≥30 in analyses, length≥35.</li>
+<li><strong>Damage:</strong> <strong>UDG + EndoVIII</strong> (all libraries); at genotyping, <strong>T in first/last-2 bases set to BQ 2</strong> (no mapDamage/rescale). <strong>Calling:</strong> <strong>GATK UnifiedGenotyper v1.3</strong>, <code>--output_mode EMIT_ALL_SITES --genotype_likelihoods_model BOTH</code>, diploid, + Meyer-2012 two-iteration "re-call" for tri-allelic hets. <strong>Masks (SI 5b minimal set):</strong> TRF + MQ30 + map35_50/map35_100 + GC-binned central-95% coverage + drop GATK indels. <strong>Contam:</strong> mt 0.78%, ML-nuclear 0.8%, ROH 1.16%, Y 0.55% (~1%). <strong>Sex:</strong> female.</li>
+<li><strong>Reuse:</strong> original GATK VCFs at <code>…/altai/AltaiNeandertal/VCF/</code>; <strong>prefer the 2017 snpAD reprocess</strong> (<code>…/Vindija/VCF/Altai/</code>) for comparability.</li>
+</ul>
+<h3 id="meyer-et-al-2012-science--denisova-3-30-denisovan">Meyer et al. 2012, <em>Science</em> — Denisova 3 (~30× Denisovan)</h3>
+<ul>
+<li><strong>Read proc:</strong> Ibis base-call → overlap-merge (≥11 nt; reject &gt;5 bases BQ&lt;15) → <strong>trim first &amp; last 2 bases</strong> → <strong>BWA 0.5.8a <code>-l 16500 -n 0.01 -o 2</code></strong> → drop &lt;35 bp; edit-distance &gt;20% removed → GATK 1.3.14 realign. <strong>Dedup:</strong> per-library consensus collapse. <strong>Damage:</strong> <strong>UDG+EndoVIII</strong> + the 2 bp terminal trim; CpG flag for masking; no rescale. <strong>Calling:</strong> <strong>GATK UnifiedGenotyper v1.3</strong>, EMIT_ALL_SITES, diploid, two-iteration re-call. <strong>Masks:</strong> Duke 20-mer uniqueness (Map20=1), coverage central-95% (Denisova 16–46×), + INFO flags RM/UR/SysErr/CpG. <strong>Contam:</strong> mt 0.35%, nuclear 0.22%, Y &lt;0.1%. <strong>Sex:</strong> female.</li>
+<li><strong>Reuse:</strong> original GATK "Extended VCF" (<code>cdna.eva.mpg.de/denisova/VCF/human/</code>); <strong>prefer the 2017 snpAD reprocess</strong> (<code>…/Vindija/VCF/Denisova/</code>).</li>
+</ul>
+<h3 id="mafessoni-et-al-2020-pnas--chagyrskaya-8-276">Mafessoni et al. 2020, <em>PNAS</em> — Chagyrskaya 8 (~27.6×)</h3>
+<ul>
+<li><strong>Build:</strong> hg19+decoy. <strong>Read proc:</strong> freeIbis/Bustard → <strong>leeHom</strong> (both adapters must match double-index) → <strong>BWA <code>-n 0.01 -o 2 -l 16500</code></strong> → drop &lt;35 bp → GATK 1.3-1.4 indel-realign. <strong>Dedup:</strong> <code>bam-rmdup</code> per library. <strong>Filters:</strong> MQ≥25, BQ≥30, length≥35. <strong>Damage:</strong> <strong>non-UDG single-stranded</strong>; snpAD-modeled (no trim/rescale). <strong>Calling:</strong> <strong>snpAD v0.2.1</strong>, per-chromosome error+freq, diploid, highest-likelihood genotype. <strong>Masks (verbatim "general filters"):</strong> map35_100 + <strong>TandemRepeatFinder</strong> simple-repeats + <strong>GATK-indel</strong> positions + <strong>GC-binned central-95% coverage</strong> + <strong>min-coverage 10</strong>; downstream D-stats reuse the <strong>Vindija FilterBed</strong>. <strong>Contam:</strong> mt 0.9%, Y 0.7%, ML-nuclear ~0.14–0.2% (&lt;1%). <strong>Sex:</strong> female.</li>
+<li><strong>Reuse:</strong> VCF (<code>…/Chagyrskaya/VCF/chr*.noRB.vcf.gz</code>) + its <code>FilterBed/</code>. (<code>.noRB</code> ≠ a Mafessoni term; it's an MPI pipeline artifact.)</li>
+</ul>
+<h3 id="peyrégne-et-al-2025-biorxiv--denisova-25-236--preprint">Peyrégne et al. 2025, <em>bioRxiv</em> — Denisova 25 (~23.6×) ⚠ preprint</h3>
+<ul>
+<li><strong>Build:</strong> hg19+decoy. <strong>Read proc:</strong> leeHom → <strong>BWA aln</strong> (aDNA params "per Meyer 2012"; exact string not printed for Den25) → drop &lt;35 bp → GATK 1.3-14. <strong>Dedup:</strong> <code>bam-rmdup</code>. <strong>Filters:</strong> MQ≥25, BQ≥30, L≥35 (filename <code>L35 MQ25 B30 map35_100</code>). <strong>Damage:</strong> <strong>non-UDG single-stranded</strong>, snpAD-modeled; AuthentiCT for damage-based contam. <strong>Calling:</strong> <strong>snpAD v0.2.1</strong>, diploid autosomes; <strong>X/Y treated haploid (male)</strong> — het X/Y filtered out. <strong>Masks:</strong> map35_100 + TRF + GATK-indel + GC central-95% + autosomal min-10×; PAR-aware. <strong>Contam:</strong> <strong>~3.2% autosomal</strong>, 2.5% X, 6.3% mt, AuthentiCT 1.3% — non-trivial. <strong>Sex:</strong> male.</li>
+<li><strong>Reuse:</strong> same standard snpAD pipeline as the others → comparable — <strong>but data not public yet</strong> (preprint); mark provisional; mask X/Y hets; watch the ~3.2% contamination.</li>
+</ul>
+<h3 id="prüfer-2018-bioinformatics--snpad-the-caller-behind-all-the-above">Prüfer 2018, <em>Bioinformatics</em> — <strong>snpAD</strong> (the caller behind all the above)</h3>
+<ul>
+<li>Damage-aware diploid caller; <strong>EM-like</strong>: estimate genotype frequencies (ML, BOBYQA/nlopt) → call temporary genotypes → re-estimate a <strong>position+orientation error profile</strong> (15+15+interior) per library type → iterate. <strong>Base qualities are deliberately NOT used inside the model</strong> (merged reads rarely low-Q; BQ≥30 pre-filter only). Reports highest-likelihood genotype + GQ. <strong>Coverage guidance:</strong> ≥4× for genotype freqs, ≥6× for error rates, <strong>≥15× for reference-bias</strong>; &lt;15× het transitions inflated → treat low-cov snpAD calls as approximate. Does <strong>not</strong> estimate contamination (reference-bias <code>r</code> is only an upper bound). ts/tv ≈ 2.06 (far fewer damage-driven false hets than GATK).</li>
+</ul>
+<hr />
+<h2 id="tier-b--low-coverage-bam-only--we-compute-genotype-likelihoods-authors-used-pseudo-haploid">Tier B — low-coverage (BAM-only → we compute genotype likelihoods; authors used pseudo-haploid)</h2>
+<h3 id="hajdinjak-et-al-2018-nature--goyet-q56-1-22-les-cottés-z4-1514-27-spy-94a-10-mezmaiskaya-2-17-vindija-87-13">Hajdinjak et al. 2018, <em>Nature</em> — Goyet Q56-1 (2.2×), Les Cottés Z4-1514 (2.7×), Spy 94a (1.0×), Mezmaiskaya 2 (1.7×), Vindija 87 (1.3×)</h3>
+<ul>
+<li><strong>Read proc:</strong> Bustard/FreeIbis → <strong>leeHom</strong> → jivebunny demux → <strong>BWA 0.5.10-evan <code>-n 0.01 -o 2 -l 16500</code></strong> → SAMtools 1.3.1 L&gt;35, <strong>MQ≥25</strong> (chosen over MQ37 to keep deaminated endogenous reads). <strong>Dedup:</strong> <code>bam-rmdup 0.6.3</code> (consensus). <strong>Damage:</strong> mostly <strong>non-UDG</strong> (2 libraries UDG); <strong>no trim/rescale</strong> — instead <strong>enrich for deaminated fragments</strong> (C→T within first/last 3 positions; 2 for UDG libs) + strand-orientation filter + <strong>transversions-only</strong> downstream. <strong>Calling:</strong> <strong>none</strong> — <strong>pseudo-haploid random single-read sampling</strong> with <strong>heffalump</strong>, at sites L≥35/MQ≥25/BQ≥30/map35_100, min-depth 1, no max-depth. <strong>Contam:</strong> mt 0.5–5.1%, ML-nuclear 0.18–1.75%, qpAdm ~4% for Spy (→1% on deaminated). <strong>Sex:</strong> Les Cottés/Goyet/Vi87 female; Mez2/Spy male.</li>
+<li><strong>Reuse:</strong> <strong>no genotype calls exist</strong> — start from ENA BAMs (PRJEB21870/21875/21883/21881/21882) and re-run. <strong>Vindija 87 = the Vindija 33.19 individual</strong> → for genotypes use the Vi 33.19 snpAD VCF instead.</li>
+</ul>
+<h3 id="slon-et-al-2018-nature--denisova-11-denny-f1-hybrid-26">Slon et al. 2018, <em>Nature</em> — Denisova 11 "Denny" (F1 hybrid, ~2.6×)</h3>
+<ul>
+<li><strong>Read proc:</strong> leeHom → jivebunny → BWA aln (aDNA params per Meyer 2012) → SAMtools merge → L≥35, <strong>MQ≥25</strong>. <strong>Dedup:</strong> <code>bam-rmdup</code>. <strong>Damage:</strong> <strong>non-UDG single-stranded</strong>; transversions + strand-orientation + deaminated-subset handling. <strong>Calling:</strong> <strong>no per-site diploid VCF</strong> — snpAD used only for genome-wide <strong>heterozygosity frequencies</strong>; ancestry via <strong>pseudo-haploid random 1–2 read draws</strong> at transversion sites. <strong>Contam:</strong> nuclear 1.4%, Y 1.6%, mt 0.3–0.4% (≤1.7%). <strong>Sex:</strong> female.</li>
+<li><strong>Reuse:</strong> reads only (ENA <strong>PRJEB24663</strong>); re-run; hybrid → expect ~50/50 Neanderthal/Denisovan allele matching.</li>
+</ul>
+<h3 id="peyrégne-et-al-2019-sci-adv--hohlenstein-stadel-005-male-scladina-i-4a-002-female--early-120-ka">Peyrégne et al. 2019, <em>Sci. Adv.</em> — Hohlenstein-Stadel (~0.05×, male), Scladina I-4A (~0.02×, female) — early ~120 ka</h3>
+<ul>
+<li><strong>Read proc:</strong> Bustard → <strong>leeHom</strong> → Jivebunny → <strong>BWA <code>-n 0.01 -o 2 -l 16500</code></strong> → <strong>L≥30</strong> (spurious-alignment &lt;1%), MQ≥25, map35_L100. <strong>Dedup:</strong> <code>bam-rmdup</code> + <code>bam-mergeRef</code>. <strong>Damage:</strong> <strong>non-UDG single-stranded</strong>; <strong>deamination filter is load-bearing</strong> (≥1 C→T within 3 bp of ends) + strand-orientation filter. <strong>Calling:</strong> <strong>none</strong> — pseudo-haploid single random read; third alleles dropped; transversions for divergence. <strong>Reference-bias correction</strong> (dual hg19 + "Neandertalized" hg19) is essential. <strong>Contam (critical):</strong> raw = <strong>22.9% (HST) / 64.8% (Scladina)</strong>; <strong>deamination-filtered = 2.0% / 5.5%</strong> (the numbers used). <strong>Sex:</strong> HST male, Scladina female. <strong>Coverage:</strong> deaminated autosomal ~0.029× / 0.006×.</li>
+<li><strong>Reuse:</strong> reads only (ENA <strong>PRJEB29475</strong>); expect <strong>very few usable panel sites</strong>; every result contingent on deamination + strand + reference-bias QC — do not skip.</li>
+</ul>
+<hr />
+<h2 id="tier-c--excluded">Tier C — excluded</h2>
+<h3 id="castellano-et-al-2014-pnas--el-sidrón-1253-exome-capture-only">Castellano et al. 2014, <em>PNAS</em> — El Sidrón 1253 (exome-capture only)</h3>
+<ul>
+<li><strong>Exome capture, coding + 100 bp flanks only — NO shotgun genome.</strong> GATK UnifiedGenotyper v1.3, diploid; <strong>El Sidrón called at GQ10</strong> (12.5× exome → hom sites undercalled at GQ30). UDG+EndoVIII + terminal Q→2 masking. Endogenous <strong>0.2%</strong>; ~27 Mb / 17,367 genes. mt-contamination only (&lt;1%); <strong>no nuclear contamination estimate.</strong></li>
+<li><strong>Reuse:</strong> exome VCF (<code>…/neandertal/exomes/</code>) usable only for coding-region SNPs; <strong>most pigmentation SNPs are regulatory → expect ~none</strong> → <strong>excluded</strong> from the genome-wide analysis (→ 14 analyzed).</li>
+</ul>
+<hr />
+<h2 id="modern-reference">Modern reference</h2>
+<h3 id="mallick-et-al-2016-nature--sgdp-our-copy--cteam_remap-to-hs37d5">Mallick et al. 2016, <em>Nature</em> — SGDP (our copy = cteam_remap to hs37d5)</h3>
+<ul>
+<li><strong>Build:</strong> hs37d5. <strong>Read proc:</strong> trimadap adapter-trim → <strong>BWA-MEM 0.7.10</strong> (paired) → <strong>samblaster</strong> dedup (inline). Modern PCR-free/PCR DNA — <strong>no damage handling</strong> (none needed). <strong>Calling:</strong> <strong>GATK UnifiedGenotyper</strong> (reference-bias-free <strong>flat prior 0.4995/0.001/0.4995</strong>), single-sample, EMIT_ALL_SITES, SNP-only, <code>-dcov 600</code>, <code>stand_call_conf 5</code>. <strong>Ploidy: diploid throughout — Y/mtDNA/male-X NOT specially treated</strong> (handle ourselves for uniparental/X work). <strong>Masks:</strong> universal mask (75-mer mappability + mDUST/RepeatMasker low-complexity + 1000G-aberrant regions; retains 87%) + per-sample CNV mask; <strong>filter-level system FL 0–9</strong> (level 1 default, level 9 strict, level 0 for pulldown). <strong>No contamination estimate</strong> (QC via Ti/Tv=2.02 + divergence-vector outlier removal 300→235). <strong>Coverage:</strong> median 42× (34–83×).</li>
+<li><strong>Reuse:</strong> our <code>sgdp.wg</code> is this release → reuse per-sample calls via cTools at a chosen filter level (default 1); already hg19; <strong>verify build (Q2) + apply the universal mask</strong>; add contamination/damage only for the ancient samples we merge in.</li>
+</ul>
+</main>
+</body>
+</html>
