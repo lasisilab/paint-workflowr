@@ -69,3 +69,6 @@ docs/depth_spinoff.html
 *.bed
 data/allele_ref.txt
 *.tbi
+
+# Source-paper PDFs kept local (copyright — not redistributed on the public repo)
+plan/papers/pdf/

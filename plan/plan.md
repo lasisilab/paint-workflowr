@@ -142,6 +142,7 @@ The QC phases below (0–3, the `Q` items) are **not starting from zero** — th
     - [ ] Record how the committed `data/snps.txt` / `pigmentation_snps.csv` was generated (GWAS Catalog trait EFO + access date).
     - [ ] For gene coordinates (needed by B4 ii / B6): record source (Ensembl/RefSeq release # + build) and assert every gene resolves to exactly one region.
   - **Artifact:** the manifest table itself + a one-line "inputs ledger" badge (N inputs · N fully-provenanced · N unknown), modeled on `pigmentation-gene-network/DATA_SOURCES.md`.
+  - **Progress (2026-07-23):** the genome-level half of this is done — [`papers/REFERENCES.md`](papers/REFERENCES.md) has verified source paper, DOI, coverage, exact VCF/BAM/ENA URLs, and data tier for **all 15 archaic genomes + SGDP**, and [`papers/VCF_QC.md`](papers/VCF_QC.md) documents the QC each published VCF already carries. Open-access PDFs are pulled into the git-ignored `papers/pdf/`. Still to do for full Q1: the SNP-panel BED characterization, gene-coordinate provenance, checksums, and folding all of it into `qc/manifest.tsv`.
 
 - **Q10a (environment capture) — do the first slice of Q10 now.** Alongside Q1, pin and record the tool versions (`bcftools`, `plink2`, `samtools`, R + packages) into the manifest so Phase 1's results are reproducible from the start. The full reproducibility build (DAG + CI) is tracked as **Q10** in Phase 5.
 

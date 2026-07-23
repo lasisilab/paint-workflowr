@@ -1,33 +1,30 @@
-# PAINT — per-sample coverage over the pigmentation panel (EXACT, from committed data)
-# Computed 2026-07-23 from data/<sample>_depth.txt (samtools depth -a over the panel).
+# PAINT — per-sample coverage: realized (current, from committed data) vs published genome-wide
+# Computed 2026-07-23 from data/<sample>_depth.txt; published coverage verified from source papers
+# (see plan/papers/REFERENCES.md). Realized = mean depth over the 222 panel positions.
 #
-# CAVEATS (important):
-#  1. These depths are measured at the panel's CURRENT (hg38) coordinates read against
-#     hg19 data (bug A2) -> they are realized depths at MIS-LOCATED positions, NOT the
-#     true coverage at the intended pigmentation SNPs. True per-locus coverage comes
-#     after the build fix / rebuild (Stage 2/3, Q6).
-#  2. Denisova3's value is ARTIFACTUALLY low (0.495x) due to the chr-naming bug (A1);
-#     its true coverage is ~30x. It is a high-coverage Denisovan mis-recovered here.
-#  3. "max" >> "mean" in low-coverage samples (e.g. vindija87 max 147, Sclad max 91)
-#     is a bioinformatic pileup artifact (collapsed/repetitive regions) -> motivates
-#     the max-depth cap in the rebuild's calling stage.
-#  4. Published/expected genome-wide coverage per sample is to be recorded in the
-#     provenance manifest (Q1) from the source papers and asserted against realized
-#     coverage (Q6). Column expected_wg_cov is left "confirm" until then.
+# CAVEATS:
+#  1. Realized depths are at the panel's CURRENT (hg38) mis-located coordinates (bug A2) -> depths at
+#     WRONG positions, not true per-locus coverage. True per-locus coverage comes after the rebuild (Q6).
+#  2. Denisova3's 0.495x is ARTIFACTUALLY low (chr-naming bug A1); its published coverage is ~30x.
+#  3. max >> mean (Vindija87, Scladina) = pileup artifact -> motivates the max-depth cap.
+#  4. Realized panel mean can differ from published genome-wide coverage (panel positions are not a random
+#     genome sample, and artifacts inflate the mean). Q6 compares the two per sample.
+#  5. High-coverage genomes (Tier A) will be taken from the published snpAD genotype VCFs, not re-called
+#     (plan/papers/VCF_QC.md); low-coverage (Tier B) -> ANGSD genotype likelihoods from BAMs.
 #
-# sample        realized_mean_panel_depth  max_depth  covered_of_222  pct_covered  tier            expected_wg_cov
-vindija33       30.716                     106        222/222         100.0        high            confirm(~30x Pruefer2017)
-Chagyrskaya8    27.423                     85         222/222         100.0        high            confirm(~27x Mafessoni2020)
-den25           16.680                     48         183/222         82.4         high/medium      confirm
-den5            16.059                     36         222/222         100.0        high            confirm(Altai Neanderthal, Pruefer2014)
-vindija87       3.185                      147        122/222         55.0         low(+maxdepth artifact)  confirm
-lesCottes       2.941                      51         142/222         64.0         low             confirm
-goyet           2.464                      54         163/222         73.4         low             confirm
-mez2            1.856                      53         113/222         50.9         low             confirm
-Sclad           1.856                      91         64/222          28.8         low(+maxdepth artifact)  confirm
-denny           1.252                      20         121/222         54.5         low(Denisova11 hybrid)   confirm(~2.6x Slon2018)
-spy             0.743                      22         75/222          33.8         low             confirm
-Denisova3       0.495                      6          69/222          31.1         ARTIFACT(true ~30x, bug A1)  confirm(~30x Meyer2012)
-mez1            0.180                      2          37/222          16.7         very low        confirm
-hst             0.117                      2          24/222          10.8         very low        confirm
-Sid1253         EMPTY                      -          0/0             -            no data (excluded -> 14 analyzed)  none
+# sample        realized_mean_panel_depth  max  covered/222  tier   published_wg_cov (paper)
+vindija33       30.716   106  222/222   A-high   ~30x (Pruefer 2017)
+Chagyrskaya8    27.423   85   222/222   A-high   ~27-28x (Mafessoni 2020)
+den25           16.680   48   183/222   A-high   ~24x (Peyregne 2025, PREPRINT)
+den5            16.059   36   222/222   A-high   ~52x (Pruefer 2014, Altai)   # realized << published: check in Q6
+vindija87       3.185    147  122/222   B-low    ~1.3x (Hajdinjak 2018; = Vi33.19 individual)
+lesCottes       2.941    51   142/222   B-low    ~2.7x (Hajdinjak 2018)
+goyet           2.464    54   163/222   B-low    ~2.2x (Hajdinjak 2018)
+mez2            1.856    53   113/222   B-low    ~1.7x (Hajdinjak 2018)
+Sclad           1.856    91   64/222    B-low    ~0.02-0.03x / 78 Mbp (Peyregne 2019, EARLY ~120ka)
+denny           1.252    20   121/222   B-low    ~2.6x (Slon 2018, Denisova 11 F1 hybrid)
+spy             0.743    22   75/222    B-low    ~1.0x (Hajdinjak 2018)
+Denisova3       0.495    6    69/222    ARTIFACT ~30x (Meyer 2012) -- true high-cov, mis-recovered (A1)
+mez1            0.180    2    37/222    B-low    ~1.9x (Pruefer 2017 added; Prufer 2014 orig)
+hst             0.117    2    24/222    B-low    ~0.05x / 168 Mbp (Peyregne 2019, EARLY ~120ka)
+Sid1253         EMPTY    -    0/0       excluded exome-only ~12.5x over exome (Castellano 2014); no shotgun genome
