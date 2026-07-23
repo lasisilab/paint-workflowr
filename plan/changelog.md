@@ -6,6 +6,11 @@ Legend: **DONE** = action taken · **FOUND** = finding/evidence · **DECIDED** =
 
 ---
 
+## 2026-07-23 — Pipeline audit workbook
+
+- **DONE** — Wrote [`pipeline_workbook.md`](pipeline_workbook.md): a step-by-step, audit-oriented record of the whole bioinformatics pipeline (acquire → depth/filter → archaic calling → SGDP subset/merge → PCA → projection → R analysis). Per step: exact command + tool + module/version, inputs/outputs (path · format · upstream source), key parameters, and a "⚠ Verify" reviewer worklist. Includes a mermaid data-flow diagram, a "which scripts are canonical" table (the pipeline has several competing/dead scripts), a known-issues table, an audit checklist, and a reproduce-from-scratch order. Built by fanning out per-stage extraction over the verbatim script text (repo-only doc; lists cluster paths).
+- **FOUND (new, fixable)** — the ancient→modern PCA **projection collapse** has a second root cause beyond the build mismatch: `plink2 --score` mean-imputes missing genotypes and, with `--variance-standardize` + high ancient missingness, every sample collapses to the reference centroid (the committed `.sscore` has byte-identical coords for all 15). Fix = add `no-mean-imputation` to the `--score` modifiers in `pca_proj.py`. Also confirmed `pca_proj.py` is canonical (vs `pig_pca_proj.py`, which additionally omits `--variance-standardize`).
+
 ## 2026-07-22 — Pages live; Node-24 fix; cluster inventory; methods clarifications
 
 - **DONE** — Pushed to `main` and the site went **live** at `https://lasisilab.github.io/paint-workflowr/` (plan at `/plan/`). First deploy failed because the Actions token can't *create* the Pages site in an org repo ("Resource not accessible by integration"); enabled Pages once via `gh api -X POST repos/lasisilab/paint-workflowr/pages -f build_type=workflow`, re-ran → green. Future pushes auto-republish.
