@@ -202,7 +202,7 @@
       <thead><tr><th>Step</th><th>Lily's original</th><th>Rebuild (from raw)</th></tr></thead>
       <tbody>
         <tr><td>Acquire</td><td>download BAMs, sort, index</td><td>re-download + <strong>checksum</strong> (Q1); harmonize contig naming for all (fixes A1 globally)</td></tr>
-        <tr><td>Raw QC</td><td>— (none)</td><td><strong>mapDamage, sex, contamination, coverage-vs-expectation</strong> (Q6/Q7/Q8)</td></tr>
+        <tr><td>Raw QC</td><td>— (none)</td><td><strong>mapDamage, sex, contamination, coverage-vs-expectation, and heterozygosity-vs-depth</strong> (Q6/Q7/Q8)</td></tr>
         <tr><td>Panel / build</td><td>panel on <strong>hg38</strong>, data on hg19 → wrong coordinates (A2)</td><td>panel put on <strong>hg19</strong> by rsID; tracer-SNP lint (Q2); allele/palindrome check (Q4)</td></tr>
         <tr><td>Call genotypes</td><td><strong>hard calls</strong> (bcftools) for all samples incl. &lt;1× — forces a genotype from 1–2 reads; whole-genome was <strong>haploid <code>--ploidy 1</code></strong> (A3)</td><td><strong>genotype likelihoods (ANGSD)</strong> — no hard call for low-coverage samples; diploid model; <strong>max-depth cap</strong>; mapDamage-rescale; transitions kept for pigmentation, transversion-only for ancestry. Hard calls only for the 4–5 high-coverage genomes (reporting/cross-check)</td></tr>
         <tr><td>Modern ref</td><td>SGDP subset → merge → PCA</td><td>verify (or rebuild) <code>sgdp.wg</code> against the same lint</td></tr>
@@ -241,6 +241,8 @@
         <tr><td>2026-07-23</td><td>2</td><td>Documented exact per-sample panel coverage (10/14 under ~3.2×; max-depth artifacts in Vindija 87 / Scladina)</td><td><span class="chip ext">done</span></td><td><code>coverage_current.tsv</code>, §02</td></tr>
         <tr><td>2026-07-23</td><td>1</td><td>Confirmed from thesis §2.3: archaics are BAMs pre-mapped to hg19, no FASTQ → rebuild on hg19</td><td><span class="chip ext">done</span></td><td>§02, §04</td></tr>
         <tr><td>2026-07-23</td><td>4/6</td><td><strong>Decision:</strong> use genotype likelihoods (ANGSD) + PCAngsd for low-coverage, not hard-calling; max-depth cap; transversion-only for ancestry only</td><td><span class="chip neutral">decided</span></td><td><code>rebuild_from_raw.md</code> Stage 4/6</td></tr>
+        <tr><td>2026-07-23</td><td>0</td><td>Provenance search: only 6 of 15 archaic acquisition sources are on the cluster (den11, scladina, hst, mez1, spy, vindija33); searching the literature/archives for the other 9 + whether phased VCFs exist for the high-coverage genomes</td><td><span class="chip warn">in progress</span></td><td>Stage 1 data-form choice</td></tr>
+        <tr><td>2026-07-23</td><td>2</td><td><strong>Added:</strong> individual heterozygosity vs individual depth (ANGSD realSFS) as a diversity + contamination diagnostic</td><td><span class="chip neutral">planned</span></td><td>Q7; rebuild Stage 2</td></tr>
         <tr><td></td><td>0</td><td>Provenance manifest + pinned env + recover all 15 acquisition URLs</td><td><span class="chip neutral">todo</span></td><td></td></tr>
         <tr><td></td><td>1</td><td>Re-acquire raw reads (targeted or full) + harmonize naming</td><td><span class="chip neutral">todo</span></td><td></td></tr>
         <tr><td></td><td>2</td><td>Raw QC: mapDamage, sex, contamination, coverage</td><td><span class="chip neutral">todo</span></td><td></td></tr>

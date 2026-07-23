@@ -280,7 +280,8 @@ All A-items here were reproduced with commands + real output — see [`verify/BU
     - [ ] X/Y depth-ratio sex check vs recorded sex.
     - [ ] Contamination estimate per sample; assert below threshold.
     - [ ] Genotype concordance at published sites where available.
-  - **Artifact:** rows added to the per-sample QC dashboard: sex, contamination %, identity-confirmed flag.
+    - [ ] **Individual heterozygosity vs individual depth** (genetic-diversity + contamination diagnostic; TL request): estimate per-sample heterozygosity from genotype likelihoods (**ANGSD `realSFS`**, depth-aware — *not* hard calls), and plot it against mean depth. Neanderthals are expected to show *low* heterozygosity; a sample with *elevated* heterozygosity (especially at low depth, where hets are otherwise under-called) is a contamination/damage red flag. This is the cleanest single check for modern-human contamination.
+  - **Artifact:** rows added to the per-sample QC dashboard: sex, contamination %, identity-confirmed flag — plus a **heterozygosity-vs-depth scatter** (one point per individual, expected-range band) that doubles as a diversity figure.
 
 - [ ] **Q8 · Ancient-DNA authenticity / damage handling** · ⚪ (YP/LH) · **TODO**
   - **What it is:** run `mapDamage`/`PMDtools` on each BAM and assert the characteristic post-mortem deamination signal (5′ C>T and 3′ G>A) is present, in the authentic-aDNA range, and decays from the read ends as expected; record each sample's UDG-treatment status in the manifest; and run a robustness test — re-call with terminal bases trimmed/masked and assert the pigmentation genotype calls are stable.

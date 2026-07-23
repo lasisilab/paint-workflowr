@@ -36,8 +36,13 @@ The raw data is **hg19**, and — confirmed from the thesis §2.3 — the archai
 - **Recover the acquisition URLs for all 15 samples.** Known so far (from `sort_wget.slurm`/`phased_get.slurm`): Denisova 11 = ENA `ERR2273828`; Scladina = ENA `ERR9741105`; Hohlenstein-Stadel = MPI-EVA `L5386.bam`; Mezmaiskaya 1 = ENA `ERR257722`; Spy = MPI-EVA `A9416`; Vindija 33.19 = MPI-EVA Prüfer 2017 per-chromosome. **Still to locate (9):** Chagyrskaya 8, Denisova 5 (Altai), Denisova 25, Denisova 3, Goyet, Les Cottés, Mezmaiskaya 2, Vindija 87, El Sidrón — from the missing acquisition scripts on the cluster or the source papers (MPI-EVA `ftp.eva.mpg.de`, ENA `ftp.sra.ebi.ac.uk`).
 - **Gate:** every sample has a documented, resolvable source + expected coverage; no `unknown`.
 
-### Stage 1 — Re-acquire the raw reads  · gate: checksums match, headers sane
-Two acquisition modes — pick per the compute you want to spend (see §Compute):
+### Stage 1 — Re-acquire the source data  · gate: checksums match, headers sane
+**Data-form choice per sample (Tina's point — "or phased VCFs?").** The high-coverage archaics are published by Max Planck as **phased / genotyped VCFs**, not only BAMs — for those, the published VCF is the better source of truth than re-calling from reads (their calling was done carefully by the original authors). So:
+- **High-coverage genomes** (Altai/Denisova 5, Vindija 33.19, Chagyrskaya 8, Denisova 3): prefer the **published genotype/phased VCFs** (exact URLs from the provenance search, Stage 0); verify build + lint; re-call from BAMs only as a cross-check.
+- **Low-coverage genomes** (the Hajdinjak-2018 late Neanderthals, HST, etc.): BAMs → **ANGSD genotype likelihoods** (Stage 4). Hard-called VCFs generally don't exist for these, and shouldn't — the coverage can't support hard calls.
+- Whichever form, record source + checksum in the manifest (Q1).
+
+Two read-acquisition modes for the BAM route — pick per the compute you want to spend (see §Compute):
 - **1a. Targeted (recommended):** download only the reads overlapping the SNP positions we need, by streaming from the remote indexed BAMs: `samtools view -b <remote-or-local>.bam -L targets.hg19.bed`. Targets = the ~9.2M whole-genome ancestry SNPs ∪ the pigmentation panel windows. This cuts hundreds of GB of whole genomes down to tens of GB of relevant reads, and is enough for depth, calling, ancestry PCA, and (representatively) mapDamage.
 - **1b. Full genomes:** download the complete BAMs (needed only if we later want genome-wide analyses beyond the SNP panels). Heaviest.
 - Sort, index, and **harmonize contig naming to bare `1..22,X,Y`** for *every* sample as they land (`samtools reheader`) — this fixes A1 for the whole set at the source, not as a special case.
@@ -47,7 +52,8 @@ Two acquisition modes — pick per the compute you want to spend (see §Compute)
 - **Coverage vs expectation (Q6):** realized depth per sample vs its published coverage; the 5 declared high-coverage genomes (incl. Denisova 3, now correctly named) must land in the high band.
 - **Sex & contamination (Q7):** X/Y depth-ratio sex check; X-chromosome / mtDNA contamination estimate; assert < threshold.
 - **Damage / authenticity (Q8):** **mapDamage** per sample → 5′ C>T / 3′ G>A misincorporation curves; record UDG status; this is what your mapDamage request feeds.
-- **Gate:** damage in the authentic-aDNA range; contamination below threshold; coverage matches expectation (Denisova 3 no longer sparse).
+- **Genetic diversity — individual heterozygosity vs depth (Tina's request):** estimate per-individual **heterozygosity** the depth-aware way, from genotype likelihoods, **ANGSD → `realSFS`** (per-sample folded site-frequency spectrum → heterozygosity = the proportion of heterozygous sites), *not* from hard calls. Then **plot individual heterozygosity against individual depth.** This is a double-duty diagnostic: (1) it is a real diversity metric (Neanderthals are expected to have *low* heterozygosity from small long-term population size), and (2) the het-vs-depth plot exposes confounding — at low depth heterozygosity is systematically *under*-called (missed hets) while **modern contamination or damage *inflates* it**, so a sample sitting off the expected het-vs-depth trend is a red flag (feeds Q7). Report it as a labelled scatter (one point per individual, het on y, mean depth on x, expected-range band).
+- **Gate:** damage in the authentic-aDNA range; contamination below threshold; coverage matches expectation (Denisova 3 no longer sparse); heterozygosity-vs-depth reviewed — no sample is an unexplained outlier (high het at low depth ⇒ suspect contamination/damage; investigate before use).
 
 ### Stage 3 — One build + a verified, harmonized panel  · gate: build lint + allele check (Q2, Q4)
 - Put the pigmentation panel on **hg19** by rsID (re-pull hg19 coordinates for each panel rsID; keep both builds in the manifest so the bug cannot recur). Reconcile the panel-size mess (committed 222 vs cluster 395-line BED vs 225 unique rsIDs vs 129 overlapping the modern reference) — settle on one documented analysis panel.
