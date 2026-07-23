@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>PAINT — Data &amp; Pipeline (living record)</title>
+<style>
+  :root {
+    --bg: #E8EAE6; --surface: #F6F7F4; --surface-2: #FCFDFB; --ink: #1A1E1C; --ink-2: #434A47;
+    --ink-3: #6C736F; --line: #D2D6CF; --line-2: #E1E4DD; --accent: #1E5A54; --accent-2: #2C7A70;
+    --accent-soft: #DDE8E4; --ok: #2F7D4F; --ok-soft: #DCEBE0; --warn: #8F6410; --warn-soft: #F0E6CE;
+    --bad: #A5433A; --bad-soft: #F1DAD5; --ext: #45638A; --ext-soft: #DBE3EF; --neutral-soft: #E2E5DF;
+    --shadow: 0 1px 2px rgba(20,30,26,.06), 0 6px 18px rgba(20,30,26,.05);
+    --radius: 12px; --maxw: 1080px; --measure: 74ch;
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, "Times New Roman", serif;
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --mono: ui-monospace, "SF Mono", "SFMono-Regular", Menlo, Consolas, "Liberation Mono", monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #12150F; --surface: #1A1E17; --surface-2: #20251D; --ink: #E7EAE4; --ink-2: #B0B7B0;
+      --ink-3: #838A84; --line: #2B3129; --line-2: #242A22; --accent: #63B6A9; --accent-2: #7FCBBE;
+      --accent-soft: #182723; --ok: #6FCB8F; --ok-soft: #16241A; --warn: #D6A63C; --warn-soft: #2A2312;
+      --bad: #E28A7E; --bad-soft: #2C1815; --ext: #8DAFD2; --ext-soft: #16202D; --neutral-soft: #232821;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 6px 20px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="light"] { --bg:#E8EAE6;--surface:#F6F7F4;--surface-2:#FCFDFB;--ink:#1A1E1C;--ink-2:#434A47;--ink-3:#6C736F;--line:#D2D6CF;--line-2:#E1E4DD;--accent:#1E5A54;--accent-2:#2C7A70;--accent-soft:#DDE8E4;--ok:#2F7D4F;--ok-soft:#DCEBE0;--warn:#8F6410;--warn-soft:#F0E6CE;--bad:#A5433A;--bad-soft:#F1DAD5;--ext:#45638A;--ext-soft:#DBE3EF;--neutral-soft:#E2E5DF;--shadow:0 1px 2px rgba(20,30,26,.06),0 6px 18px rgba(20,30,26,.05); }
+  :root[data-theme="dark"] { --bg:#12150F;--surface:#1A1E17;--surface-2:#20251D;--ink:#E7EAE4;--ink-2:#B0B7B0;--ink-3:#838A84;--line:#2B3129;--line-2:#242A22;--accent:#63B6A9;--accent-2:#7FCBBE;--accent-soft:#182723;--ok:#6FCB8F;--ok-soft:#16241A;--warn:#D6A63C;--warn-soft:#2A2312;--bad:#E28A7E;--bad-soft:#2C1815;--ext:#8DAFD2;--ext-soft:#16202D;--neutral-soft:#232821;--shadow:0 1px 2px rgba(0,0,0,.4),0 6px 20px rgba(0,0,0,.35); }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 60px; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
+  .topbar { position: sticky; top: 0; z-index: 20; background: color-mix(in srgb, var(--bg) 86%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+  .topbar .row { display: flex; align-items: center; gap: 16px; height: 50px; }
+  .topbar .brand { font-family: var(--mono); font-weight: 600; letter-spacing: .12em; font-size: .8rem; color: var(--accent); text-transform: uppercase; white-space: nowrap; }
+  .topbar nav { display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; margin-left: auto; }
+  .topbar nav::-webkit-scrollbar { display: none; }
+  .topbar nav a { color: var(--ink-2); text-decoration: none; font-size: .8rem; padding: 6px 9px; border-radius: 8px; white-space: nowrap; }
+  .topbar nav a:hover { color: var(--ink); background: var(--surface); }
+  header.hero { padding: 46px 0 26px; border-bottom: 1px solid var(--line); }
+  .eyebrow { font-family: var(--mono); text-transform: uppercase; letter-spacing: .18em; font-size: .72rem; color: var(--accent); margin: 0 0 12px; }
+  h1.title { font-family: var(--serif); font-weight: 600; font-size: clamp(2.1rem, 5vw, 3.1rem); line-height: 1.04; letter-spacing: -.01em; margin: 0; }
+  .subtitle { font-family: var(--serif); font-style: italic; color: var(--ink-2); font-size: clamp(1.05rem, 2.2vw, 1.3rem); margin: 12px 0 0; max-width: 52ch; }
+  a { color: var(--accent-2); }
+  section { padding: 36px 0; border-bottom: 1px solid var(--line-2); }
+  .sec-head { display: flex; align-items: baseline; gap: 14px; margin: 0 0 6px; }
+  .sec-num { font-family: var(--mono); font-size: .8rem; color: var(--accent); letter-spacing: .1em; }
+  h2 { font-family: var(--serif); font-weight: 600; font-size: clamp(1.4rem, 3vw, 1.9rem); letter-spacing: -.01em; margin: 0; }
+  h3 { font-family: var(--serif); }
+  .lede { color: var(--ink-2); max-width: var(--measure); margin: 12px 0 0; }
+  p { max-width: var(--measure); }
+  code { font-family: var(--mono); font-size: .84em; background: var(--neutral-soft); padding: 1px 5px; border-radius: 5px; }
+  .chip { display: inline-flex; align-items: center; gap: 6px; font-family: var(--mono); font-size: .66rem; letter-spacing: .04em; text-transform: uppercase; padding: 2px 8px; border-radius: 999px; white-space: nowrap; }
+  .chip::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+  .chip.ok { color: var(--ok); background: var(--ok-soft); } .chip.warn { color: var(--warn); background: var(--warn-soft); }
+  .chip.bad { color: var(--bad); background: var(--bad-soft); } .chip.neutral { color: var(--ink-2); background: var(--neutral-soft); }
+  .chip.ext { color: var(--ext); background: var(--ext-soft); }
+  .callout { border-left: 3px solid var(--accent); background: var(--accent-soft); border-radius: 0 10px 10px 0; padding: 16px 18px; margin: 22px 0; }
+  .callout h4 { margin: 0 0 8px; font-family: var(--sans); font-size: .98rem; font-weight: 650; }
+  .callout p { margin: 0; font-size: .92rem; max-width: none; } .callout p + p { margin-top: 8px; }
+  .table-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); margin-top: 18px; background: var(--surface); }
+  table { border-collapse: collapse; width: 100%; font-size: .84rem; min-width: 640px; }
+  thead th { text-align: left; font-family: var(--mono); font-size: .62rem; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3); font-weight: 600; padding: 10px 13px; border-bottom: 1px solid var(--line); white-space: nowrap; background: var(--surface-2); }
+  tbody td { padding: 10px 13px; border-bottom: 1px solid var(--line-2); vertical-align: top; }
+  tbody tr:last-child td { border-bottom: none; }
+  dl.def { display: grid; grid-template-columns: max-content 1fr; gap: 0; margin-top: 18px; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: var(--surface); }
+  dl.def > div { display: contents; }
+  dl.def dt { font-weight: 650; font-size: .9rem; padding: 12px 16px; border-top: 1px solid var(--line-2); background: var(--surface-2); }
+  dl.def dd { margin: 0; font-size: .9rem; color: var(--ink-2); padding: 12px 16px; border-top: 1px solid var(--line-2); }
+  dl.def > div:first-child dt, dl.def > div:first-child dd { border-top: none; }
+  @media (max-width: 640px) { dl.def { grid-template-columns: 1fr; } dl.def dt { padding-bottom: 2px; } dl.def dd { padding-top: 4px; border-top: none; } }
+  /* flow diagram */
+  .flowlegend { display: flex; gap: 16px; flex-wrap: wrap; font-size: .8rem; color: var(--ink-2); margin: 16px 0 6px; }
+  .flow { display: flex; flex-wrap: wrap; align-items: stretch; gap: 8px; margin-top: 8px; }
+  .node { flex: 1 1 150px; min-width: 150px; border: 1px solid var(--line); border-radius: 10px; padding: 11px 13px; background: var(--surface); box-shadow: var(--shadow); position: relative; }
+  .node .k { font-family: var(--mono); font-size: .62rem; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3); display: block; margin-bottom: 3px; }
+  .node .t { font-size: .84rem; font-weight: 600; } .node .d { font-size: .76rem; color: var(--ink-2); margin-top: 3px; }
+  .node.bam { border-left: 4px solid var(--bad); } .node.op { border-left: 4px solid var(--ink-3); background: var(--surface-2); }
+  .node.vcf { border-left: 4px solid var(--ext); } .node.fig { border-left: 4px solid var(--accent); }
+  .arrow { align-self: center; color: var(--ink-3); font-size: 1.1rem; padding: 0 2px; }
+  .sw { display: inline-block; width: 10px; height: 10px; border-radius: 3px; vertical-align: -1px; margin-right: 5px; }
+  footer { padding: 34px 0 70px; color: var(--ink-3); font-size: .82rem; } footer p { max-width: none; }
+</style>
+</head>
+<body>
+<div class="topbar"><div class="wrap row">
+  <span class="brand">PAINT · data &amp; pipeline</span>
+  <nav>
+    <a href="#what">BAM vs VCF</a><a href="#raw">Raw data</a><a href="#flow">Flow</a>
+    <a href="#did">What the pipeline does</a><a href="#same">Are they the same?</a><a href="#log">Run log</a>
+    <a href="paint-plan.html">← Roadmap</a>
+  </nav>
+</div></div>
+
+<div class="wrap">
+  <header class="hero">
+    <p class="eyebrow">Living record · started 23 Jul 2026</p>
+    <h1 class="title">The data, and what we do to it</h1>
+    <p class="subtitle">What the raw archaic data actually is, the difference between reads (BAM) and genotype calls (VCF), what the pipeline transforms, and a running log we update as we rebuild.</p>
+    <div style="margin-top:16px;font-size:.85rem;color:var(--ink-3)">Companion to the <a href="paint-plan.html">roadmap</a>. Full audit of the original pipeline: <code>plan/pipeline_workbook.md</code>. Bug evidence: <a href="https://github.com/lasisilab/paint-workflowr/blob/main/plan/verify/BUG_EVIDENCE.md">BUG_EVIDENCE.md</a>. Rebuild plan: <a href="https://github.com/lasisilab/paint-workflowr/blob/main/plan/rebuild_from_raw.md">rebuild_from_raw.md</a>.</div>
+  </header>
+
+  <!-- BAM VS VCF -->
+  <section id="what">
+    <div class="sec-head"><span class="sec-num">01</span><h2>BAM vs VCF — reads vs. conclusions</h2></div>
+    <p class="lede">The single most important distinction for understanding this project's data. Every archaic individual can exist as either (or both), and they are <em>not</em> interchangeable.</p>
+    <dl class="def">
+      <div><dt>BAM<br><span style="font-weight:400;font-size:.78rem;color:var(--ink-3)">Binary Alignment Map</span></dt><dd>The actual <strong>sequencing reads</strong> — every short DNA fragment, placed ("aligned") on the reference genome, carrying per-base quality, mapping quality, and the ancient-DNA <strong>damage</strong> still visible at read ends. Large (GBs). From a BAM you can re-derive coverage, assess damage, and (re-)call genotypes any way you like. <em>The raw-ish evidence.</em></dd></div>
+      <div><dt>VCF<br><span style="font-weight:400;font-size:.78rem;color:var(--ink-3)">Variant Call Format</span></dt><dd>The <strong>genotype conclusions</strong> drawn from a BAM: at chosen positions, "this individual is A/G", plus depth/quality annotations. Small (MBs). You <strong>cannot</strong> recover the underlying reads or the damage signal from a VCF — the read-level information is gone. <em>A derived summary.</em></dd></div>
+    </dl>
+    <div class="callout"><h4>The analogy</h4><p>A <strong>BAM is all the raw crime-scene photographs</strong> from every angle — you can re-measure anything later. A <strong>VCF is the detective's written findings</strong> ("at spot X the allele is G"). Once you keep only the VCF, you can't go back and re-examine the photos. This is exactly why <strong>mapDamage, a max-depth filter, and any transversion/transition handling need BAMs</strong> — they read the photographs; a VCF has already thrown them away.</p></div>
+  </section>
+
+  <!-- RAW DATA -->
+  <section id="raw">
+    <div class="sec-head"><span class="sec-num">02</span><h2>The raw public data</h2></div>
+    <p class="lede">The archaic genomes are published — as <strong>BAMs aligned to hg19/GRCh37</strong> — in two public archives: <strong>MPI-EVA</strong> (Max Planck, <code>ftp.eva.mpg.de</code>) and <strong>EBI-ENA</strong> (<code>ftp.sra.ebi.ac.uk</code>). Lily's pipeline started from these BAMs and called its own genotypes. Sources marked "confirm" are being recovered in Stage 0 of the rebuild.</p>
+    <div class="table-scroll"><table>
+      <thead><tr><th>Sample</th><th>Type</th><th>Coverage tier</th><th>Archive</th><th>Accession / path</th><th>Note</th></tr></thead>
+      <tbody>
+        <tr><td>Vindija 33.19</td><td>Neanderthal</td><td>high (~30×)</td><td>MPI-EVA</td><td>Prüfer 2017, per-chromosome BAMs</td><td>flagship high-coverage</td></tr>
+        <tr><td>Chagyrskaya 8</td><td>Neanderthal</td><td>high (~27×)</td><td>ENA (confirm)</td><td>confirm in Stage 0</td><td>high-coverage</td></tr>
+        <tr><td>Denisova 5 (Altai)</td><td>Neanderthal</td><td>high (~30×)</td><td>MPI-EVA (confirm)</td><td>confirm in Stage 0</td><td>"Altai Neanderthal" — despite the cave name</td></tr>
+        <tr><td>Denisova 3</td><td>Denisovan</td><td>high (~30×)</td><td>MPI-EVA (confirm)</td><td>confirm in Stage 0</td><td><strong>chr-named BAM</strong> → bug A1</td></tr>
+        <tr><td>Denisova 25</td><td>Denisovan</td><td>medium (~16×)</td><td>MPI-EVA (confirm)</td><td>confirm in Stage 0</td><td></td></tr>
+        <tr><td>Denisova 11 (denny)</td><td>F1 hybrid</td><td>low</td><td>ENA</td><td><code>ERR2273828</code></td><td>Neanderthal × Denisovan first-generation</td></tr>
+        <tr><td>Goyet Q56-1</td><td>Neanderthal</td><td>low</td><td>confirm</td><td>confirm in Stage 0</td><td></td></tr>
+        <tr><td>Les Cottés Z4-1415</td><td>Neanderthal</td><td>low</td><td>confirm</td><td>confirm in Stage 0</td><td></td></tr>
+        <tr><td>Mezmaiskaya 1</td><td>Neanderthal</td><td>low</td><td>ENA</td><td><code>ERR257722</code> (L4741)</td><td></td></tr>
+        <tr><td>Mezmaiskaya 2</td><td>Neanderthal</td><td>low</td><td>confirm</td><td>confirm in Stage 0</td><td></td></tr>
+        <tr><td>Scladina</td><td>Neanderthal</td><td>low</td><td>ENA</td><td><code>ERR9741105</code> (G2160)</td><td></td></tr>
+        <tr><td>Spy 94a</td><td>Neanderthal</td><td>low</td><td>MPI-EVA</td><td><code>A9416</code></td><td></td></tr>
+        <tr><td>Hohlenstein-Stadel</td><td>Neanderthal</td><td>low</td><td>MPI-EVA</td><td><code>L5386.bam</code></td><td></td></tr>
+        <tr><td>Vindija 87</td><td>Neanderthal</td><td>low</td><td>confirm</td><td>confirm in Stage 0</td><td></td></tr>
+        <tr><td>El Sidrón (Sid1253)</td><td>Neanderthal</td><td>none</td><td>confirm</td><td>confirm in Stage 0</td><td><strong>no usable data</strong> → 14 analyzed, not 15</td></tr>
+      </tbody>
+    </table></div>
+    <p style="font-size:.82rem;color:var(--ink-3);margin-top:10px">Modern comparison: the <strong>Simons Genome Diversity Project</strong> (SGDP), 15 individuals, genotyped at ~9.2 M whole-genome SNPs on hg19 (<code>pca/modern/sgdp.wg</code> on the cluster — verified hg19, contains the pigmentation SNPs by rsID).</p>
+  </section>
+
+  <!-- FLOW -->
+  <section id="flow">
+    <div class="sec-head"><span class="sec-num">03</span><h2>Data-flow — reads → genotypes → coordinates → picture</h2></div>
+    <p class="lede">The whole pipeline is one chain. Colour marks the level each step operates at — the <strong>BAM→VCF boundary</strong> (red→blue) is where "photographs" become "written findings" and damage/depth information is fixed in place.</p>
+    <div class="flowlegend">
+      <span><span class="sw" style="background:var(--bad)"></span>read-level (BAM)</span>
+      <span><span class="sw" style="background:var(--ink-3)"></span>operation</span>
+      <span><span class="sw" style="background:var(--ext)"></span>genotype-level (VCF/PLINK)</span>
+      <span><span class="sw" style="background:var(--accent)"></span>result</span>
+    </div>
+    <div class="flow">
+      <div class="node bam"><span class="k">raw · hg19</span><span class="t">Public BAMs</span><span class="d">reads from MPI-EVA / ENA</span></div>
+      <span class="arrow">→</span>
+      <div class="node op"><span class="k">samtools</span><span class="t">Sort · index · rename contigs</span><span class="d">harmonize to bare 1..22,X,Y (fixes A1)</span></div>
+      <span class="arrow">→</span>
+      <div class="node bam"><span class="k">read-level QC</span><span class="t">Coverage · sex · contamination · mapDamage</span><span class="d">Q6 / Q7 / Q8 — needs reads</span></div>
+      <span class="arrow">→</span>
+      <div class="node op"><span class="k">bcftools</span><span class="t">Call genotypes at verified panel</span><span class="d">diploid, keep-all, max-depth cap, damage-rescale</span></div>
+      <span class="arrow">→</span>
+      <div class="node vcf"><span class="k">derived</span><span class="t">VCF (genotypes)</span><span class="d">the conclusions — reads now discarded</span></div>
+      <span class="arrow">→</span>
+      <div class="node op"><span class="k">plink2</span><span class="t">Merge · freq · PCA · project</span><span class="d">no-mean-imputation (fixes collapse)</span></div>
+      <span class="arrow">→</span>
+      <div class="node fig"><span class="k">output</span><span class="t">Coverage &amp; PCA figures</span><span class="d">before / after</span></div>
+    </div>
+  </section>
+
+  <!-- WHAT THE PIPELINE DOES -->
+  <section id="did">
+    <div class="sec-head"><span class="sec-num">04</span><h2>What the pipeline does</h2></div>
+    <p class="lede">Left: what Lily's original pipeline did (and where the bugs entered). Right: what the rebuild does differently, with a QC gate at each stage. Full rebuild plan: <a href="https://github.com/lasisilab/paint-workflowr/blob/main/plan/rebuild_from_raw.md"><code>rebuild_from_raw.md</code></a>.</p>
+    <div class="table-scroll"><table>
+      <thead><tr><th>Step</th><th>Lily's original</th><th>Rebuild (from raw)</th></tr></thead>
+      <tbody>
+        <tr><td>Acquire</td><td>download BAMs, sort, index</td><td>re-download + <strong>checksum</strong> (Q1); harmonize contig naming for all (fixes A1 globally)</td></tr>
+        <tr><td>Raw QC</td><td>— (none)</td><td><strong>mapDamage, sex, contamination, coverage-vs-expectation</strong> (Q6/Q7/Q8)</td></tr>
+        <tr><td>Panel / build</td><td>panel on <strong>hg38</strong>, data on hg19 → wrong coordinates (A2)</td><td>panel put on <strong>hg19</strong> by rsID; tracer-SNP lint (Q2); allele/palindrome check (Q4)</td></tr>
+        <tr><td>Call genotypes</td><td>pigmentation: keep-all diploid; whole-genome: <strong>haploid <code>--ploidy 1</code></strong> (A3)</td><td>diploid autosomes; keep-all; <strong>max-depth cap</strong>; mapDamage-rescale; transitions kept for pigmentation, transversion-only for ancestry</td></tr>
+        <tr><td>Modern ref</td><td>SGDP subset → merge → PCA</td><td>verify (or rebuild) <code>sgdp.wg</code> against the same lint</td></tr>
+        <tr><td>PCA + project</td><td>projection <strong>collapsed</strong> (no <code>no-mean-imputation</code>) + rank-1 panel</td><td>positive control (Q3); <code>no-mean-imputation</code> (Q5); 3 panels × 2 designs</td></tr>
+        <tr><td>Reproduce</td><td>manual scripts, competing/dead copies, no seeds</td><td>Snakemake DAG, pinned env, seeds, CI (Q10)</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <!-- ARE THEY THE SAME -->
+  <section id="same">
+    <div class="sec-head"><span class="sec-num">05</span><h2>Are the samples all the same? No.</h2></div>
+    <p class="lede">They differ on nearly every axis that matters — which is why one uniform recipe never fit them.</p>
+    <dl class="def">
+      <div><dt>Format / source</dt><dd>single BAMs (ENA accessions) vs per-chromosome BAMs (Vindija, MPI-EVA); different filenames and conventions.</dd></div>
+      <div><dt>Coverage</dt><dd>~4 high-coverage (~16–30×: Vindija 33.19, Chagyrskaya 8, Denisova 5, Denisova 25) vs the rest very low (0.1–3×). This drives the missingness story.</dd></div>
+      <div><dt>Lab treatment</dt><dd>some UDG-treated (damage largely removed), some not — changes how much read-end deamination there is, and how aggressively we must handle it.</dd></div>
+      <div><dt>Type</dt><dd>Neanderthal, Denisovan, and the <strong>Denisova 11 F1 hybrid</strong>. Note <strong>Denisova 5 is a Neanderthal</strong> despite the cave name.</dd></div>
+      <div><dt>Contig naming</dt><dd>Denisova 3's BAM was <code>chr</code>-prefixed while the others were bare — bug A1.</dd></div>
+      <div><dt>Data at all</dt><dd>El Sidrón (Sid1253) has none → <strong>14 analyzed, not 15</strong>.</dd></div>
+      <div><dt>Current cluster state</dt><dd>the full sorted BAMs are <strong>gone</strong> (only wrong-region <code>filtered_*.bam</code> + already-called VCFs remain) — which is why the rebuild re-downloads the raw reads.</dd></div>
+    </dl>
+  </section>
+
+  <!-- RUN LOG -->
+  <section id="log">
+    <div class="sec-head"><span class="sec-num">06</span><h2>Run log <span style="font-size:.8rem;color:var(--ink-3);font-weight:400">— updated as we go</span></h2></div>
+    <p class="lede">A dated record of what we've actually done to the data, so the pipeline's real state is always legible. Newest at the bottom.</p>
+    <div class="table-scroll"><table>
+      <thead><tr><th>Date</th><th>Stage</th><th>Action</th><th>Status</th><th>Output / evidence</th></tr></thead>
+      <tbody>
+        <tr><td>2026-07-22</td><td>audit</td><td>Reproduced the build mismatch (A2), Denisova 3 naming (A1), <code>--ploidy 1</code> (A3), dead scripts (A5)</td><td><span class="chip bad">found</span></td><td><code>verify/BUG_EVIDENCE.md</code></td></tr>
+        <tr><td>2026-07-23</td><td>audit</td><td>Traced each bug to its downstream consequence; rendered before-figures from committed data</td><td><span class="chip bad">found</span></td><td><code>plan/figures/before_*.png</code></td></tr>
+        <tr><td>2026-07-23</td><td>0</td><td>Probed the cluster: full BAMs absent; <code>sgdp.wg</code> confirmed hg19 with pigmentation SNPs by rsID; <code>ancient_sgdp_wg.vcf.gz</code> (1.6 G) present; 129 panel SNPs overlap the modern ref (92 transitions / 37 transversions)</td><td><span class="chip ext">probed</span></td><td>this page §02, §05</td></tr>
+        <tr><td>2026-07-23</td><td>—</td><td><strong>Decision:</strong> rebuild from raw rather than trust the derived data</td><td><span class="chip neutral">decided</span></td><td><code>rebuild_from_raw.md</code></td></tr>
+        <tr><td></td><td>0</td><td>Provenance manifest + pinned env + recover all 15 acquisition URLs</td><td><span class="chip neutral">todo</span></td><td></td></tr>
+        <tr><td></td><td>1</td><td>Re-acquire raw reads (targeted or full) + harmonize naming</td><td><span class="chip neutral">todo</span></td><td></td></tr>
+        <tr><td></td><td>2</td><td>Raw QC: mapDamage, sex, contamination, coverage</td><td><span class="chip neutral">todo</span></td><td></td></tr>
+        <tr><td></td><td>3</td><td>Panel → hg19 (by rsID) + tracer lint + allele check</td><td><span class="chip neutral">todo</span></td><td></td></tr>
+        <tr><td></td><td>4</td><td>Re-call genotypes (diploid, keep-all, max-depth cap, damage-rescale)</td><td><span class="chip neutral">todo</span></td><td></td></tr>
+        <tr><td></td><td>6</td><td>PCA + projection (positive control, no-mean-imputation) → after-figures</td><td><span class="chip neutral">todo</span></td><td></td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <footer>
+    <p>Living record — kept in step with <code>plan/plan.md</code>, <code>plan/rebuild_from_raw.md</code>, and <code>plan/verify/BUG_EVIDENCE.md</code>. If this page and the plan disagree, the plan wins. Back to the <a href="paint-plan.html">roadmap</a>.</p>
+  </footer>
+</div>
+
+<script>
+  (function () {
+    var links = Array.prototype.slice.call(document.querySelectorAll('.topbar nav a'));
+    var map = {}; links.forEach(function (a){ var h=a.getAttribute('href'); if(h&&h.charAt(0)==='#') map[h.slice(1)] = a; });
+    var obs = new IntersectionObserver(function (es){ es.forEach(function(e){ if(e.isIntersecting){ Object.values(map).forEach(function(l){l.style.color='';l.style.background='';}); var a=map[e.target.id]; if(a){a.style.color='var(--accent)';a.style.background='var(--surface)';} } }); }, { rootMargin: '-45% 0px -50% 0px' });
+    document.querySelectorAll('section[id]').forEach(function(s){ obs.observe(s); });
+  })();
+</script>
+</body>
+</html>
