@@ -273,6 +273,21 @@
       <h4>The single most unblocking step: B2</h4>
       <p>Putting everything on the hg38 build (<strong>B2</strong>) is both the fix for the root bug (<strong>A2</strong>) <em>and</em> the prerequisite for using the four hg38 datasets (<strong>B1</strong>) and every matched-build analysis. <strong>A1</strong> (Denisova 3 renaming) is independent and can run in parallel.</p>
     </div>
+
+    <h3 style="font-family:var(--serif);font-weight:600;font-size:1.2rem;margin:26px 0 4px">QC already in place vs. what these phases add</h3>
+    <p style="font-size:.9rem;color:var(--ink-2);max-width:var(--measure)">The QC phases below (0–3, the <code>Q</code> items) don't start from zero — they build on the quality work already in Lily's thesis. Knowing the split lets us credit what's done and target only the gaps.</p>
+    <div class="callout">
+      <h4>✓ Already in place (Lily's thesis pipeline)</h4>
+      <p><strong>The coverage/depth + missingness arm</strong> — the QC-minded half of the thesis: per-sample per-base depth across the whole panel (<code>samtools depth -a</code>, zero-coverage sites included), a missingness model (<code>glmer(Missing ~ chromosome + age + (1|Coverage) + (1|Sample))</code>), and genotype-confidence simulations, including a Monte-Carlo term that decays confidence toward the read ends — an <em>implicit</em> nod to ancient-DNA damage.</p>
+      <p><strong>Standard pipeline hygiene:</strong> <code>samtools quickcheck</code> on downloads; MAPQ ≥ 30 / BaseQ ≥ 30 in the whole-genome calling; biallelic-SNP filtering + LD-pruning before the WG PCA; dedup + deterministic variant IDs + reference-frequency scoring in the projection; and labelling Denisova 11 as an F1 hybrid in the figures.</p>
+      <p><strong>The honest framing itself</strong> — the headline conclusion (archaic pigmentation prediction is <em>not yet well-supported</em>) was a QC-minded verdict, not over-claiming.</p>
+    </div>
+    <div class="callout" style="border-left-color:var(--warn);background:var(--warn-soft)">
+      <h4>◱ Not yet done — exactly what Q1–Q10 add</h4>
+      <p>Build/contig-naming lint (<strong>Q2</strong>), a provenance manifest + checksums (<strong>Q1</strong>), a positive control (<strong>Q3</strong>), allele/ref-alt/palindrome harmonization (<strong>Q4</strong>), PCA/projection non-degeneracy checks (<strong>Q5</strong>), coverage-vs-expectation alerting (<strong>Q6</strong>), sample identity/sex/contamination (<strong>Q7</strong>), formal aDNA-damage assessment (<strong>Q8</strong>), cross-validation vs published genotypes (<strong>Q9</strong>), and reproducibility infrastructure (<strong>Q10</strong>).</p>
+      <p>Their absence is precisely why the three serious bugs slipped through — the build mismatch (<strong>A2</strong>), Denisova 3's naming (<strong>A1</strong>), and the projection collapse were never caught by an automated check. Quality filtering was also <strong>inconsistent</strong>: the <code>-q 30 -Q 30</code> filter is in the whole-genome calling but <em>not</em> in the depth step or the pigmentation-panel calling.</p>
+    </div>
+
     <div class="table-scroll">
       <table>
         <thead><tr><th>Phase</th><th>Goal (the gate)</th><th>Items</th><th>Status</th></tr></thead>
@@ -335,6 +350,7 @@
           <p><b class="lab what">What it is:</b> the 222 pigmentation SNP positions ("the panel") were taken from the GWAS Catalog, which uses the <strong>hg38</strong> genome build. But every individual's DNA — the archaic samples <em>and</em> the SGDP genomes — is aligned to the <strong>hg19</strong> build. Since the same SNP sits at different coordinates in the two builds (SLC24A5 = <code>15:48,134,288</code> in hg38 vs <code>15:48,426,484</code> in hg19), looking up the panel's hg38 positions in the hg19 data hits the <strong>wrong places</strong> in the genome.</p>
           <p><b class="lab why">Why it matters:</b> it breaks both analyses. <strong>(1)</strong> The wrong hg19 positions are essentially random spots, and at random spots all 15 modern genomes carry the same letter (221 of 222 are <em>monomorphic</em> — no variation). Positions with no variation give the PCA nothing to separate samples on, so it collapses to one axis and every archaic sample lands on the <em>same</em> point — the figure is meaningless. <strong>(2)</strong> The depth/missingness reported "at each pigmentation SNP" is measured at a spot that can be far off — hundreds of kb (~292 kb for SLC24A5), differing per SNP — so it isn't the intended loci.</p>
           <p><b class="lab do">What to do:</b> put the panel and the data on the same build first (item B2). Plan's choice: lift the <strong>data up to hg38</strong> (the four new datasets are already hg38). Alternatively lift the <strong>panel down to hg19</strong> with UCSC <code>liftOver</code> or <code>CrossMap</code> (+ an hg38→hg19 chain file), or re-pull the SNPs' hg19 coordinates from the GWAS Catalog. Pick one build; make everything match. Until then, treat the pigmentation PCA and pigmentation-depth results as unreliable. <strong>Proven fixed by Q2 + Q5.</strong></p>
+        <p><b class="lab" style="color:var(--bad)">Consequence (demonstrated):</b> the pigmentation PCA is rank-1 (<code>pigmentation.pca.eigenval</code>: PC1 = 0.063, PC2–10 ≈ 3e-18); only 1 of 222 SNPs (a non-canonical rs76285708) carries any loading; modern PC1 takes just <strong>3 discrete values</strong> — so the thesis's "PC1 differentiates Bantu and Yoruba" (Fig 8) and "archaics fall near Africans / a small number of loci" (Discussion, p.32) are <strong>one-SNP artifacts</strong>. The whole-genome PCA (Fig 7) and the <em>aggregate</em> missingness result are <strong>not</strong> affected.</p>
         </div>
         <details class="ev">
           <summary><span class="idt">A2</span> Evidence</summary>
@@ -371,6 +387,7 @@ $ grep '^15' data/vindija33_depth.txt | grep 48134288
           <p><b class="lab what">What it is:</b> chromosomes can be labelled <code>1, 2, …</code> (bare) or <code>chr1, chr2, …</code> (prefixed). The reference, the panel, and every archaic sample use the bare style — <em>except Denisova 3</em>, whose file uses <code>chr</code>-prefixed names. So the (bare) SNP positions aren't found in its (<code>chr</code>) file.</p>
           <p><b class="lab why">Why it matters:</b> Denisova 3 is a high-coverage Denisovan, yet it shows near-empty coverage (mean depth 0.5×, 69/222 SNPs — vs 30.7× and 222/222 for <strong>Vindija 33.19</strong>, a comparable sample) and sits in the sparse group of thesis Fig 5. Because the reference and panels are bare-named, any step that pairs Denisova 3's <code>chr</code>-named reads with them (whole-genome calling, PCA inputs) fails to match and drops most of its data — so the sparseness is very likely a naming artifact. (Separate from A2: A2 makes the panel wrong for <em>everyone</em>; A1 makes <em>this one sample</em> look empty.)</p>
           <p><b class="lab do">What to do:</b> relabel Denisova 3's chromosomes to the bare style — e.g. <code>samtools reheader</code> with a name map (<code>chr1</code>→<code>1</code>, …) — then re-run its depth + genotype calling and confirm the coverage is really there. (The cluster script <code>pca_ancient.slurm</code> already has <code>chr</code>-normalizing logic to reuse.) <strong>Proven by Q2 (naming lint) and Q6 (coverage jumps into the high band).</strong></p>
+        <p><b class="lab" style="color:var(--bad)">Consequence (demonstrated):</b> in the committed depth files Denisova 3 recovers at <strong>0.5×, 69/222 SNPs</strong> (vs Vindija 33.19 at 30.7×, 222/222), so Fig 5 draws this 30× genome in the <em>sparse</em> band — contradicting the thesis's own Table 3, which lists it as high-coverage. In the whole-genome projection its recovered dosage is 221k vs ~1.66M for its peers, placing it at the empty-sample point (PC1 = +0.011) instead of with the other Denisovan (Denisova 25, PC1 = −0.058) in Fig 7. No effect on Fig 8.</p>
         </div>
         <details class="ev">
           <summary><span class="idt">A1</span> Evidence</summary>
@@ -389,6 +406,7 @@ $ samtools view -H filtered_vindija33.bam | grep '^@SQ' | head -2
           <p><b class="lab what">What it is:</b> humans have two copies of each non-sex chromosome, so a genotype should be a pair (<code>A/G</code>). One calling job (<code>ancient_wg.slurm</code>) is set to <code>--ploidy 1</code> (haploid) across all chromosomes, forcing a single allele per position.</p>
           <p><b class="lab why">Why it matters:</b> a heterozygous individual (carrying both <code>A</code> and <code>G</code>) can't be recorded as such — half the genotype information on the non-sex chromosomes is lost, biasing anything downstream (including the whole-genome PCA that Q3 uses as a positive control).</p>
           <p><b class="lab do">What to do:</b> confirm intent; for diploid chromosomes this normally shouldn't be <code>--ploidy 1</code>. Re-run diploid if it was a mistake.</p>
+          <p><b class="lab" style="color:var(--warn)">Consequence (demonstrated / latent):</b> the committed whole-genome projection scores these haploid archaics against a PCA basis built from <strong>diploid</strong> SGDP moderns — a real ploidy mismatch; the heterozygote loss itself is on the cluster-only VCF (latent locally). Honest note: the whole-genome PCA <strong>conclusion survives</strong> — archaics still sit clearly on the non-African side of PC1 (Fig 7 / §3.4).</p>
         </div>
         <details class="ev">
           <summary><span class="idt">A3</span> Evidence</summary>
@@ -447,6 +465,7 @@ $ bcftools view -H -r 1 ancient_sgdp_wg.vcf.gz | head
           <p><b class="lab what">What it is:</b> two scripts call ancient genotypes at the panel — one keeps every position (<code>bcftools call -c</code>), one keeps only positions that vary (<code>-mv</code>).</p>
           <p><b class="lab why">Why it (barely) matters:</b> I first flagged the <code>-mv</code> one as dropping positions and biasing results. On checking, it <strong>didn't</strong>: the actual output file has all 222 positions, so the keep-everything script is the one that ran. Nothing was lost.</p>
           <p><b class="lab do">What to do:</b> just delete the unused <code>-mv</code> script so it's clear which is canonical. No re-analysis needed.</p>
+          <p><b class="lab" style="color:var(--ok)">Consequence: none.</b> Every row of <code>ancient.projected.pig.sscore</code> has ALLELE_CT = 444 (= 2 × 222), so the keep-all <code>-c</code> output is what was scored; nothing downstream traces to the <code>-mv</code> script. Deleting it is pure hygiene.</p>
         </div>
         <details class="ev">
           <summary><span class="idt">A4</span> Evidence</summary>
@@ -465,6 +484,7 @@ $ bcftools view -H ancient_pigmentation.vcf.gz | wc -l
           <p><b class="lab what">What it is:</b> (i) <code>ancient_merge.slurm</code> merges files matching <code>*.wg.vcf.gz</code>, but the real file is <code>ancient_sgdp_wg.vcf.gz</code> (<code>_wg</code>, not <code>.wg</code>), so it matches nothing. (ii) <code>pca_ancient.slurm</code> points at a reference <code>hg19.fa</code> that isn't present, so it can't run, and its output is used nowhere.</p>
           <p><b class="lab why">Why it matters:</b> only as clutter/confusion — neither is part of the working pipeline. (Cleaning them up also removes the "which script is canonical?" ambiguity that Q10 formalizes.)</p>
           <p><b class="lab do">What to do:</b> delete or fix them so the cluster reflects what actually runs.</p>
+          <p><b class="lab" style="color:var(--ok)">Consequence: none.</b> No committed artifact or figure traces to either script (the real WG projection came from <code>ancient_wg.slurm</code>; the WG-PCA axes from <code>modern_pca.slurm</code>). Pure hygiene — though <code>pca_ancient.slurm</code> is worth reading first, since it holds the <code>chr</code>-reheader logic that fixes A1.</p>
         </div>
         <details class="ev">
           <summary><span class="idt">A5</span> Evidence</summary>
@@ -517,6 +537,7 @@ pca_ancient.slurm:19: REF=".../reference/hg19.fa"   <span class="cmt"># referenc
             <p><b class="lab deliv">Deliverable:</b> <code>qc/check_pca_degeneracy.R</code> + the one-line edit to <code>pca_proj.py</code>.</p>
             <p><b class="lab acc">Acceptance:</b> ≥ <em>k</em> polymorphic panel SNPs; λ2/λ1 above floor; <code>sd(PC1)</code> across archaics above ε with ≥2 differing; <code>pca_proj.py</code> contains <code>no-mean-imputation</code>. After B2 + the fix, all four pass.</p>
             <p><b class="lab art">Artifact:</b> a scree plot + a "projection spread" strip plot (spread out, or stacked on one point?).</p>
+            <p><b class="lab" style="color:var(--bad)">Consequence already visible (demonstrated):</b> the committed <code>data/ancient.projected.pig.sscore</code> has <strong>byte-identical PC coordinates for all 15 archaics</strong> (PC1 = 0.0335547 for every one) despite differing input dosages, while the whole-genome <code>.sgdp.sscore</code> keeps them distinct — so Fig 8 currently stacks every archaic on one point, and the thesis's "archaics cluster with Africans" rests on where that single point landed (actually 4.6× closer to the non-African cluster).</p>
           </div>
           <ul class="subtasks">
             <li>Add <code>no-mean-imputation</code> to <code>pca_proj.py</code>; document the missingness policy.</li>
@@ -744,6 +765,7 @@ pca_ancient.slurm:19: REF=".../reference/hg19.fa"   <span class="cmt"># referenc
         <div class="body">
           <p><b class="lab what">What it is:</b> small fixes in the website source: <code>introduction.Rmd</code> says the panel is "395 SNPs" but it's 222; the "View genetic PCAs" link points to the old <code>analysis.html</code> (should be <code>pca.html</code>); the <code>LICENSE</code> file is empty (license text only lives in <code>license.Rmd</code>); two built pages (<code>docs/analysis.html</code>, <code>docs/depth_spinoff.html</code>) have no source; and <code>cleaning.Rmd</code>/<code>process_links.R</code> hard-code Lily's laptop paths so they won't run elsewhere.</p>
           <p><b class="lab do">What to do:</b> fix the number, the link, add license text, remove the orphaned pages, and replace the hard-coded paths.</p>
+          <p><b class="lab" style="color:var(--bad)">Consequence (demonstrated, reader-facing):</b> confined to the published site (the thesis is correct), but each misleads a reader — the live Background page states "395 SNPs" (contradicting the 222 in the thesis and the ~226-bar chart right below it), the "View genetic PCAs" link 404s on a clean rebuild, the empty <code>LICENSE</code> leaves the promised MIT reuse grant legally unsupported, and because <code>.gitignore</code> drops all <code>*.csv</code> while the derived tables are written only to Lily's laptop paths, <strong>the committed site cannot be rebuilt from a fresh clone</strong> (every page reading a derived CSV errors).</p>
         </div>
       </div>
     </div>

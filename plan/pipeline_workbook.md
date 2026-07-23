@@ -256,7 +256,7 @@ simulate_confidence <- function(depth, error_rate){ p<-1-error_rate; k<-floor(de
 # position-dependent Monte Carlo: p_interior+(p_end-p_interior)*exp(-lambda*dist_to_end); rbinom; n_sim=1000
 mod1 <- glmer(Missing ~ factor(Chromosome) + age_scaled + (1|Coverage) + (1|Sample), data=ancient_depth, family=binomial)  # age_scaled=scale(Age_ka)
 ```
-**⚠** `(1|Coverage)` is a **per-sample constant → collinear/nested with `(1|Sample)`** (expect singular fit; drop it or make coverage a fixed effect). Monte Carlo has **no `set.seed`** → plot changes each render. `Missing` is assumed present in the CSV (not derived here). Prose coefficients (age β=1.34; chr β=−0.02) are hand-typed, can drift from `summary(mod1)`. `Position_bin=round(Position/500000)` runs arithmetic on a factor (harmless, unused). `library(shiny)` unused.
+**⚠** (corrected 2026-07-23 after inspecting the rendered `docs/depth.html`): the fit is **not** singular, but `(1|Coverage)` is a **2-level grouping** (`groups: Sample, 13; Coverage, 2`) whose random-intercept variance (**13.0**) is estimated from just 2 groups (statistically unidentifiable) and **dwarfs** the Sample variance (0.99) — a degenerate variance component; make Coverage a fixed effect or drop it. The Monte Carlo has no in-`Rmd` `set.seed`, **but** workflowr injects `set.seed(20251106)` from `_workflowr.yml`, so the committed Fig 6 **is** reproducible as built (it would only drift if knitted outside workflowr). The prose coefficients (age β=1.34; chr β=−0.02, p=0.03) **describe a different model than this page runs** — they match the numeric-`Chromosome` model in `depth_spinoff`, not the `factor(Chromosome)` model here (which gives age β=1.36 and 20 chromosome coefficients; and chr5 is p=0.094, *not* significant, though the thesis lists it as significant). `Missing` is assumed present in the CSV (not derived here). `Position_bin=round(Position/500000)` runs arithmetic on a factor (harmless, unused). `library(shiny)` unused.
 
 ## E8d. `pca.Rmd` → PCA figures
 `fread` `sgdp.wg.pca.eigenvec` + `ancient.projected.sgdp.sscore` (+ pigmentation pair) — **present**; joins `modern_metadata.csv` (**missing**). Labels ancient by ID (`Denisova3/25`→Denisovan, `Denisova11`→Hybrid, else Neanderthal). Plots PC1–2 & PC3–4 per panel (patchwork), modern shape 16 / ancient shape 4, color by Region.
@@ -287,10 +287,10 @@ mod1 <- glmer(Missing ~ factor(Chromosome) + age_scaled + (1|Coverage) + (1|Samp
 | 4 | **`--ploidy 1`** haploid autosomal calling; ploidy inconsistent with pigmentation calls | A4c | 🟡 |
 | 5 | **`subset_sgdp` `-R` region-string bug** — `chr:from-to` file not parsed by `view -R` | B (subset_sgdp) | 🟡 |
 | 6 | **Coordinate-convention split** — `sgdp.snps.pos` used 1-based vs 0-based across scripts | B2, get_simons | 🟡 |
-| 7 | **glmer redundant random effects** — Coverage is per-sample, so its random intercept is collinear/nested with the Sample random intercept (expect singular fit) | E8c | 🟡 |
+| 7 | **glmer degenerate random effect + stale prose** — fit is not singular, but Coverage is a 2-group random intercept whose variance (13.0, from 2 groups) is unidentifiable and dwarfs Sample (0.99); and the page's prose coefficients come from a different model (numeric Chromosome) than the factor model it fits | E8c | 🟡 |
 | 8 | Competing/dead scripts (`-mv`, `sgdp_merge_panel`, `vcf_merge`, `ancient_merge`, `pca_ancient`, `pig_pca_proj`) | many | ⚪ cleanup |
 | 9 | Hardcoded laptop paths; missing derived CSVs; hardcoded PCA label rows | E8a/b/d | ⚪ |
-| 10 | No version pinning (bcftools/plink2/R); no `set.seed`; no aDNA damage handling visible | all | ⚪ traceability |
+| 10 | No version pinning (bcftools/plink2/R); no aDNA damage handling visible. (Seeds ARE injected by workflowr `_workflowr.yml` `seed: 20251106`, so committed figures reproduce as built — there is just no explicit `set.seed` in the Rmd) | all | ⚪ traceability |
 
 ## Reviewer audit checklist
 1. **Locate & characterize the panel BED** `/home/lheald/gwas_loci/snps.bed` (SNP count, **build**, contig naming). Reconcile the hg38-vs-hg19 mismatch (issue 1) — this is upstream of almost everything pigmentation.
