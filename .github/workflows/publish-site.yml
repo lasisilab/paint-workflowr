@@ -46,6 +46,11 @@ jobs:
           #    Publish only the rendered HTML; keep plan.md / changelog.md repo-only.
           mkdir -p _site/plan
           cp plan/*.html _site/plan/
+          # 3) consequence figures referenced by the plan HTML (before/after record).
+          if [ -d plan/figures ]; then
+            mkdir -p _site/plan/figures
+            cp plan/figures/*.png _site/plan/figures/ 2>/dev/null || true
+          fi
           # GitHub Pages must not run Jekyll (workflowr ships _files/ + site_libs/).
           touch _site/.nojekyll
 
