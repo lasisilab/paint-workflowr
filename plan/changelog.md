@@ -6,6 +6,14 @@ Legend: **DONE** = action taken · **FOUND** = finding/evidence · **DECIDED** =
 
 ---
 
+## 2026-07-22 — Self-containment rewrite (no assumed knowledge) + cold-reader audit
+
+- **DONE** — Rewrote the plan so every item stands alone: added a **Glossary** (hg19/hg38, SNP, panel, "the data", GWAS/GWAS Catalog, allele, kb, aligned/BAM, genotype calling, SLURM, liftOver, MC1R, HIrisPlex-S, exome, synonymous/non-synonymous, tissue-specific expression, the six skin genes, ploidy…) and gave every roadmap item a **What / Why / Do** structure. Applied to both `plan.md` and `paint-plan.html`.
+- **DECIDED** — Disambiguated "the data": it means the sequencing reads for every individual (archaic BAMs **and** SGDP genomes), all aligned to the hg19 reference — as opposed to "the panel" (the 222-SNP list, on hg38). This phrasing is now used everywhere instead of a bare "the data".
+- **DONE (verification)** — Ran a cold-reader audit (5 agents, each given one section + the glossary only). Scores 2–4/5; fixed everything flagged: named the actual tools in the Do steps (liftOver/CrossMap for build conversion, samtools reheader for A1, VEP/SnpEff/ANNOVAR for B7), corrected the depth-offset magnitude (was "~kb", is up to ~292 kb and varies per SNP), spelled out the diploid polygenic-score rule (allele dosage 0/1/2) and score direction, defined "high-coverage" (the 4 flagship genomes) in B4, clarified that B7's syn:non-syn ratio is over coding variants (not the mostly-non-coding panel), and stated the B2 dependency where analyses need matched-build genotypes.
+- **FIX** — Corrected the manuscript title to "The genetic landscape of pigmentation in archaic hominins".
+- **DONE** — Added public-repo source links (each dataset → its file in `tinalasisi/pigmentation-gene-network`) and gave HIrisPlex-S its own labelled row.
+
 ## 2026-07-22 — Evidence pass: reproduced (and corrected) the flagged bugs
 
 Every flagged bug was re-checked with explicit commands + captured output → [`verify/BUG_EVIDENCE.md`](verify/BUG_EVIDENCE.md) (runnable `verify/verify_bugs.sh`). Results:
