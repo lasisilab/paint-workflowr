@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>PAINT — Plan &amp; Roadmap</title>
+<style>
+  :root {
+    --bg: #E8EAE6; --surface: #F6F7F4; --surface-2: #FCFDFB; --ink: #1A1E1C; --ink-2: #434A47;
+    --ink-3: #6C736F; --line: #D2D6CF; --line-2: #E1E4DD; --accent: #1E5A54; --accent-2: #2C7A70;
+    --accent-soft: #DDE8E4; --ok: #2F7D4F; --ok-soft: #DCEBE0; --warn: #8F6410; --warn-soft: #F0E6CE;
+    --bad: #A5433A; --bad-soft: #F1DAD5; --ext: #45638A; --ext-soft: #DBE3EF; --neutral-soft: #E2E5DF;
+    --shadow: 0 1px 2px rgba(20,30,26,.06), 0 6px 18px rgba(20,30,26,.05);
+    --radius: 12px; --maxw: 1080px; --measure: 72ch;
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, "Times New Roman", serif;
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --mono: ui-monospace, "SF Mono", "SFMono-Regular", Menlo, Consolas, "Liberation Mono", monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #12150F; --surface: #1A1E17; --surface-2: #20251D; --ink: #E7EAE4; --ink-2: #B0B7B0;
+      --ink-3: #838A84; --line: #2B3129; --line-2: #242A22; --accent: #63B6A9; --accent-2: #7FCBBE;
+      --accent-soft: #182723; --ok: #6FCB8F; --ok-soft: #16241A; --warn: #D6A63C; --warn-soft: #2A2312;
+      --bad: #E28A7E; --bad-soft: #2C1815; --ext: #8DAFD2; --ext-soft: #16202D; --neutral-soft: #232821;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 6px 20px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="light"] { --bg:#E8EAE6;--surface:#F6F7F4;--surface-2:#FCFDFB;--ink:#1A1E1C;--ink-2:#434A47;--ink-3:#6C736F;--line:#D2D6CF;--line-2:#E1E4DD;--accent:#1E5A54;--accent-2:#2C7A70;--accent-soft:#DDE8E4;--ok:#2F7D4F;--ok-soft:#DCEBE0;--warn:#8F6410;--warn-soft:#F0E6CE;--bad:#A5433A;--bad-soft:#F1DAD5;--ext:#45638A;--ext-soft:#DBE3EF;--neutral-soft:#E2E5DF;--shadow:0 1px 2px rgba(20,30,26,.06),0 6px 18px rgba(20,30,26,.05); }
+  :root[data-theme="dark"] { --bg:#12150F;--surface:#1A1E17;--surface-2:#20251D;--ink:#E7EAE4;--ink-2:#B0B7B0;--ink-3:#838A84;--line:#2B3129;--line-2:#242A22;--accent:#63B6A9;--accent-2:#7FCBBE;--accent-soft:#182723;--ok:#6FCB8F;--ok-soft:#16241A;--warn:#D6A63C;--warn-soft:#2A2312;--bad:#E28A7E;--bad-soft:#2C1815;--ext:#8DAFD2;--ext-soft:#16202D;--neutral-soft:#232821;--shadow:0 1px 2px rgba(0,0,0,.4),0 6px 20px rgba(0,0,0,.35); }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 60px; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
+
+  .topbar { position: sticky; top: 0; z-index: 20; background: color-mix(in srgb, var(--bg) 86%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+  .topbar .row { display: flex; align-items: center; gap: 16px; height: 50px; }
+  .topbar .brand { font-family: var(--mono); font-weight: 600; letter-spacing: .12em; font-size: .8rem; color: var(--accent); text-transform: uppercase; white-space: nowrap; }
+  .topbar nav { display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; margin-left: auto; }
+  .topbar nav::-webkit-scrollbar { display: none; }
+  .topbar nav a { color: var(--ink-2); text-decoration: none; font-size: .8rem; padding: 6px 9px; border-radius: 8px; white-space: nowrap; }
+  .topbar nav a:hover { color: var(--ink); background: var(--surface); }
+
+  header.hero { padding: 48px 0 28px; border-bottom: 1px solid var(--line); }
+  .eyebrow { font-family: var(--mono); text-transform: uppercase; letter-spacing: .18em; font-size: .72rem; color: var(--accent); margin: 0 0 12px; }
+  h1.title { font-family: var(--serif); font-weight: 600; font-size: clamp(2.3rem, 5.4vw, 3.4rem); line-height: 1.03; letter-spacing: -.01em; margin: 0; }
+  .subtitle { font-family: var(--serif); font-style: italic; color: var(--ink-2); font-size: clamp(1.05rem, 2.2vw, 1.35rem); margin: 12px 0 0; max-width: 44ch; }
+  .meta-row { display: flex; flex-wrap: wrap; gap: 8px 24px; margin-top: 22px; }
+  .meta-row .m .k { font-family: var(--mono); font-size: .66rem; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); display:block; }
+  .meta-row .m .v { font-size: .9rem; }
+  a { color: var(--accent-2); }
+
+  section { padding: 40px 0; border-bottom: 1px solid var(--line-2); }
+  .sec-head { display: flex; align-items: baseline; gap: 14px; margin: 0 0 6px; }
+  .sec-num { font-family: var(--mono); font-size: .8rem; color: var(--accent); letter-spacing: .1em; }
+  h2 { font-family: var(--serif); font-weight: 600; font-size: clamp(1.45rem, 3vw, 1.95rem); letter-spacing: -.01em; margin: 0; }
+  .lede { color: var(--ink-2); max-width: var(--measure); margin: 12px 0 0; }
+  p { max-width: var(--measure); }
+
+  .chip { display: inline-flex; align-items: center; gap: 6px; font-family: var(--mono); font-size: .66rem; letter-spacing: .04em; text-transform: uppercase; padding: 2px 8px; border-radius: 999px; white-space: nowrap; }
+  .chip::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+  .chip.ok { color: var(--ok); background: var(--ok-soft); }
+  .chip.warn { color: var(--warn); background: var(--warn-soft); }
+  .chip.bad { color: var(--bad); background: var(--bad-soft); }
+  .chip.ext { color: var(--ext); background: var(--ext-soft); }
+  .chip.neutral { color: var(--ink-2); background: var(--neutral-soft); }
+  .who { font-family: var(--mono); font-size: .66rem; font-weight: 600; padding: 2px 7px; border-radius: 6px; border: 1px solid var(--line); color: var(--ink-2); background: var(--surface-2); }
+
+  .sources { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 20px; }
+  @media (max-width: 720px) { .sources { grid-template-columns: 1fr; } }
+  .src { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 16px; box-shadow: var(--shadow); }
+  .src .tag { font-family: var(--mono); font-size: .66rem; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+  .src h3 { margin: 5px 0 3px; font-family: var(--serif); font-size: 1.05rem; font-weight: 600; }
+  .src p { margin: 0; font-size: .82rem; color: var(--ink-2); max-width: none; }
+
+  .callout { border-left: 3px solid var(--accent); background: var(--accent-soft); border-radius: 0 10px 10px 0; padding: 16px 18px; margin: 22px 0; }
+  .callout.ask { border-left-color: var(--bad); background: var(--bad-soft); }
+  .callout h4 { margin: 0 0 8px; font-family: var(--sans); font-size: .98rem; font-weight: 650; }
+  .callout p { margin: 0; font-size: .9rem; max-width: none; }
+  .callout ul { margin: 8px 0 0; padding-left: 20px; }
+  .callout li { font-size: .9rem; margin: 6px 0; }
+  code { font-family: var(--mono); font-size: .84em; background: var(--neutral-soft); padding: 1px 5px; border-radius: 5px; }
+  .mono { font-family: var(--mono); }
+
+  .table-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); margin-top: 20px; background: var(--surface); }
+  table { border-collapse: collapse; width: 100%; font-size: .86rem; min-width: 640px; }
+  thead th { text-align: left; font-family: var(--mono); font-size: .64rem; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3); font-weight: 600; padding: 11px 14px; border-bottom: 1px solid var(--line); white-space: nowrap; background: var(--surface-2); }
+  tbody td { padding: 11px 14px; border-bottom: 1px solid var(--line-2); vertical-align: top; }
+  tbody tr:last-child td { border-bottom: none; }
+  td .idt { font-family: var(--mono); font-weight: 600; color: var(--accent); }
+
+  .cards { display: grid; gap: 16px; margin-top: 22px; }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 22px; box-shadow: var(--shadow); }
+  .card > h3 { margin: 0 0 4px; font-family: var(--serif); font-weight: 600; font-size: 1.24rem; }
+  .card .sub { color: var(--ink-3); font-size: .85rem; margin: 0 0 8px; }
+  ul.checklist { list-style: none; margin: 10px 0 0; padding: 0; }
+  ul.checklist li { display: grid; grid-template-columns: 20px 1fr; gap: 10px; padding: 9px 0; border-top: 1px solid var(--line-2); font-size: .92rem; }
+  ul.checklist li:first-child { border-top: none; }
+  ul.checklist .box { width: 15px; height: 15px; border: 1.5px solid var(--ink-3); border-radius: 4px; margin-top: 3px; }
+  ul.checklist li.done .box { background: var(--ok); border-color: var(--ok); position: relative; }
+  ul.checklist li.done .box::after { content: "✓"; color: #fff; font-size: 11px; position: absolute; left: 2px; top: -3px; }
+  ul.checklist li.done .body { color: var(--ink-3); }
+  .item-head { display: flex; flex-wrap: wrap; align-items: center; gap: 7px; }
+  .item-head .t { font-weight: 600; }
+  .item-note { color: var(--ink-2); font-size: .87rem; margin-top: 3px; }
+  .pri { font-size: .8rem; }
+  footer { padding: 36px 0 70px; color: var(--ink-3); font-size: .82rem; }
+  footer p { max-width: none; }
+  .legend { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; font-size: .8rem; color: var(--ink-3); align-items: center; }
+  .prov { margin-top: 22px; }
+  .prov h3 { font-family: var(--serif); font-weight: 600; font-size: 1.1rem; margin: 0 0 4px; }
+  details.ev { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 10px 15px; margin-top: 10px; box-shadow: var(--shadow); }
+  details.ev summary { cursor: pointer; font-size: .92rem; font-weight: 600; list-style: none; display: flex; align-items: center; gap: 9px; }
+  details.ev summary::-webkit-details-marker { display: none; }
+  details.ev summary::before { content: "▸"; color: var(--accent); font-size: .8rem; }
+  details.ev[open] summary::before { content: "▾"; }
+  details.ev summary .idt { font-family: var(--mono); font-weight: 600; color: var(--accent); }
+  details.ev pre { overflow-x: auto; background: var(--surface-2); border: 1px solid var(--line-2); border-radius: 8px; padding: 11px 13px; font-family: var(--mono); font-size: .73rem; line-height: 1.55; margin: 11px 0 8px; }
+  details.ev .cmt { color: var(--ink-3); }
+  details.ev .verdict { font-size: .82rem; margin: 0; }
+  details.ev .verdict b.ok { color: var(--ok); } details.ev .verdict b.warn { color: var(--warn); } details.ev .verdict b.bad { color: var(--bad); }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="wrap row">
+    <span class="brand">PAINT · plan</span>
+    <nav>
+      <a href="#status">Status</a>
+      <a href="#ask">For Lily</a>
+      <a href="#bugs">Bugs</a>
+      <a href="#analysis">Analysis</a>
+      <a href="#infra">Infra</a>
+      <a href="#writing">Writing</a>
+    </nav>
+  </div>
+</div>
+
+<div class="wrap">
+  <header class="hero">
+    <p class="eyebrow">Project plan &amp; roadmap · 22 Jul 2026</p>
+    <h1 class="title">PAINT — what's next</h1>
+    <p class="subtitle">Pigmentation genetics in Neanderthals &amp; Denisovans: bugs to fix, the analysis redesign, and the road to two papers.</p>
+    <div class="meta-row">
+      <div class="m"><span class="k">Team</span><span class="v">Lasisi (PI) · Heald · Pryor</span></div>
+      <div class="m"><span class="k">Source of truth</span><span class="v"><code>plan/plan.md</code> + <code>plan/changelog.md</code></span></div>
+      <div class="m"><span class="k">Dataset source</span><span class="v"><code>pigmentation-gene-network</code> (hg38)</span></div>
+    </div>
+    <div class="legend">
+      <span class="who">TL</span> Tina <span class="who">LH</span> Lily <span class="who">YP</span> Yemko
+      &nbsp;·&nbsp; <span class="pri">🔴 high</span> <span class="pri">🟡 med</span> <span class="pri">⚪ low</span>
+    </div>
+  </header>
+
+  <!-- STATUS -->
+  <section id="status">
+    <div class="sec-head"><span class="sec-num">01</span><h2>Where things stand</h2></div>
+    <p class="lede">Three sources are now reviewed and cross-checked. The big shift: the four pigmentation datasets we wanted already exist, harmonized on hg38, in one repo — so the work moves from <em>assembling</em> data to <em>integrating</em> it and fixing a handful of pipeline bugs.</p>
+    <div class="sources">
+      <div class="src"><span class="tag">Reviewed</span><h3>Repo</h3><p><code>lasisilab/paint-workflowr</code> — thesis site, small data, scripts.</p></div>
+      <div class="src"><span class="tag">Reviewed</span><h3>Thesis</h3><p>41-page honors thesis (20 Apr 2026). Confirms the 222-SNP panel; feasibility framing.</p></div>
+      <div class="src"><span class="tag">Inventoried</span><h3>Cluster</h3><p>Great Lakes Turbo, 110 GB — the full 19-job pipeline + all genomic data.</p></div>
+    </div>
+    <div class="callout">
+      <h4>Datasets — already in <code>pigmentation-gene-network</code>, on hg38</h4>
+      <p>All four of the June-plan datasets are there — <strong>GWAS Catalog</strong>, <strong>Bajpai 2023 CRISPR</strong>, <strong>Raghunath/D'Arcy melanogenesis network</strong>, <strong>Baxter cross-species</strong> — plus the <strong>HIrisPlex-S</strong> markers (full MC1R red-hair set + blue-eye HERC2/OCA2). Only gap: the HIrisPlex-S numeric coefficients (optional; needed only for quantitative probabilities, not the directionality score).</p>
+    </div>
+
+    <div class="prov">
+      <h3>Where each dataset comes from</h3>
+      <p style="font-size:.88rem;color:var(--ink-2)">Full provenance (endpoints, licenses, freeze dates) lives in <code>pigmentation-gene-network/DATA_SOURCES.md</code>.</p>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>Dataset</th><th>Origin</th><th>What / how acquired</th><th>Level</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Melanogenesis network</strong> ("Raghunath")</td><td>Raghunath et al. 2015, <em>BMC Res Notes</em></td><td>265-node / 429 signed-directed melanogenesis backbone; curated <strong>in-lab as prior PAINT work</strong> — the mechanistic core everything else annotates.</td><td>genes</td></tr>
+            <tr><td><strong>GWAS Catalog</strong></td><td>NHGRI-EBI (Sollis 2023)</td><td>Pigmentation associations via API (<code>gwas_catalog.py</code>); 1,072 lead SNPs + 723 gene-level.</td><td>SNPs</td></tr>
+            <tr><td><strong>CRISPR screen</strong></td><td>Bajpai et al. 2023, <em>Science</em></td><td>Genome-wide screen; 169 hits (q&lt;0.10) with direction.</td><td>genes</td></tr>
+            <tr><td><strong>Cross-species</strong></td><td>Baxter et al. 2018/19, <em>PCMR</em></td><td>635 human genes + mouse/zebrafish orthologs.</td><td>genes</td></tr>
+            <tr><td><strong>PPI expansion</strong></td><td>D'Arcy et al. 2023, <em>Bioengineering</em></td><td>243-gene OMIM table + 451-node STRING PPI.</td><td>genes</td></tr>
+            <tr><td><strong>Prediction panel</strong></td><td>HIrisPlex-S (Chaitanya 2018 / Walsh 2017)</td><td>36 markers → 16 genes; coefficients = optional fetch.</td><td>SNPs</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ASK -->
+  <section id="ask">
+    <div class="sec-head"><span class="sec-num">02</span><h2>For Lily — please confirm / mull over</h2></div>
+    <div class="callout ask">
+      <h4>① Denisova 3 — was the chromosome naming an accident?</h4>
+      <p>Denisova 3's BAM is the <em>only</em> one using <code>chr</code>-prefixed contigs (<code>chr1</code>, <code>chrM</code>); every other sample and the reference use bare names (<code>1</code>, <code>2</code>). So a ~30× Denisovan comes out near-empty at the pigmentation loci and lands in the sparse group of Fig 5. If that mismatch was unintentional, we re-run it with matched contigs and it should jump to the high-coverage tier — which would also move its position in the PCA and missingness results.</p>
+    </div>
+    <div class="callout ask">
+      <h4>② The big one — the pigmentation panel is on hg38 but the data is hg19</h4>
+      <p>This is now confirmed with evidence (it's why the pigmentation PCA came out flat, and it also shifts the depth measurements). Did you know the GWAS/panel coordinates were hg38 while the SGDP + archaic data are hg19? And how do you want to harmonize — lift the data up to hg38 (matches the plan and the four datasets) or lift the panel down to hg19? See B2.</p>
+      <h4>③ One quick confirm</h4>
+      <p>Was the whole-genome calling's <code>--ploidy 1</code> (haploid) intentional? It means no heterozygous genotypes on autosomes. (Also: there are two ancient-calling scripts, <code>-mv</code> vs <code>-c</code> — the <code>-c</code> one is clearly the one used, so we'll just delete the other.)</p>
+    </div>
+  </section>
+
+  <!-- BUGS -->
+  <section id="bugs">
+    <div class="sec-head"><span class="sec-num">03</span><h2>Bugs &amp; fixes</h2></div>
+    <p class="lede">Each item below was <strong>reproduced with commands + captured output</strong> — see <code>plan/verify/BUG_EVIDENCE.md</code> (runnable <code>verify_bugs.sh</code>). The headline: a <strong>genome-build mismatch</strong> (hg38 panel vs hg19 data) is the root cause of the pigmentation-PCA problem and also shifts the depth measurements. One earlier claim (A4) didn't hold and is downgraded. None damage the data — they affect results.</p>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>ID</th><th>Issue</th><th>Effect</th><th>Status</th><th>Pri · Owner</th></tr></thead>
+        <tbody>
+          <tr><td class="idt">A2</td><td><strong>Genome-build mismatch</strong> — 222-SNP panel is hg38, reference &amp; data are hg19</td><td>Root cause: pigmentation PCA collapses to rank-1 → all archaics project to identical coords; depth arm measures loci ~kb off-target</td><td><span class="chip bad">confirmed</span></td><td>🔴 TL/LH</td></tr>
+          <tr><td class="idt">A1</td><td>Denisova 3 chr-naming mismatch (only chr-prefixed BAM)</td><td>Flagship Denisovan under-recovered (0.5×, 69/222); sparse in Fig 5 &amp; PCA. Independent of A2</td><td><span class="chip bad">confirmed</span></td><td>🔴 LH→TL</td></tr>
+          <tr><td class="idt">A3</td><td><code>--ploidy 1</code> haploid whole-genome calling on autosomes</td><td>Heterozygotes never emitted (output GTs single-allele)</td><td><span class="chip bad">confirmed</span></td><td>🟡 LH</td></tr>
+          <tr><td class="idt">A4</td><td>Two ancient-calling scripts (<code>-mv</code> vs <code>-c</code>)</td><td><strong>Not an active bug</strong> — committed output has all 222 sites; delete the unused <code>-mv</code> script</td><td><span class="chip neutral">downgraded</span></td><td>⚪ LH/TL</td></tr>
+          <tr><td class="idt">A5</td><td>Orphan/broken scripts (<code>ancient_merge</code> glob matches nothing; <code>pca_ancient</code> missing <code>hg19.fa</code> + dead output)</td><td>Confusing/unused; won't run</td><td><span class="chip bad">confirmed</span></td><td>⚪ LH/TL</td></tr>
+          <tr><td class="idt">A6</td><td>Repo housekeeping (395→222, stale link, empty LICENSE, laptop paths)</td><td>Docs/reproducibility polish</td><td><span class="chip neutral">cleanup</span></td><td>⚪ LH</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 style="margin-top:26px">Evidence — reproduce each one</h3>
+    <p style="font-size:.9rem;color:var(--ink-2)">Full re-runnable log: <a href="https://github.com/lasisilab/paint-workflowr/blob/main/plan/verify/BUG_EVIDENCE.md">plan/verify/BUG_EVIDENCE.md</a> · script <a href="https://github.com/lasisilab/paint-workflowr/blob/main/plan/verify/verify_bugs.sh">verify_bugs.sh</a>. Expand any item for the exact command + real output.</p>
+
+    <details class="ev">
+      <summary><span class="idt">A2</span> Genome-build mismatch — the proof</summary>
+<pre>$ grep -E "48134288|48426484" data/snps.txt
+15:48134288::            <span class="cmt"># SLC24A5/rs1426654 = hg38 (hg19 would be 48426484)</span>
+
+$ ssh greatlakes head -1 reference/hs37d5.fa
+>1 dna:chromosome chromosome:GRCh37:1:...   <span class="cmt"># reference & data are hg19</span>
+
+$ awk 'NR>1{n++;if($5+0==0)z++}END{print n,z}' pigmentation_snps_freq.afreq
+sites=222   ALT_FREQ==0: 221     <span class="cmt"># 221/222 monomorphic in SGDP (all-reference)</span>
+
+$ cat pigmentation.pca.eigenval      |   $ cat sgdp.wg.pca.eigenval  (same samples)
+0.0627529                            |   2.29579
+2.9703e-18   (× 9 more)              |   1.54548  1.40896  1.31014 ...
+                                     <span class="cmt"># rank-1 (1 real PC) vs full-rank</span>
+
+$ head -3 data/ancient.projected.pig.sscore
+Chagyrskaya8 ... 0.0335547,-4.0e-11,1.8e-11,...   <span class="cmt"># every archaic sample</span>
+Denisova25   ... 0.0335547,-4.0e-11,1.8e-11,...   <span class="cmt"># projects to IDENTICAL coords</span>
+
+$ grep '^15' data/vindija33_depth.txt | grep 48134288
+15  48134288  19    <span class="cmt"># depth arm also measures the hg38 coord (~292kb off-target)</span></pre>
+      <p class="verdict"><b class="bad">CONFIRMED.</b> Panel is hg38, reference/data are hg19 → wrong coordinates everywhere pigmentation SNPs are used. Fixed by B2.</p>
+    </details>
+
+    <details class="ev">
+      <summary><span class="idt">A1</span> Denisova 3 chromosome-naming</summary>
+<pre>$ samtools view -H filtered_Denisova3.bam | grep '^@SQ' | head -2
+@SQ  SN:chrM ...   @SQ  SN:chr1 ...    <span class="cmt"># chr-prefixed — the ONLY sample that is</span>
+$ samtools view -H filtered_vindija33.bam | grep '^@SQ' | head -2
+@SQ  SN:1 ...      @SQ  SN:2 ...       <span class="cmt"># bare (matches reference & panels)</span>
+
+# mean depth over the panel:  Denisova3 = 0.5x (69/222)   Vindija33 = 30.7x (222/222)</pre>
+      <p class="verdict"><b class="bad">CONFIRMED.</b> Its extraction fails on the contig-name mismatch → looks empty though it's high-coverage. Independent of A2.</p>
+    </details>
+
+    <details class="ev">
+      <summary><span class="idt">A3</span> Haploid (<code>--ploidy 1</code>) autosomal calling</summary>
+<pre>$ grep -nE 'ploidy|CHRS=' ancient_wg.slurm
+64: CHRS=( {1..22} X Y )        <span class="cmt"># autosomes included</span>
+83:     --ploidy 1 \
+$ bcftools view -H -r 1 ancient_sgdp_wg.vcf.gz | head
+1  846808  C  T   0:0,255:27,0   .:0,0:0,0   0:0,67:2,0
+                  <span class="cmt"># GT is a single allele (haploid) — never 0/1</span></pre>
+      <p class="verdict"><b class="warn">CONFIRMED.</b> Heterozygotes are never emitted on autosomes. Confirm this was intended.</p>
+    </details>
+
+    <details class="ev">
+      <summary><span class="idt">A4</span> Two callers — this one did NOT hold up</summary>
+<pre>$ grep -A1 'bcftools call' pigmentation_ancient_call.slurm  pig_call_miss.slurm
+pigmentation_ancient_call.slurm:  bcftools call -mv    <span class="cmt"># variants-only</span>
+pig_call_miss.slurm:              bcftools call -c     <span class="cmt"># keeps all sites</span>
+$ bcftools view -H ancient_pigmentation.vcf.gz | wc -l
+222     <span class="cmt"># FULL panel — nothing was dropped; the -c script is the one used</span></pre>
+      <p class="verdict"><b class="warn">DOWNGRADED.</b> Not an active bug — the committed output has all 222 sites. Just delete the unused <code>-mv</code> script. (Original "ascertainment bias" claim was wrong.)</p>
+    </details>
+
+    <details class="ev">
+      <summary><span class="idt">A5</span> Orphan / broken scripts</summary>
+<pre>$ ls ancient_wholegenome/*.wg.vcf.gz
+ls: cannot access '*.wg.vcf.gz': No such file or directory   <span class="cmt"># ancient_merge glob matches nothing</span>
+$ ls ancient_wholegenome/*_wg.vcf.gz
+ancient_sgdp_wg.vcf.gz            <span class="cmt"># real file is _wg, not .wg</span>
+$ ls reference/ ; grep -n hg19.fa pca_ancient.slurm
+hs37d5.fa  hs37d5.fa.fai          <span class="cmt"># no hg19.fa</span>
+pca_ancient.slurm:19: REF=".../reference/hg19.fa"   <span class="cmt"># references a missing file</span></pre>
+      <p class="verdict"><b class="bad">CONFIRMED.</b> Both are dead/broken — delete or fix.</p>
+    </details>
+  </section>
+
+  <!-- ANALYSIS -->
+  <section id="analysis">
+    <div class="sec-head"><span class="sec-num">04</span><h2>Analysis redesign</h2><span style="margin-left:auto;font-size:.8rem;color:var(--ink-3)">from the 17 Jun plan</span></div>
+    <div class="cards">
+      <div class="card">
+        <h3>Data &amp; coordinates</h3>
+        <p class="sub">The unblocking step — B2 likely also fixes A2 and enables B1.</p>
+        <ul class="checklist">
+          <li><span class="box"></span><span class="body"><span class="item-head"><span class="idt">B1</span><span class="t">Four-dataset coverage analysis</span><span class="pri">🔴</span><span class="who">TL</span><span class="who">LH</span></span><div class="item-note">Layered coverage: GWAS-only, then each of the four subsets. Source: <code>pigmentation-gene-network</code>.</div></span></li>
+          <li><span class="box"></span><span class="body"><span class="item-head"><span class="idt">B2</span><span class="t">Normalize everything to hg38</span><span class="pri">🔴</span><span class="who">TL</span><span class="who">LH</span></span><div class="item-note">Datasets already hg38; lift the archaic + SGDP side from hs37d5/hg19. Likely resolves A2.</div></span></li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>"What color were they?"</h3>
+        <p class="sub">Simple, fast, defensible — get the landscape out first.</p>
+        <ul class="checklist">
+          <li><span class="box"></span><span class="body"><span class="item-head"><span class="idt">B3</span><span class="t">Directionality polygenic score + MC1R check</span><span class="pri">🟡</span><span class="who">TL</span><span class="who">LH</span></span><div class="item-note">GWAS betas → +1/−1 per pigment-increasing/decreasing allele. Reconfirm no MC1R red-hair loss-of-function. HIrisPlex-S coefficients optional (European-trained → directionality is the safer route for archaics).</div></span></li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>PCA, redone</h3>
+        <p class="sub">Three variants × two designs.</p>
+        <ul class="checklist">
+          <li><span class="box"></span><span class="body"><span class="item-head"><span class="idt">B4</span><span class="t">Three-variant PCA</span><span class="pri">🟡</span><span class="who">LH</span></span><div class="item-note">(i) pigmentation SNPs · (ii) whole pigmentation-related genes (pull start/stop coords) · (iii) genome-wide. Designs: everybody-together (moderns + 3 high-cov) &amp; moderns-only with all ancients projected.</div></span></li>
+          <li><span class="box"></span><span class="body"><span class="item-head"><span class="idt">B5</span><span class="t">Missingness strategy</span><span class="pri">🟡</span><span class="who">TL</span><span class="who">LH</span></span><div class="item-note">Masking all → &lt;50 SNPs; focus high-coverage for SNP work, move to gene-level to escape sparsity.</div></span></li>
+          <li><span class="box"></span><span class="body"><span class="item-head"><span class="idt">B6</span><span class="t">Genes-vs-SNPs layers</span><span class="pri">🟡</span><span class="who">YP</span><span class="who">TL</span></span><div class="item-note">Network/Baxter/Bajpai = genes (coords); GWAS/HIrisPlex = SNPs. Keep explicit.</div></span></li>
+          <li><span class="box"></span><span class="body"><span class="item-head"><span class="idt">B7</span><span class="t">Functional / skin-specific focus</span><span class="pri">⚪</span><span class="who">YP</span><span class="who">LH</span></span><div class="item-note">Report syn:non-syn ratios; highlight skin-specific genes (TYR, OCA2, TYRP1, DCT, PMEL, MLANA).</div></span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- INFRA -->
+  <section id="infra">
+    <div class="sec-head"><span class="sec-num">05</span><h2>Repo &amp; cluster infrastructure</h2></div>
+    <div class="card">
+      <ul class="checklist">
+        <li class="done"><span class="box"></span><span class="body"><span class="item-head"><span class="idt">C1</span><span class="t">Repo moved to Lasisi Lab org</span><span class="who">TL</span></span><div class="item-note">Done — <code>lasisilab/paint-workflowr</code>. Confirm Lily's access.</div></span></li>
+        <li><span class="box"></span><span class="body"><span class="item-head"><span class="idt">C2</span><span class="t">Cluster-compatible workflow (PODFRIDGE-style)</span><span class="pri">🟡</span><span class="who">TL</span></span><div class="item-note">Gitignore the cluster tree, code runs "as if the cluster were a folder." Lily develops locally (8 GB RAM → PCAs/calling stay on cluster) &amp; pings Tina to run.</div></span></li>
+        <li><span class="box"></span><span class="body"><span class="item-head"><span class="idt">C3</span><span class="t">Preserve derived cluster data</span><span class="pri">🟡</span><span class="who">TL</span></span><div class="item-note">Turbo isn't archival — back up merged SGDP panels, archaic call sets, PCA outputs.</div></span></li>
+        <li><span class="box"></span><span class="body"><span class="item-head"><span class="idt">C4</span><span class="t">"Where everything lives" doc</span><span class="pri">⚪</span><span class="who">LH</span></span><div class="item-note">Google Doc: dissertation, repos, Drive folders.</div></span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- WRITING -->
+  <section id="writing">
+    <div class="sec-head"><span class="sec-num">06</span><h2>Writing &amp; lit review</h2></div>
+    <div class="card">
+      <ul class="checklist">
+        <li><span class="box"></span><span class="body"><span class="item-head"><span class="idt">D1</span><span class="t">Archaic-pigmentation lit review</span><span class="pri">🔴</span><span class="who">LH</span></span><div class="item-note">Undermind "archaic skin" → Claude-screen 50–100 papers (new-data/selection papers since ~2000 → supplementaries → search the gene list). Anchors: Lalueza-Fox 2007 + rebuttals; Omer Gokcumen. Feeds both papers.</div></span></li>
+        <li><span class="box"></span><span class="body"><span class="item-head"><span class="idt">D2</span><span class="t">TIG review manuscript</span><span class="pri">🔴</span><span class="who">LH</span><span class="who">TL</span></span><div class="item-note">Prioritize — no new analysis. Keep TIG vs PAINT tasks separate.</div></span></li>
+        <li><span class="box"></span><span class="body"><span class="item-head"><span class="idt">D3</span><span class="t">PAINT paper</span><span class="pri">🟡</span><span class="who">TL</span><span class="who">LH</span><span class="who">YP</span></span><div class="item-note">Draft title: <em>"The genetic landscape of pigmentation in our hominins."</em> Resolve the PAINT acronym; Tina scopes journals. Get the landscape out before it's scooped.</div></span></li>
+      </ul>
+    </div>
+  </section>
+
+  <footer>
+    <p>This page renders <code>plan/plan.md</code>; the dated history of what was done/found/decided is in <code>plan/changelog.md</code>. If this page and <code>plan.md</code> ever disagree, <code>plan.md</code> is authoritative. Bug items A2–A5 are preliminary pending a clean re-verification pass.</p>
+  </footer>
+</div>
+
+<script>
+  (function () {
+    var links = Array.prototype.slice.call(document.querySelectorAll('.topbar nav a'));
+    var map = {}; links.forEach(function (a){ map[a.getAttribute('href').slice(1)] = a; });
+    var obs = new IntersectionObserver(function (es){ es.forEach(function(e){ if(e.isIntersecting){ links.forEach(function(l){l.style.color='';l.style.background='';}); var a=map[e.target.id]; if(a){a.style.color='var(--accent)';a.style.background='var(--surface)';} } }); }, { rootMargin: '-45% 0px -50% 0px' });
+    document.querySelectorAll('section[id]').forEach(function(s){ obs.observe(s); });
+  })();
+</script>
+</body>
+</html>

@@ -1,0 +1,67 @@
+# Publish the PAINT site to GitHub Pages via the native Pages-from-Actions path.
+#
+# NOTE ON BUILD SYSTEM: this repo is a **workflowr** (R Markdown) project, not
+# Quarto. The workflowr site is built locally with wflow_publish() and the output
+# is committed to docs/; CI does NOT re-run R (that needs R + the genomics stack +
+# cluster data). This job therefore just *assembles and deploys the already-built
+# static output* — the same deploy pattern as the Quarto publish-site.yml in
+# tinalasisi/pigmentation-gene-network, adapted to workflowr.
+#
+# It also copies plan/*.html into /plan/ so the roadmap resolves at a direct link
+# (https://lasisilab.github.io/paint-workflowr/plan/) but is NOT in the site navbar.
+# The internal plan.md / changelog.md sources are deliberately NOT published.
+name: Publish site
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Latest push to main always wins; a new run cancels an in-flight/queued one.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Assemble site (workflowr docs/ + plan/)
+        run: |
+          set -euo pipefail
+          rm -rf _site && mkdir -p _site
+          # 1) the workflowr-built site (index, introduction, depth, pca, …)
+          cp -R docs/. _site/
+          # 2) the plan — reachable at /plan/ by direct link, absent from the navbar.
+          #    Publish only the rendered HTML; keep plan.md / changelog.md repo-only.
+          mkdir -p _site/plan
+          cp plan/*.html _site/plan/
+          # GitHub Pages must not run Jekyll (workflowr ships _files/ + site_libs/).
+          touch _site/.nojekyll
+
+      - uses: actions/configure-pages@v5
+        with:
+          # Self-provision Pages (source = GitHub Actions) on first run, so the
+          # step doesn't fail if Settings → Pages hasn't been set by hand yet.
+          enablement: true
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
