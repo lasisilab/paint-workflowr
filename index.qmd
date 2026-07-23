@@ -1,0 +1,34 @@
+---
+title: "PAINT"
+subtitle: "Pigmentation genetics in archaic hominins"
+---
+
+**PAINT** is an ongoing project on the genetics of pigmentation — skin, hair, and eye color — in Neanderthals and Denisovans, and how it compares to present-day human variation. The recurring public question is *"what did archaic humans look like?"* PAINT asks how much their ancient DNA can actually answer, and stays honest about where the data runs out.
+
+## Status
+
+- **v1 — honors thesis (2026, Lily Heald).** Sets up the feasibility question: how complete and deep is the archaic sequencing at pigmentation loci, and where do archaic samples fall relative to modern humans? The analysis pages below are that work.
+- **In progress — the PAINT paper and a *Trends in Genetics* review.** Expanding to four complementary pigmentation datasets, standardizing everything on the hg38 genome build, a directionality-based pigmentation score, and redone principal-component analyses. The full roadmap lives in the [project plan](plan/paint-plan.html).
+
+## Analyses
+
+- [Background](introduction.qmd) — ancient-genome availability, the modern reference panel (Simons Genome Diversity Project), and the pigmentation-SNP set, with maps and reference tables.
+- [Sequencing depth &amp; missingness](depth.qmd) — how complete and reliable the archaic sequencing is, with consensus-accuracy simulations and a mixed-effects model of what drives missing data.
+- [Principal component analysis](pca.qmd) — where archaic samples fall relative to modern populations, genome-wide versus pigmentation-only.
+
+## What the work finds
+
+Archaic sequencing is uneven and often shallow; missing data is non-random (older samples have more of it); and pigmentation-associated SNPs on their own don't separate populations the way the whole genome does. So confident, species-wide claims about archaic pigmentation aren't well supported — the contribution is an honest map of what the genetics does and doesn't show.
+
+## Data sources
+
+- **Simons Genome Diversity Project (SGDP)** — modern human reference genomes.
+- **Max Planck Institute for Evolutionary Anthropology (MPI-EVA)** — archaic Neanderthal/Denisovan genomes (`ftp.eva.mpg.de/neandertal`).
+- **NHGRI-EBI GWAS Catalog** — pigmentation-associated variants (EFO trait `OBA_VT0002095`); source of the 222-SNP panel.
+- **NASA Earth Observations** — AURA UV-index climatology.
+
+## Team
+
+Lily Heald · Tina Lasisi (advisor) · Yemko Pryor.
+
+*Code is released under the MIT License; written content and figures under CC BY 4.0 — see [License](license.qmd).*

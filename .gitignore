@@ -69,3 +69,9 @@ docs/depth_spinoff.html
 *.bed
 data/allele_ref.txt
 *.tbi
+
+# Quarto (migration from workflowr — see MIGRATION.md)
+/_site/
+/.quarto/
+# NOTE: _freeze/ is intentionally NOT ignored — it holds the rendered R outputs
+# that CI serves without re-running R. Commit it after a local `quarto render`.

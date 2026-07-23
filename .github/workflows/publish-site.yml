@@ -1,18 +1,15 @@
-# Publish the PAINT site to GitHub Pages via the native Pages-from-Actions path.
+# Render the Quarto site and deploy it to GitHub Pages (Pages-from-Actions).
 #
-# NOTE ON BUILD SYSTEM: this repo is a **workflowr** (R Markdown) project, not
-# Quarto. The workflowr site is built locally with wflow_publish() and the output
-# is committed to docs/; CI does NOT re-run R (that needs R + the genomics stack +
-# cluster data). This job therefore just *assembles and deploys the already-built
-# static output* — the same deploy pattern as the Quarto publish-site.yml in
-# tinalasisi/pigmentation-gene-network, adapted to workflowr.
+# This repo was migrated from workflowr to Quarto (see MIGRATION.md). CI does NOT
+# run R: with `execute: freeze: auto` in _quarto.yml, Quarto renders the R-heavy
+# pages (introduction, depth, pca, cleaning) from the committed _freeze/ results,
+# which are produced by a one-time local `quarto render` on a machine with R + the
+# data files. Prose pages (index, about, license) render without any of that.
 #
-# It also copies plan/*.html into /plan/ so the roadmap resolves at a direct link
-# (https://lasisilab.github.io/paint-workflowr/plan/) but is NOT in the site navbar.
-# The internal plan.md / changelog.md sources are deliberately NOT published.
+# The project plan is copied into /plan/ so it resolves at a direct link
+# (https://lasisilab.github.io/paint-workflowr/plan/) but stays out of the navbar.
 #
-# Action versions pinned to current Node-24 majors (checked 2026-07; GitHub is
-# deprecating Node 20 on runners). Bump these together if a Node-20 warning returns.
+# Action versions pinned to current Node-24 majors (checked 2026-07).
 name: Publish site
 
 on:
@@ -25,7 +22,6 @@ permissions:
   pages: write
   id-token: write
 
-# Latest push to main always wins; a new run cancels an in-flight/queued one.
 concurrency:
   group: pages
   cancel-in-progress: true
@@ -36,26 +32,23 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - name: Assemble site (workflowr docs/ + plan/)
+      - uses: quarto-dev/quarto-actions/setup@v2
+
+      - name: Render Quarto site
+        run: quarto render
+
+      - name: Add the project plan at /plan/ (direct link only, not in navbar)
         run: |
           set -euo pipefail
-          rm -rf _site && mkdir -p _site
-          # 1) the workflowr-built site (index, introduction, depth, pca, …)
-          cp -R docs/. _site/
-          # 2) the plan — reachable at /plan/ by direct link, absent from the navbar.
-          #    Publish only the rendered HTML; keep plan.md / changelog.md repo-only.
           mkdir -p _site/plan
           cp plan/*.html _site/plan/
-          # GitHub Pages must not run Jekyll (workflowr ships _files/ + site_libs/).
-          touch _site/.nojekyll
 
       - uses: actions/configure-pages@v6
         with:
-          # Self-provision Pages (source = GitHub Actions) if not already enabled.
-          # NOTE: an org repo's built-in Actions token may lack permission to CREATE
-          # the Pages site on the very first run; if so, enable it once by hand
-          # (Settings → Pages → Source = GitHub Actions, or `gh api -X POST
-          # repos/<owner>/<repo>/pages -f build_type=workflow`), then re-run.
+          # Self-provision Pages if not already enabled. NOTE: an org repo's
+          # built-in token may lack permission to CREATE the site on the first
+          # run; if so, enable once (Settings → Pages → Source = GitHub Actions,
+          # or `gh api -X POST repos/<owner>/<repo>/pages -f build_type=workflow`).
           enablement: true
 
       - uses: actions/upload-pages-artifact@v5
