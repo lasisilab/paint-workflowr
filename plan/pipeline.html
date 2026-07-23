@@ -119,6 +119,7 @@
   <section id="raw">
     <div class="sec-head"><span class="sec-num">02</span><h2>The raw public data</h2></div>
     <p class="lede">The archaic genomes are published — as <strong>BAMs aligned to hg19/GRCh37</strong> — in two public archives: <strong>MPI-EVA</strong> (Max Planck, <code>ftp.eva.mpg.de</code>) and <strong>EBI-ENA</strong> (<code>ftp.sra.ebi.ac.uk</code>). Lily's pipeline started from these BAMs and called its own genotypes. Sources marked "confirm" are being recovered in Stage 0 of the rebuild.</p>
+    <div class="callout"><h4>BAMs only — no FASTQ (confirmed from thesis §2.3)</h4><p>The archaic data was taken as <strong>BAM files "previously mapped to the GRCh37/hg19 reference"</strong> — i.e. the reads were already aligned by the original data producers; Lily did no alignment, adapter-trimming, or read-collapsing herself, and there was <strong>no FASTQ</strong>. The modern SGDP data came as <strong>VCFs</strong> (also hg19). Consequence for the rebuild: re-mapping to hg38 would require going back to FASTQ and re-running the whole aDNA read-processing chain (and the MPI-EVA genomes are published only as processed BAMs) — so <strong>rebuilding on hg19 is the practical choice</strong>, not just the cheap one.</p></div>
     <div class="table-scroll"><table>
       <thead><tr><th>Sample</th><th>Type</th><th>Coverage tier</th><th>Archive</th><th>Accession / path</th><th>Note</th></tr></thead>
       <tbody>
@@ -139,7 +140,30 @@
         <tr><td>El Sidrón (Sid1253)</td><td>Neanderthal</td><td>none</td><td>confirm</td><td>confirm in Stage 0</td><td><strong>no usable data</strong> → 14 analyzed, not 15</td></tr>
       </tbody>
     </table></div>
-    <p style="font-size:.82rem;color:var(--ink-3);margin-top:10px">Modern comparison: the <strong>Simons Genome Diversity Project</strong> (SGDP), 15 individuals, genotyped at ~9.2 M whole-genome SNPs on hg19 (<code>pca/modern/sgdp.wg</code> on the cluster — verified hg19, contains the pigmentation SNPs by rsID).</p>
+    <p style="font-size:.82rem;color:var(--ink-3);margin-top:10px">Modern comparison: the <strong>Simons Genome Diversity Project</strong> (SGDP), 15 individuals, downloaded as whole-genome <strong>VCFs</strong> on hg19 (thesis: a 34.4 M-SNP whole-genome panel; <code>pca/modern/sgdp.wg</code> on the cluster — verified hg19, contains the pigmentation SNPs by rsID).</p>
+
+    <h3 style="font-size:1.1rem;margin:26px 0 4px">Coverage — exact, current</h3>
+    <p style="font-size:.9rem;color:var(--ink-2);max-width:var(--measure)">Per-sample mean depth over the panel, computed exactly from the committed <code>*_depth.txt</code> (full record + caveats: <a href="https://github.com/lasisilab/paint-workflowr/blob/main/plan/coverage_current.tsv"><code>coverage_current.tsv</code></a>). <strong>Read these as caveated:</strong> they're measured at the panel's <em>current (hg38) mis-located</em> coordinates (bug A2), so they are realized depths at the wrong positions, not true per-locus coverage; <strong>Denisova 3's 0.5× is artifactual</strong> (bug A1 — its true coverage is ~30×); and a max far above the mean (Vindija 87, Scladina) is a <strong>pileup artifact</strong> that motivates the max-depth cap. True per-locus coverage comes after the rebuild (Q6). <strong>10 of the 14 samples are under ~3.2× — which is why hard-calling is the wrong tool and we move to genotype likelihoods (ANGSD).</strong></p>
+    <div class="table-scroll"><table>
+      <thead><tr><th>Sample</th><th>Mean depth (panel)</th><th>Max</th><th>Covered / 222</th><th>Tier</th></tr></thead>
+      <tbody>
+        <tr><td>Vindija 33.19</td><td>30.716</td><td>106</td><td>222/222</td><td><span class="chip ok">high</span></td></tr>
+        <tr><td>Chagyrskaya 8</td><td>27.423</td><td>85</td><td>222/222</td><td><span class="chip ok">high</span></td></tr>
+        <tr><td>Denisova 25</td><td>16.680</td><td>48</td><td>183/222</td><td><span class="chip ok">high</span></td></tr>
+        <tr><td>Denisova 5</td><td>16.059</td><td>36</td><td>222/222</td><td><span class="chip ok">high</span></td></tr>
+        <tr><td>Vindija 87</td><td>3.185</td><td><strong>147</strong></td><td>122/222</td><td><span class="chip warn">low · max-depth artifact</span></td></tr>
+        <tr><td>Les Cottés</td><td>2.941</td><td>51</td><td>142/222</td><td><span class="chip warn">low</span></td></tr>
+        <tr><td>Goyet</td><td>2.464</td><td>54</td><td>163/222</td><td><span class="chip warn">low</span></td></tr>
+        <tr><td>Mezmaiskaya 2</td><td>1.856</td><td>53</td><td>113/222</td><td><span class="chip warn">low</span></td></tr>
+        <tr><td>Scladina</td><td>1.856</td><td><strong>91</strong></td><td>64/222</td><td><span class="chip warn">low · max-depth artifact</span></td></tr>
+        <tr><td>Denisova 11 (denny)</td><td>1.252</td><td>20</td><td>121/222</td><td><span class="chip warn">low · hybrid</span></td></tr>
+        <tr><td>Spy</td><td>0.743</td><td>22</td><td>75/222</td><td><span class="chip warn">very low</span></td></tr>
+        <tr><td>Denisova 3</td><td>0.495</td><td>6</td><td>69/222</td><td><span class="chip bad">artifact — true ~30× (A1)</span></td></tr>
+        <tr><td>Mezmaiskaya 1</td><td>0.180</td><td>2</td><td>37/222</td><td><span class="chip warn">very low</span></td></tr>
+        <tr><td>Hohlenstein-Stadel</td><td>0.117</td><td>2</td><td>24/222</td><td><span class="chip warn">very low</span></td></tr>
+        <tr><td>El Sidrón (Sid1253)</td><td>—</td><td>—</td><td>0</td><td><span class="chip neutral">no data — excluded</span></td></tr>
+      </tbody>
+    </table></div>
   </section>
 
   <!-- FLOW -->
@@ -167,6 +191,7 @@
       <span class="arrow">→</span>
       <div class="node fig"><span class="k">output</span><span class="t">Coverage &amp; PCA figures</span><span class="d">before / after</span></div>
     </div>
+    <p style="font-size:.85rem;color:var(--ink-2);max-width:var(--measure);margin-top:16px"><strong>What "contig" means</strong> (it comes up a lot): a <em>contig</em> ("contiguous sequence") is one continuous stretch of the reference the reads align to — in a human reference, essentially each chromosome, plus small unplaced/decoy pieces. Every BAM and VCF opens with a header line per contig, <code>@SQ SN:&lt;name&gt; LN:&lt;length&gt;</code>, and the <code>SN</code> value is its label. <strong>"Contig naming"</strong> is whether that label is bare (<code>1</code>) or prefixed (<code>chr1</code>). Two files can describe the same genome yet be unusable together if one says <code>1</code> and the other <code>chr1</code> — the software matches by name, finds nothing, and silently returns empty. That one-sample mismatch is bug <strong>A1</strong> (Denisova 3's BAM was <code>chr</code>-named against a bare-named reference and panel), which is why the "rename contigs" step above harmonizes <em>every</em> sample to bare names up front.</p>
   </section>
 
   <!-- WHAT THE PIPELINE DOES -->
@@ -179,9 +204,9 @@
         <tr><td>Acquire</td><td>download BAMs, sort, index</td><td>re-download + <strong>checksum</strong> (Q1); harmonize contig naming for all (fixes A1 globally)</td></tr>
         <tr><td>Raw QC</td><td>— (none)</td><td><strong>mapDamage, sex, contamination, coverage-vs-expectation</strong> (Q6/Q7/Q8)</td></tr>
         <tr><td>Panel / build</td><td>panel on <strong>hg38</strong>, data on hg19 → wrong coordinates (A2)</td><td>panel put on <strong>hg19</strong> by rsID; tracer-SNP lint (Q2); allele/palindrome check (Q4)</td></tr>
-        <tr><td>Call genotypes</td><td>pigmentation: keep-all diploid; whole-genome: <strong>haploid <code>--ploidy 1</code></strong> (A3)</td><td>diploid autosomes; keep-all; <strong>max-depth cap</strong>; mapDamage-rescale; transitions kept for pigmentation, transversion-only for ancestry</td></tr>
+        <tr><td>Call genotypes</td><td><strong>hard calls</strong> (bcftools) for all samples incl. &lt;1× — forces a genotype from 1–2 reads; whole-genome was <strong>haploid <code>--ploidy 1</code></strong> (A3)</td><td><strong>genotype likelihoods (ANGSD)</strong> — no hard call for low-coverage samples; diploid model; <strong>max-depth cap</strong>; mapDamage-rescale; transitions kept for pigmentation, transversion-only for ancestry. Hard calls only for the 4–5 high-coverage genomes (reporting/cross-check)</td></tr>
         <tr><td>Modern ref</td><td>SGDP subset → merge → PCA</td><td>verify (or rebuild) <code>sgdp.wg</code> against the same lint</td></tr>
-        <tr><td>PCA + project</td><td>projection <strong>collapsed</strong> (no <code>no-mean-imputation</code>) + rank-1 panel</td><td>positive control (Q3); <code>no-mean-imputation</code> (Q5); 3 panels × 2 designs</td></tr>
+        <tr><td>PCA + project</td><td>hard-genotype <code>plink2 --score</code>; thesis §2.6 states "no imputation" but the code lacked <code>no-mean-imputation</code>, so plink silently mean-imputed → <strong>collapse</strong> on the rank-1 (wrong-build) panel</td><td><strong>PCAngsd</strong> on the genotype likelihoods (low-coverage-appropriate); positive control (Q3); non-degeneracy (Q5); 3 panels × 2 designs</td></tr>
         <tr><td>Reproduce</td><td>manual scripts, competing/dead copies, no seeds</td><td>Snakemake DAG, pinned env, seeds, CI (Q10)</td></tr>
       </tbody>
     </table></div>
@@ -213,6 +238,9 @@
         <tr><td>2026-07-23</td><td>audit</td><td>Traced each bug to its downstream consequence; rendered before-figures from committed data</td><td><span class="chip bad">found</span></td><td><code>plan/figures/before_*.png</code></td></tr>
         <tr><td>2026-07-23</td><td>0</td><td>Probed the cluster: full BAMs absent; <code>sgdp.wg</code> confirmed hg19 with pigmentation SNPs by rsID; <code>ancient_sgdp_wg.vcf.gz</code> (1.6 G) present; 129 panel SNPs overlap the modern ref (92 transitions / 37 transversions)</td><td><span class="chip ext">probed</span></td><td>this page §02, §05</td></tr>
         <tr><td>2026-07-23</td><td>—</td><td><strong>Decision:</strong> rebuild from raw rather than trust the derived data</td><td><span class="chip neutral">decided</span></td><td><code>rebuild_from_raw.md</code></td></tr>
+        <tr><td>2026-07-23</td><td>2</td><td>Documented exact per-sample panel coverage (10/14 under ~3.2×; max-depth artifacts in Vindija 87 / Scladina)</td><td><span class="chip ext">done</span></td><td><code>coverage_current.tsv</code>, §02</td></tr>
+        <tr><td>2026-07-23</td><td>1</td><td>Confirmed from thesis §2.3: archaics are BAMs pre-mapped to hg19, no FASTQ → rebuild on hg19</td><td><span class="chip ext">done</span></td><td>§02, §04</td></tr>
+        <tr><td>2026-07-23</td><td>4/6</td><td><strong>Decision:</strong> use genotype likelihoods (ANGSD) + PCAngsd for low-coverage, not hard-calling; max-depth cap; transversion-only for ancestry only</td><td><span class="chip neutral">decided</span></td><td><code>rebuild_from_raw.md</code> Stage 4/6</td></tr>
         <tr><td></td><td>0</td><td>Provenance manifest + pinned env + recover all 15 acquisition URLs</td><td><span class="chip neutral">todo</span></td><td></td></tr>
         <tr><td></td><td>1</td><td>Re-acquire raw reads (targeted or full) + harmonize naming</td><td><span class="chip neutral">todo</span></td><td></td></tr>
         <tr><td></td><td>2</td><td>Raw QC: mapDamage, sex, contamination, coverage</td><td><span class="chip neutral">todo</span></td><td></td></tr>

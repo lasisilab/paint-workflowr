@@ -20,11 +20,11 @@
 ---
 
 ## Genome-build decision (read first)
-The raw data is **hg19**. Two options, same as B2 in `plan.md`:
-- **Rebuild on hg19** (recommended for the rebuild itself): the data is already hg19, so *move the panel to hg19* and keep everything native — no lossy read re-mapping, fewer moving parts, fastest to a correct answer. The four new pigmentation datasets (hg38) are then lifted **down** to hg19 for integration, or handled in a later hg38 pass.
-- **Rebuild on hg38**: re-map the raw reads to GRCh38 first (heaviest; only worth it if we commit to hg38 as the project standard now). Defer unless you want the hg38 datasets integrated immediately.
+The raw data is **hg19**, and — confirmed from the thesis §2.3 — the archaic data is distributed as **BAM files already mapped to GRCh37/hg19** (there is **no FASTQ**; Lily inherited the data producers' alignments and did no re-mapping). This makes the choice lopsided:
+- **Rebuild on hg19** (strongly recommended): the reads are already aligned to hg19, so we *move the panel to hg19* and keep everything native — no re-alignment, no FASTQ hunt, fewest moving parts, fastest to a correct answer. The four new pigmentation datasets (hg38) are lifted **down** to hg19 for integration, or handled in a later hg38 pass.
+- **Rebuild on hg38**: would require going back to **FASTQ** (raw reads) and re-running the full aDNA read-processing chain — adapter removal, read collapsing, alignment to GRCh38, damage-aware post-processing — for every sample. FASTQ exists at ENA for some accessions but the MPI-EVA genomes are published only as processed BAMs, so this is both the heaviest option *and* partly blocked by data availability. Only worth it if hg38 becomes the committed project standard.
 
-**Default: rebuild on hg19**, lift panels to match. (One decision to confirm.)
+**Default: rebuild on hg19** (lift panels to match). The BAM-only reality makes this the practical as well as the cheap choice.
 
 ---
 
@@ -32,7 +32,7 @@ The raw data is **hg19**. Two options, same as B2 in `plan.md`:
 
 ### Stage 0 — Provenance & environment  · gate: every input traced (Q1, Q10a)
 - Build `qc/manifest.tsv`: one row per input (raw BAM, panel, SGDP, reference) with `path · sha256 · source(accession/URL) · build · N · date`.
-- Pin the environment (conda env / container) and record `samtools`, `bcftools`, `plink2`, `mapDamage`, `R` versions.
+- Pin the environment (conda env / container) and record versions of `samtools`, `bcftools`, `plink2`, **`ANGSD`**, **`PCAngsd`**, **`mapDamage`**, and `R`. (ANGSD + PCAngsd are the primary genotype-likelihood engine — see Stage 4/6 — and are conda-installable: `conda install -c bioconda angsd pcangsd mapdamage2`.)
 - **Recover the acquisition URLs for all 15 samples.** Known so far (from `sort_wget.slurm`/`phased_get.slurm`): Denisova 11 = ENA `ERR2273828`; Scladina = ENA `ERR9741105`; Hohlenstein-Stadel = MPI-EVA `L5386.bam`; Mezmaiskaya 1 = ENA `ERR257722`; Spy = MPI-EVA `A9416`; Vindija 33.19 = MPI-EVA Prüfer 2017 per-chromosome. **Still to locate (9):** Chagyrskaya 8, Denisova 5 (Altai), Denisova 25, Denisova 3, Goyet, Les Cottés, Mezmaiskaya 2, Vindija 87, El Sidrón — from the missing acquisition scripts on the cluster or the source papers (MPI-EVA `ftp.eva.mpg.de`, ENA `ftp.sra.ebi.ac.uk`).
 - **Gate:** every sample has a documented, resolvable source + expected coverage; no `unknown`.
 
@@ -55,25 +55,28 @@ Two acquisition modes — pick per the compute you want to spend (see §Compute)
 - **Allele harmonization (Q4):** REF base at each panel position == panel/VCF REF (`samtools faidx`); effect allele ∈ {REF,ALT}; **flag palindromes**; decide policy.
 - **Gate:** lint exits 0; 0 REF mismatches on retained SNPs.
 
-### Stage 4 — Re-call genotypes properly  · gate: calls sane, damage-aware
-This is where the earlier bugs get fixed by construction, and your calling-filter requests apply:
-- **Diploid autosomes** (fix A3): `bcftools call -m` with default (diploid) ploidy on 1–22; haploid only on X/Y for males as appropriate.
-- **Keep-all at the panel** (not `-mv`): emit every panel site so hom-ref is retained.
-- **Max-depth cap** (your request): reject sites whose depth is an extreme outlier (pileup artifacts in repetitive/collapsed regions) — e.g. cap at a per-sample multiple of median depth, and flag+drop sites above it. Set both a floor (min depth for a confident call) and a ceiling.
-- **Damage handling** (your request, applied carefully):
-  - **mapDamage `--rescale`** the base qualities so likely-deaminated bases are down-weighted — this keeps the transition SNPs (see caveat) while mitigating damage.
-  - **Transversion policy — important:** a blanket *transversion-only* filter would delete ~71% of the pigmentation panel, **including SLC24A5 (rs1426654) and HERC2 (rs12913832)**, which are transitions (measured: of 129 panel SNPs overlapping the reference, 92 are transitions vs 37 transversions). So: use **transversion-only for the whole-genome ancestry PCA** (standard, damage-robust) but **keep transitions for the pigmentation panel**, relying on rescaling + higher depth + high-coverage samples there. Report both.
-- **Gate:** genotypes are diploid on autosomes; no sites above the max-depth ceiling remain; a transition-heavy vs transversion-only call set are both produced for comparison.
+### Stage 4 — Genotype **likelihoods** (not hard calls)  · gate: GLs sane, damage-aware
+**Design change (2026-07-23, Tina):** the samples are mostly **low coverage** — 10 of the 14 are under ~3.2× at the panel and several are <1× (exact table in `coverage_current.tsv`). **Hard-calling with VCF tools is the wrong tool here**: forcing a definite genotype from 1–2 reads either invents a call or drops the site, and it bakes in aDNA damage as false alleles. So the primary engine is **genotype likelihoods via ANGSD**, which keep the per-genotype probability and propagate uncertainty; hard calls are reserved for the few high-coverage genomes and for specific per-SNP *reporting* (e.g. does a high-coverage archaic carry an MC1R red-hair allele).
+
+- **Primary — ANGSD genotype likelihoods** at the SNP panels (`-GL 1|2 -doGlf`, `-sites` = the panel positions, `-minMapQ 30 -minQ 20`), from the mapDamage-rescaled BAMs. No hard genotype is committed; the downstream PCA (Stage 6, PCAngsd) consumes the GLs directly.
+- **Diploid model** (fix A3): ANGSD models autosomes as diploid; the old `--ploidy 1` haploid autosomal calling is not reproduced. (X/Y handled by sex from Stage 2.)
+- **Max-depth cap** (Tina's request): impose a per-sample depth ceiling to reject pileup artifacts — the current data already shows these (e.g. **Vindija 87 mean 3.2× but max 147×; Scladina mean 1.9× but max 91×** — collapsed/repetitive regions). ANGSD `-setMaxDepth` (and `-setMinDepth`) drop sites outside a sane band; set the ceiling from each sample's depth distribution (e.g. a high percentile or a multiple of the mode), and log how many sites are dropped.
+- **Damage handling** (Tina's request, applied per analysis):
+  - **mapDamage `--rescale`** the base qualities so likely-deaminated bases are down-weighted — keeps the transition SNPs while mitigating damage. ANGSD can additionally `-trim` read ends and `-noTrans 1` where wanted.
+  - **Transversion policy — important:** a blanket *transversion-only* filter would delete ~71% of the pigmentation panel, **including SLC24A5 (rs1426654) and HERC2 (rs12913832)** (transitions; measured 92 Ti / 37 Tv among the 129 panel SNPs in the reference, and the MC1R red-hair set is transitions too). So use **transversion-only (`-noTrans 1`) for the whole-genome ancestry PCA** (standard, damage-robust) but **keep transitions for the pigmentation panel**, leaning on rescaling + GL uncertainty + the high-coverage samples. Report both.
+- **Hard calls — secondary, high-coverage only:** for the 4–5 high-coverage genomes, `bcftools mpileup | bcftools call -m` (diploid, keep-all) at the panel gives a conventional VCF for per-SNP reporting and cross-checking against published archaic genotypes (Q9). These are *not* the basis of the low-coverage PCA.
+- **Gate:** GLs produced at the panels with documented quality/depth/damage filters; max-depth ceiling applied (dropped-site counts logged); transition-kept vs transversion-only GL sets both available; high-coverage hard-call VCF produced for reporting only.
 
 ### Stage 5 — Modern reference  · gate: SGDP verified or rebuilt
 - Verify the existing `sgdp.wg` (15 samples, 9.2M hg19 SNPs — confirmed hg19, contains the pigmentation SNPs by rsID) via the Stage-3 lint + a checksum, OR rebuild it from the SGDP source if provenance can't be established (Q1). Decide 15-sample (matches the thesis) vs expanding to the 279-sample set.
 - **Gate:** modern reference passes the same build/allele lint as the archaic data.
 
-### Stage 6 — PCA + projection  · gate: positive control + non-degeneracy (Q3, Q5)
-- **Positive control (Q3):** whole-genome PCA must reproduce known structure (Africans separate on PC1; archaics among non-Africans). If it can't, stop.
-- **Non-degeneracy (Q5):** pigmentation PCA is multi-dimensional (not rank-1); projection uses **`no-mean-imputation`**; projected archaics have non-zero spread.
-- **Three panels × two designs (B4):** pigmentation SNPs / whole pigmentation genes / genome-wide × (high-coverage-together, moderns-with-all-projected).
-- **Gate:** control reproduces known structure; no collapse; before/after figures rendered.
+### Stage 6 — PCA + projection (GL-based)  · gate: positive control + non-degeneracy (Q3, Q5)
+- **Primary — PCAngsd on the genotype likelihoods** from Stage 4: this is the low-coverage-appropriate PCA (covariance estimated from GLs with per-sample uncertainty), for both the ancestry (whole-genome) and pigmentation panels. It replaces the old `plink2 --pca` + `--score` hard-genotype projection that produced the collapse.
+- **Positive control (Q3):** the whole-genome PCAngsd run must reproduce known structure (Africans separate on PC1; archaics among non-Africans). If it can't, stop.
+- **Non-degeneracy (Q5):** the pigmentation PCA is multi-dimensional (not rank-1) and samples spread out — the collapse was a symptom of hard-call mean-imputation on a monomorphic (wrong-build) panel; GL-based PCA on the corrected hg19 panel should not collapse. (If a plink hard-genotype projection is run at all — high-coverage only — it must use `no-mean-imputation`.)
+- **Three panels × two designs (B4):** pigmentation SNPs / whole pigmentation genes / genome-wide × (high-coverage-together, moderns-with-all-projected). Low-coverage samples enter via GLs (PCAngsd), not forced hard calls.
+- **Gate:** control reproduces known structure; no collapse; before/after figures rendered (`make_consequence_figures.R after`).
 
 ### Stage 7 — Science on the clean base  · (B3, B7)
 - Directional pigmentation score + **MC1R** red-hair check (B3); functional / skin-specific-gene profile (B7). Cross-validate against published archaic genotypes (Q9).
