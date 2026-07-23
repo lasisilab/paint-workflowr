@@ -46,7 +46,7 @@
   header.hero { padding: 46px 0 26px; border-bottom: 1px solid var(--line); }
   .eyebrow { font-family: var(--mono); text-transform: uppercase; letter-spacing: .18em; font-size: .72rem; color: var(--accent); margin: 0 0 12px; }
   h1.title { font-family: var(--serif); font-weight: 600; font-size: clamp(2.3rem, 5.4vw, 3.4rem); line-height: 1.03; letter-spacing: -.01em; margin: 0; }
-  .subtitle { font-family: var(--serif); font-style: italic; color: var(--ink-2); font-size: clamp(1.05rem, 2.2vw, 1.35rem); margin: 12px 0 0; max-width: 46ch; }
+  .subtitle { font-family: var(--serif); font-style: italic; color: var(--ink-2); font-size: clamp(1.05rem, 2.2vw, 1.35rem); margin: 12px 0 0; max-width: 52ch; }
   .meta-row { display: flex; flex-wrap: wrap; gap: 8px 24px; margin-top: 22px; }
   .meta-row .m .k { font-family: var(--mono); font-size: .66rem; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); display:block; }
   .meta-row .m .v { font-size: .9rem; }
@@ -96,20 +96,39 @@
   tbody td { padding: 11px 14px; border-bottom: 1px solid var(--line-2); vertical-align: top; }
   tbody tr:last-child td { border-bottom: none; }
 
+  /* phases */
+  .phase { margin-top: 30px; }
+  .phase:first-of-type { margin-top: 16px; }
+  .phase-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 11px; margin: 0 0 4px; }
+  .phase-head .pnum { font-family: var(--mono); font-size: .72rem; color: var(--accent); letter-spacing: .08em; border: 1px solid var(--line); border-radius: 6px; padding: 3px 8px; background: var(--surface-2); white-space: nowrap; }
+  .phase-head h3 { font-family: var(--serif); font-weight: 600; font-size: 1.3rem; margin: 0; }
+  .gate { font-size: .86rem; color: var(--ink-2); border-left: 3px solid var(--accent-2); background: var(--accent-soft); border-radius: 0 8px 8px 0; padding: 9px 13px; margin: 6px 0 2px; max-width: var(--measure); }
+  .gate b { color: var(--ink); }
+
   .item { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 20px; box-shadow: var(--shadow); margin-top: 14px; }
   .item.done { opacity: .72; }
+  .item.qc { border-left: 3px solid var(--ext); }
   .item .ihead { display: flex; flex-wrap: wrap; align-items: center; gap: 9px; margin-bottom: 4px; }
   .item .idt { font-family: var(--mono); font-weight: 700; color: var(--accent); }
+  .item.qc .idt { color: var(--ext); }
   .item h3 { margin: 0; font-family: var(--serif); font-weight: 600; font-size: 1.16rem; }
   .item .body > p { margin: 7px 0 0; font-size: .92rem; max-width: none; }
   .item .body b.lab { font-family: var(--sans); }
   .item .body b.what { color: var(--ink); } .item .body b.why { color: var(--ink); } .item .body b.do { color: var(--accent-2); }
+  .item .body b.ver, .item .body b.deliv, .item .body b.acc, .item .body b.art { color: var(--ext); }
+
+  .qmeta { margin-top: 10px; padding: 10px 13px; background: var(--surface-2); border: 1px solid var(--line-2); border-radius: 8px; }
+  .qmeta p { margin: 4px 0 0; font-size: .86rem; max-width: none; }
+  .qmeta p:first-child { margin-top: 0; }
+  ul.subtasks { margin: 9px 0 0; padding-left: 0; list-style: none; font-size: .86rem; color: var(--ink-2); }
+  ul.subtasks li { padding-left: 23px; position: relative; margin: 4px 0; }
+  ul.subtasks li::before { content: "\2610"; position: absolute; left: 0; color: var(--ext); font-size: .95rem; line-height: 1.35; }
 
   details.ev { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 10px 15px; margin-top: 10px; box-shadow: var(--shadow); }
   details.ev summary { cursor: pointer; font-size: .92rem; font-weight: 600; list-style: none; display: flex; align-items: center; gap: 9px; }
   details.ev summary::-webkit-details-marker { display: none; }
-  details.ev summary::before { content: "▸"; color: var(--accent); font-size: .8rem; }
-  details.ev[open] summary::before { content: "▾"; }
+  details.ev summary::before { content: "\25B8"; color: var(--accent); font-size: .8rem; }
+  details.ev[open] summary::before { content: "\25BE"; }
   details.ev summary .idt { font-family: var(--mono); font-weight: 600; color: var(--accent); }
   details.ev pre { overflow-x: auto; background: var(--surface-2); border: 1px solid var(--line-2); border-radius: 8px; padding: 11px 13px; font-family: var(--mono); font-size: .73rem; line-height: 1.55; margin: 11px 0 8px; }
   details.ev .cmt { color: var(--ink-3); }
@@ -129,19 +148,23 @@
       <a href="#glossary">Glossary</a>
       <a href="#status">Status</a>
       <a href="#ask">For Lily</a>
-      <a href="#bugs">Bugs</a>
-      <a href="#analysis">Analysis</a>
-      <a href="#infra">Infra</a>
-      <a href="#writing">Writing</a>
+      <a href="#roadmap">Roadmap</a>
+      <a href="#phase0">0 Provenance</a>
+      <a href="#phase1">1 Build</a>
+      <a href="#phase2">2 PCA</a>
+      <a href="#phase3">3 aDNA QC</a>
+      <a href="#phase4">4 Science</a>
+      <a href="#phase5">5 Infra</a>
+      <a href="#phase6">6 Writing</a>
     </nav>
   </div>
 </div>
 
 <div class="wrap">
   <header class="hero">
-    <p class="eyebrow">Project plan &amp; roadmap · 22 Jul 2026</p>
+    <p class="eyebrow">Project plan &amp; roadmap · 23 Jul 2026</p>
     <h1 class="title">PAINT — what's next</h1>
-    <p class="subtitle">Pigmentation genetics in Neanderthals &amp; Denisovans: bugs to fix, the analysis redesign, and the road to two papers.</p>
+    <p class="subtitle">Pigmentation genetics in Neanderthals &amp; Denisovans, as one phased plan: make the foundation trustworthy, verify each step, then do the science and the two papers.</p>
     <div class="meta-row">
       <div class="m"><span class="k">Team</span><span class="v">Lasisi (PI) · Heald · Pryor</span></div>
       <div class="m"><span class="k">Source of truth</span><span class="v"><code>plan/plan.md</code> + <code>plan/changelog.md</code></span></div>
@@ -149,8 +172,9 @@
     <div class="legend">
       <span class="who">TL</span> Tina&nbsp;·&nbsp;<span class="who">LH</span> Lily&nbsp;·&nbsp;<span class="who">YP</span> Yemko
       &nbsp;&nbsp;|&nbsp;&nbsp; 🔴 high · 🟡 medium · ⚪ low priority
+      &nbsp;&nbsp;|&nbsp;&nbsp; <span class="chip neutral">todo</span> <span class="chip warn">blocked</span> <span class="chip bad">confirmed bug</span> <span class="chip ok">done</span>
     </div>
-    <p style="font-size:.85rem;color:var(--ink-3);margin-top:14px">Every item is written to stand on its own — jump anywhere and it should make sense without reading the rest. Unfamiliar term? See the <a href="#glossary">Glossary</a>.</p>
+    <p style="font-size:.85rem;color:var(--ink-3);margin-top:14px">This is now the <strong>single</strong> plan — the bug fixes, the analysis redesign, the infrastructure, the writing, <em>and</em> the reviewer-driven QC checks (items <code>Q1</code>–<code>Q10</code>) all live here, grouped into phases you do top-to-bottom. Every item stands on its own; unfamiliar term? See the <a href="#glossary">Glossary</a>.</p>
   </header>
 
   <!-- ABOUT -->
@@ -187,21 +211,27 @@
       <div><dt>Synonymous vs non-synonymous</dt><dd>A DNA change inside a gene is <em>synonymous</em> (silent — protein unchanged) or <em>non-synonymous</em> (changes the protein). Their ratio hints at whether variation is functional / under selection.</dd></div>
       <div><dt>Tissue-specific expression</dt><dd>A gene is "expressed" where it's switched on. "Skin-specific" pigmentation genes are switched on mainly in skin (vs. active all over the body).</dd></div>
       <div><dt>The six skin-specific genes</dt><dd>Referenced in B7: TYR (tyrosinase — key melanin enzyme), OCA2, TYRP1, DCT, PMEL, MLANA — all melanocyte/melanin-pathway genes.</dd></div>
+      <div><dt>Checksum / manifest</dt><dd>A <em>checksum</em> (e.g. an <code>sha256</code> hash) is a short fingerprint of a file's bytes; change one byte and it changes — so it proves a file is intact and is the exact copy you think it is. A <em>manifest</em> lists every input with its checksum, source, and build — the "these are the exact ingredients" ledger. (Building it is item Q1.)</dd></div>
+      <div><dt>Tracer SNP</dt><dd>A SNP whose coordinate is known in <em>both</em> builds (e.g. SLC24A5 = <code>15:48,426,484</code> hg19 / <code>15:48,134,288</code> hg38). Look up where a file puts it and you instantly know that file's build — a cheap, decisive build check (item Q2).</dd></div>
+      <div><dt>Positive control</dt><dd>A test where you already know the right answer, run first to prove the machinery works before trusting it on a new question. Here: does the whole-genome PCA reproduce the textbook result (Africans separate from non-Africans on PC1)? If it can't reproduce the known, don't believe the novel result (item Q3).</dd></div>
+      <div><dt>Palindromic SNP</dt><dd>A SNP whose two alleles are DNA complements — <strong>A/T</strong> or <strong>C/G</strong>. Because you can't tell from the letters alone which DNA strand a dataset reported, merging two datasets can silently flip the allele and invert a score. They're flagged and usually dropped (item Q4).</dd></div>
+      <div><dt>Contamination (aDNA)</dt><dd>Modern human DNA (from excavators, lab staff, environment) mixed into an ancient sample. It looks like extra "normal" DNA, inflating heterozygosity and creating false variant calls — so its fraction must be estimated and kept low (item Q7).</dd></div>
+      <div><dt>Pipeline DAG</dt><dd>A "directed acyclic graph" describing the pipeline as which step feeds which — the recipe written so a tool (Snakemake / Nextflow / Make) runs it in the right order automatically. It removes any "which script is canonical" ambiguity and auto-generates the flow diagram (item Q10).</dd></div>
     </dl>
   </section>
 
   <!-- STATUS -->
   <section id="status">
     <div class="sec-head"><span class="sec-num">03</span><h2>Where things stand</h2></div>
-    <p class="lede">Three places hold the work, all now reviewed. The big shift for the next phase: the pigmentation datasets we want already exist (on hg38) in one public repo, so the work moves from <em>assembling</em> data to <em>fixing</em> a few pipeline bugs and <em>integrating</em> that data.</p>
+    <p class="lede">Three places hold the work, all now reviewed. The big shift for the next phase: the pigmentation datasets we want already exist (on hg38) in one public repo, so the work moves from <em>assembling</em> data to <em>fixing</em> a few pipeline bugs, <em>verifying</em> the foundation, and <em>integrating</em> that data.</p>
     <div class="sources">
       <div class="src"><span class="tag">Reviewed</span><h3>Repo</h3><p><code>lasisilab/paint-workflowr</code> — the analysis website (built with the R tool <em>workflowr</em>), small data files, and scripts.</p></div>
       <div class="src"><span class="tag">Reviewed</span><h3>Thesis</h3><p>Lily's 41-page honors thesis (20 Apr 2026) — the completed first version of the work.</p></div>
-      <div class="src"><span class="tag">Inventoried</span><h3>Cluster</h3><p>110 GB on UMich "Great Lakes" — the full ~19-job compute pipeline and all the large genomic files. Full inventory: <code>plan/cluster_inventory.md</code> in the repo.</p></div>
+      <div class="src"><span class="tag">Inventoried</span><h3>Cluster</h3><p>110 GB on UMich "Great Lakes" — the full ~19-job compute pipeline and all the large genomic files. Full inventory + step-by-step audit: <code>plan/cluster_inventory.md</code> and <code>plan/pipeline_workbook.md</code> in the repo.</p></div>
     </div>
     <div class="callout">
       <h4>Datasets — already assembled, on hg38, in a public repo</h4>
-      <p>The four pigmentation datasets for the next phase — plus the forensic prediction panel — already exist in the public repo <a href="https://github.com/tinalasisi/pigmentation-gene-network"><code>tinalasisi/pigmentation-gene-network</code></a>, all on the hg38 build. Each links to its file; full provenance in <a href="https://github.com/tinalasisi/pigmentation-gene-network/blob/main/DATA_SOURCES.md">DATA_SOURCES.md</a>. (We use this repo, not the older <code>melanogenesis-constraints</code>.)</p>
+      <p>The four pigmentation datasets for the next phase — plus the forensic prediction panel — already exist in the public repo <a href="https://github.com/tinalasisi/pigmentation-gene-network"><code>tinalasisi/pigmentation-gene-network</code></a>, all on the hg38 build. Each links to its file; full provenance in <a href="https://github.com/tinalasisi/pigmentation-gene-network/blob/main/DATA_SOURCES.md">DATA_SOURCES.md</a>. (We use this repo, not the older <code>melanogenesis-constraints</code>.) Establishing the <em>project's own</em> input provenance — the genomes, the panel BED, the gene coordinates — is item <strong>Q1</strong>.</p>
       <div class="table-scroll">
         <table>
           <thead><tr><th>Dataset (→ source file)</th><th>Where it came from</th><th>What it is</th><th>Level</th></tr></thead>
@@ -235,102 +265,209 @@
     </div>
   </section>
 
-  <!-- BUGS -->
-  <section id="bugs">
-    <div class="sec-head"><span class="sec-num">05</span><h2>Bugs &amp; fixes</h2></div>
-    <p class="lede">Each was reproduced with commands + real output — full log <a href="https://github.com/lasisilab/paint-workflowr/blob/main/plan/verify/BUG_EVIDENCE.md">plan/verify/BUG_EVIDENCE.md</a> (runnable <a href="https://github.com/lasisilab/paint-workflowr/blob/main/plan/verify/verify_bugs.sh">verify_bugs.sh</a>). None damaged any data — they affect results. Expand any item for the exact command + output.</p>
+  <!-- ROADMAP -->
+  <section id="roadmap">
+    <div class="sec-head"><span class="sec-num">05</span><h2>Roadmap — phased execution order</h2></div>
+    <p class="lede">The work is grouped into <strong>seven phases</strong>, done top-to-bottom. Each phase is a <strong>gate</strong> — don't trust anything built on it until its checks pass — and pairs each fix/build with the QC check that proves it worked. Phases 0–3 make the foundation trustworthy; Phase 4 is the science; Phases 5–6 are reproducibility and writing (partly parallel).</p>
+    <div class="callout">
+      <h4>The single most unblocking step: B2</h4>
+      <p>Putting everything on the hg38 build (<strong>B2</strong>) is both the fix for the root bug (<strong>A2</strong>) <em>and</em> the prerequisite for using the four hg38 datasets (<strong>B1</strong>) and every matched-build analysis. <strong>A1</strong> (Denisova 3 renaming) is independent and can run in parallel.</p>
+    </div>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Phase</th><th>Goal (the gate)</th><th>Items</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td><a href="#phase0"><strong>0 · Provenance &amp; environment</strong></a></td><td>Nothing trusted until every input is traced to a source, build &amp; checksum</td><td>Q1, Q10a</td><td><span class="chip neutral">todo</span></td></tr>
+          <tr><td><a href="#phase1"><strong>1 · One genome build, verified</strong></a></td><td>Panel + all data on one build, proven — and called genotypes correct</td><td>A2, B2, A1, A3, Q2, Q4, A4, A5</td><td><span class="chip neutral">todo</span></td></tr>
+          <tr><td><a href="#phase2"><strong>2 · Positive controls &amp; PCA correctness</strong></a></td><td>Reproduce a known result before building novel ones</td><td>Q3, Q5, Q6</td><td><span class="chip neutral">todo</span></td></tr>
+          <tr><td><a href="#phase3"><strong>3 · aDNA sample QC</strong></a></td><td>Samples authentic, correctly labelled &amp; damage-aware</td><td>Q7, Q8</td><td><span class="chip neutral">todo</span></td></tr>
+          <tr><td><a href="#phase4"><strong>4 · Analysis redesign (the science)</strong></a></td><td>Deliver the analyses agreed on 17 June</td><td>B1, B3, B4, B5, B6, B7, Q9</td><td><span class="chip neutral">todo</span></td></tr>
+          <tr><td><a href="#phase5"><strong>5 · Infrastructure &amp; reproducibility</strong></a></td><td>A re-runnable, unambiguous pipeline; repo tidy</td><td>C2, C3, C4, Q10, A6, C1&nbsp;✓</td><td><span class="chip warn">in progress</span></td></tr>
+          <tr><td><a href="#phase6"><strong>6 · Writing</strong></a></td><td>Two manuscripts out</td><td>D1, D2, D3</td><td><span class="chip neutral">todo</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
 
-    <div class="item">
-      <div class="ihead"><span class="idt">A2</span><h3>The SNP list and the data are on different genome builds</h3><span class="chip bad">confirmed</span><span class="who">🔴 TL/LH</span></div>
-      <div class="body">
-        <p><b class="lab what">What it is:</b> the 222 pigmentation SNP positions ("the panel") were taken from the GWAS Catalog, which uses the <strong>hg38</strong> genome build. But every individual's DNA — the archaic samples <em>and</em> the SGDP genomes — is aligned to the <strong>hg19</strong> build. Since the same SNP sits at different coordinates in the two builds (SLC24A5 = <code>15:48,134,288</code> in hg38 vs <code>15:48,426,484</code> in hg19), looking up the panel's hg38 positions in the hg19 data hits the <strong>wrong places</strong> in the genome.</p>
-        <p><b class="lab why">Why it matters:</b> it breaks both analyses. <strong>(1)</strong> The wrong hg19 positions are essentially random spots, and at random spots all 15 modern genomes carry the same letter (221 of 222 are <em>monomorphic</em> — no variation). Positions with no variation give the PCA nothing to separate samples on, so it collapses to one axis and every archaic sample lands on the <em>same</em> point — the figure is meaningless. <strong>(2)</strong> The depth/missingness reported "at each pigmentation SNP" is measured at a spot that can be far off — hundreds of kb (~292 kb for SLC24A5), differing per SNP — so it isn't the intended loci.</p>
-        <p><b class="lab do">What to do:</b> put the panel and the data on the same build first (item B2). Plan's choice: lift the <strong>data up to hg38</strong> (the four new datasets are already hg38). Alternatively lift the <strong>panel down to hg19</strong> with UCSC <code>liftOver</code> or <code>CrossMap</code> (+ an hg38→hg19 chain file), or re-pull the SNPs' hg19 coordinates from the GWAS Catalog. Pick one build; make everything match. Until then, treat the pigmentation PCA and pigmentation-depth results as unreliable.</p>
+  <!-- PHASE 0 -->
+  <section id="phase0">
+    <div class="phase">
+      <div class="phase-head"><span class="pnum">PHASE 0</span><h3>Provenance &amp; environment</h3></div>
+      <p class="gate"><b>Gate:</b> every file the pipeline touches has a known source, a known genome build, and a checksum; tool versions are captured. Until this passes, every later result is "guilty until proven innocent." Most confirmed bugs so far are provenance/harmonization failures — so this comes first.</p>
+
+      <div class="item qc">
+        <div class="ihead"><span class="idt">Q1</span><h3>Data-provenance manifest + checksums</h3><span class="chip neutral">todo</span><span class="who">🔴 TL/LH</span></div>
+        <div class="body">
+          <p><b class="lab what">What it is:</b> a single table, <code>qc/manifest.tsv</code>, with one row per pipeline input — every genome/BAM, every SNP panel, every gene-coordinate set, the metadata — recording <code>path · sha256 · source · genome_build · N · date_obtained · produced_by</code>. <strong>A specific unknown to resolve:</strong> the pigmentation panel is currently read from a personal home dir (<code>/home/lheald/gwas_loci/snps.bed</code>) with no documentation — locate it, characterize it (which SNPs, which build), and give it a real provenance row.</p>
+          <p><b class="lab why">Why it matters:</b> you can't verify an analysis whose inputs you can't name. A wrong/undocumented source, a wrong build, a truncated download, or a silently-substituted file corrupts everything downstream invisibly. This is the prerequisite for every other check.</p>
+          <div class="qmeta">
+            <p><b class="lab ver">Verifies / relates:</b> foundational for Phases 1–4; feeds Q2 (build), Q4 (alleles), Q6 (expected coverage), Q8 (UDG status), Q10 (versions).</p>
+            <p><b class="lab deliv">Deliverable:</b> <code>qc/manifest.tsv</code> + a builder <code>qc/build_manifest.sh</code>.</p>
+            <p><b class="lab acc">Acceptance:</b> every pipeline input present with a non-empty source + build + checksum; run fails on any <code>external/unknown</code>. Re-downloading one archaic BAM and one SGDP VCF reproduces the recorded <code>sha256</code>. The <code>snps.bed</code> panel is located and its build recorded.</p>
+            <p><b class="lab art">Artifact:</b> the manifest table + a one-line "inputs ledger" badge (N inputs · N fully-provenanced · N unknown).</p>
+          </div>
+          <ul class="subtasks">
+            <li>Enumerate every input the ~19-job pipeline reads (cross-check <code>pipeline_workbook.md</code>).</li>
+            <li>Compute <code>sha256</code>; record source + build + N + date.</li>
+            <li>Locate &amp; characterize <code>/home/lheald/gwas_loci/snps.bed</code>.</li>
+            <li>Record how <code>data/snps.txt</code> was generated (GWAS Catalog trait EFO + access date).</li>
+            <li>Record gene-coordinate source (Ensembl/RefSeq release # + build); assert every gene → one region.</li>
+          </ul>
+        </div>
       </div>
-      <details class="ev">
-        <summary><span class="idt">A2</span> Evidence</summary>
+
+      <div class="callout">
+        <h4>Q10a — do the first slice of Q10 now</h4>
+        <p>Alongside Q1, pin and record tool versions (<code>bcftools</code>, <code>plink2</code>, <code>samtools</code>, R + packages) into the manifest so Phase 1's results are reproducible from the start. The full reproducibility build (DAG + CI) is tracked as <strong>Q10</strong> in Phase 5.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PHASE 1 -->
+  <section id="phase1">
+    <div class="phase">
+      <div class="phase-head"><span class="pnum">PHASE 1</span><h3>One genome build, verified</h3></div>
+      <p class="gate"><b>Gate:</b> the panel, the gene coordinates, and all sequence data are on <b>one</b> build (the plan: hg38), proven by an automated lint; the called genotypes are correct (diploid where they should be); and the dead/competing scripts are gone. This phase is the critical path — nothing pigmentation-SNP-related is trustworthy until it passes. Every bug here was reproduced with commands + real output — full log <a href="https://github.com/lasisilab/paint-workflowr/blob/main/plan/verify/BUG_EVIDENCE.md">plan/verify/BUG_EVIDENCE.md</a>.</p>
+
+      <div class="item">
+        <div class="ihead"><span class="idt">A2</span><h3>The SNP list and the data are on different genome builds — the root problem</h3><span class="chip bad">confirmed</span><span class="who">🔴 TL/LH</span></div>
+        <div class="body">
+          <p><b class="lab what">What it is:</b> the 222 pigmentation SNP positions ("the panel") were taken from the GWAS Catalog, which uses the <strong>hg38</strong> genome build. But every individual's DNA — the archaic samples <em>and</em> the SGDP genomes — is aligned to the <strong>hg19</strong> build. Since the same SNP sits at different coordinates in the two builds (SLC24A5 = <code>15:48,134,288</code> in hg38 vs <code>15:48,426,484</code> in hg19), looking up the panel's hg38 positions in the hg19 data hits the <strong>wrong places</strong> in the genome.</p>
+          <p><b class="lab why">Why it matters:</b> it breaks both analyses. <strong>(1)</strong> The wrong hg19 positions are essentially random spots, and at random spots all 15 modern genomes carry the same letter (221 of 222 are <em>monomorphic</em> — no variation). Positions with no variation give the PCA nothing to separate samples on, so it collapses to one axis and every archaic sample lands on the <em>same</em> point — the figure is meaningless. <strong>(2)</strong> The depth/missingness reported "at each pigmentation SNP" is measured at a spot that can be far off — hundreds of kb (~292 kb for SLC24A5), differing per SNP — so it isn't the intended loci.</p>
+          <p><b class="lab do">What to do:</b> put the panel and the data on the same build first (item B2). Plan's choice: lift the <strong>data up to hg38</strong> (the four new datasets are already hg38). Alternatively lift the <strong>panel down to hg19</strong> with UCSC <code>liftOver</code> or <code>CrossMap</code> (+ an hg38→hg19 chain file), or re-pull the SNPs' hg19 coordinates from the GWAS Catalog. Pick one build; make everything match. Until then, treat the pigmentation PCA and pigmentation-depth results as unreliable. <strong>Proven fixed by Q2 + Q5.</strong></p>
+        </div>
+        <details class="ev">
+          <summary><span class="idt">A2</span> Evidence</summary>
 <pre>$ grep -E "48134288|48426484" data/snps.txt
 15:48134288::            <span class="cmt"># the panel's SLC24A5 position = hg38 (hg19 would be 48426484)</span>
 $ ssh greatlakes head -1 reference/hs37d5.fa
->1 dna:chromosome chromosome:GRCh37:1:...   <span class="cmt"># the data's reference = hg19</span>
-$ awk 'NR>1{n++;if($5+0==0)z++}END{print n,z}' pigmentation_snps_freq.afreq
+&gt;1 dna:chromosome chromosome:GRCh37:1:...   <span class="cmt"># the data's reference = hg19</span>
+$ awk 'NR&gt;1{n++;if($5+0==0)z++}END{print n,z}' pigmentation_snps_freq.afreq
 sites=222   ALT_FREQ==0: 221     <span class="cmt"># 221/222 wrong-coordinate sites are monomorphic in SGDP</span>
 $ cat pigmentation.pca.eigenval  |  $ cat sgdp.wg.pca.eigenval  (same samples)
 0.0627529                        |  2.29579
-2.9703e-18  (× 9)                |  1.54548 1.40896 ...   <span class="cmt"># rank-1 vs full-rank</span>
+2.9703e-18  (x 9)                |  1.54548 1.40896 ...   <span class="cmt"># rank-1 vs full-rank</span>
 $ head -3 data/ancient.projected.pig.sscore
 Chagyrskaya8 ... 0.0335547,-4.0e-11,...   <span class="cmt"># every archaic sample gets</span>
 Denisova25   ... 0.0335547,-4.0e-11,...   <span class="cmt"># the IDENTICAL coordinates</span>
 $ grep '^15' data/vindija33_depth.txt | grep 48134288
 15  48134288  19    <span class="cmt"># depth measured at the hg38 coord, ~292kb off the real SNP</span></pre>
-        <p class="verdict"><b class="bad">CONFIRMED.</b> Panel hg38, data hg19 → wrong coordinates wherever pigmentation SNPs are used. Fixed by B2.</p>
-      </details>
-    </div>
-
-    <div class="item">
-      <div class="ihead"><span class="idt">A1</span><h3>Denisova 3 uses different chromosome names than everything else</h3><span class="chip bad">confirmed</span><span class="who">🔴 LH→TL</span></div>
-      <div class="body">
-        <p><b class="lab what">What it is:</b> chromosomes can be labelled <code>1, 2, …</code> (bare) or <code>chr1, chr2, …</code> (prefixed). The reference, the panel, and every archaic sample use the bare style — <em>except Denisova 3</em>, whose file uses <code>chr</code>-prefixed names. So the (bare) SNP positions aren't found in its (<code>chr</code>) file.</p>
-        <p><b class="lab why">Why it matters:</b> Denisova 3 is a high-coverage Denisovan, yet it shows near-empty coverage (mean depth 0.5×, 69/222 SNPs — vs 30.7× and 222/222 for <strong>Vindija 33.19</strong>, a comparable sample) and sits in the sparse group of thesis Fig 5. Because the reference and panels are bare-named, any step that pairs Denisova 3's <code>chr</code>-named reads with them (whole-genome calling, PCA inputs) fails to match and drops most of its data — so the sparseness is very likely a naming artifact. (Separate from A2: A2 makes the panel wrong for <em>everyone</em>; A1 makes <em>this one sample</em> look empty.)</p>
-        <p><b class="lab do">What to do:</b> relabel Denisova 3's chromosomes to the bare style — e.g. <code>samtools reheader</code> with a name map (<code>chr1</code>→<code>1</code>, …) — then re-run its depth + genotype calling and confirm the coverage is really there. (The cluster script <code>pca_ancient.slurm</code> already has <code>chr</code>-normalizing logic to reuse.)</p>
+          <p class="verdict"><b class="bad">CONFIRMED.</b> Panel hg38, data hg19 → wrong coordinates wherever pigmentation SNPs are used. Fixed by B2.</p>
+        </details>
       </div>
-      <details class="ev">
-        <summary><span class="idt">A1</span> Evidence</summary>
+
+      <div class="item">
+        <div class="ihead"><span class="idt">B2</span><h3>Put everything on one genome build (hg38) — do this first</h3><span class="chip neutral">todo · critical path</span><span class="who">🔴 TL/LH</span></div>
+        <div class="body">
+          <p><b class="lab what">What it is:</b> as bug A2 shows, the SNP panel is on hg38 but the sequence data (archaic + SGDP) is on hg19, which is what breaks the pigmentation analyses. The four new datasets are also hg38. So standardize the whole project on <strong>hg38</strong>: convert the archaic + SGDP data up from hg19 to hg38 so it matches the panels.</p>
+          <p><b class="lab why">Why it matters:</b> this is the fix for the root bug (A2) <em>and</em> the prerequisite for using the four hg38 datasets (B1) and every matched-build analysis (B3, B4, B7, Q9). Nothing pigmentation-SNP-related is trustworthy until builds match.</p>
+          <p><b class="lab do">What to do:</b> lift the data to hg38 (or lift the panels to hg19 — but make everything one build), then re-run depth + PCA. <strong>Critical-path first step.</strong> It isn't "done" until Q2 (tracer-SNP lint) and Q5 (PCA no longer collapses) both pass.</p>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="ihead"><span class="idt">A1</span><h3>Denisova 3 uses different chromosome names than everything else</h3><span class="chip bad">confirmed</span><span class="who">🔴 LH→TL</span></div>
+        <div class="body">
+          <p><b class="lab what">What it is:</b> chromosomes can be labelled <code>1, 2, …</code> (bare) or <code>chr1, chr2, …</code> (prefixed). The reference, the panel, and every archaic sample use the bare style — <em>except Denisova 3</em>, whose file uses <code>chr</code>-prefixed names. So the (bare) SNP positions aren't found in its (<code>chr</code>) file.</p>
+          <p><b class="lab why">Why it matters:</b> Denisova 3 is a high-coverage Denisovan, yet it shows near-empty coverage (mean depth 0.5×, 69/222 SNPs — vs 30.7× and 222/222 for <strong>Vindija 33.19</strong>, a comparable sample) and sits in the sparse group of thesis Fig 5. Because the reference and panels are bare-named, any step that pairs Denisova 3's <code>chr</code>-named reads with them (whole-genome calling, PCA inputs) fails to match and drops most of its data — so the sparseness is very likely a naming artifact. (Separate from A2: A2 makes the panel wrong for <em>everyone</em>; A1 makes <em>this one sample</em> look empty.)</p>
+          <p><b class="lab do">What to do:</b> relabel Denisova 3's chromosomes to the bare style — e.g. <code>samtools reheader</code> with a name map (<code>chr1</code>→<code>1</code>, …) — then re-run its depth + genotype calling and confirm the coverage is really there. (The cluster script <code>pca_ancient.slurm</code> already has <code>chr</code>-normalizing logic to reuse.) <strong>Proven by Q2 (naming lint) and Q6 (coverage jumps into the high band).</strong></p>
+        </div>
+        <details class="ev">
+          <summary><span class="idt">A1</span> Evidence</summary>
 <pre>$ samtools view -H filtered_Denisova3.bam | grep '^@SQ' | head -2
 @SQ  SN:chrM ...   @SQ  SN:chr1 ...    <span class="cmt"># chr-prefixed — the ONLY sample that is</span>
 $ samtools view -H filtered_vindija33.bam | grep '^@SQ' | head -2
 @SQ  SN:1 ...      @SQ  SN:2 ...       <span class="cmt"># bare (matches reference &amp; panel)</span>
 # panel-wide mean depth:  Denisova3 = 0.5x (69/222)   Vindija33 = 30.7x (222/222)</pre>
-        <p class="verdict"><b class="bad">CONFIRMED.</b> A contig-name mismatch on one sample. Independent of A2.</p>
-      </details>
-    </div>
-
-    <div class="item">
-      <div class="ihead"><span class="idt">A3</span><h3>Whole-genome calling treats chromosomes as single-copy</h3><span class="chip bad">confirmed</span><span class="who">🟡 LH</span></div>
-      <div class="body">
-        <p><b class="lab what">What it is:</b> humans have two copies of each non-sex chromosome, so a genotype should be a pair (<code>A/G</code>). One calling job (<code>ancient_wg.slurm</code>) is set to <code>--ploidy 1</code> (haploid) across all chromosomes, forcing a single allele per position.</p>
-        <p><b class="lab why">Why it matters:</b> a heterozygous individual (carrying both <code>A</code> and <code>G</code>) can't be recorded as such — half the genotype information on the non-sex chromosomes is lost, biasing anything downstream.</p>
-        <p><b class="lab do">What to do:</b> confirm intent; for diploid chromosomes this normally shouldn't be <code>--ploidy 1</code>. Re-run diploid if it was a mistake.</p>
+          <p class="verdict"><b class="bad">CONFIRMED.</b> A contig-name mismatch on one sample. Independent of A2.</p>
+        </details>
       </div>
-      <details class="ev">
-        <summary><span class="idt">A3</span> Evidence</summary>
+
+      <div class="item">
+        <div class="ihead"><span class="idt">A3</span><h3>Whole-genome calling treats chromosomes as single-copy</h3><span class="chip bad">confirmed</span><span class="who">🟡 LH</span></div>
+        <div class="body">
+          <p><b class="lab what">What it is:</b> humans have two copies of each non-sex chromosome, so a genotype should be a pair (<code>A/G</code>). One calling job (<code>ancient_wg.slurm</code>) is set to <code>--ploidy 1</code> (haploid) across all chromosomes, forcing a single allele per position.</p>
+          <p><b class="lab why">Why it matters:</b> a heterozygous individual (carrying both <code>A</code> and <code>G</code>) can't be recorded as such — half the genotype information on the non-sex chromosomes is lost, biasing anything downstream (including the whole-genome PCA that Q3 uses as a positive control).</p>
+          <p><b class="lab do">What to do:</b> confirm intent; for diploid chromosomes this normally shouldn't be <code>--ploidy 1</code>. Re-run diploid if it was a mistake.</p>
+        </div>
+        <details class="ev">
+          <summary><span class="idt">A3</span> Evidence</summary>
 <pre>$ grep -nE 'ploidy|CHRS=' ancient_wg.slurm
 64: CHRS=( {1..22} X Y )        <span class="cmt"># non-sex chromosomes included</span>
 83:     --ploidy 1 \
 $ bcftools view -H -r 1 ancient_sgdp_wg.vcf.gz | head
 1  846808  C  T   0:0,255:27,0  .:0,0:0,0  0:0,67:2,0
                   <span class="cmt"># genotype is a single allele (haploid), never 0/1</span></pre>
-        <p class="verdict"><b class="warn">CONFIRMED.</b> Heterozygotes never emitted on non-sex chromosomes. Confirm it was intended.</p>
-      </details>
-    </div>
-
-    <div class="item">
-      <div class="ihead"><span class="idt">A4</span><h3>Two versions of the pigmentation-calling script (tidy-up, not a bug)</h3><span class="chip neutral">downgraded</span><span class="who">⚪ LH/TL</span></div>
-      <div class="body">
-        <p><b class="lab what">What it is:</b> two scripts call ancient genotypes at the panel — one keeps every position (<code>bcftools call -c</code>), one keeps only positions that vary (<code>-mv</code>).</p>
-        <p><b class="lab why">Why it (barely) matters:</b> I first flagged the <code>-mv</code> one as dropping positions and biasing results. On checking, it <strong>didn't</strong>: the actual output file has all 222 positions, so the keep-everything script is the one that ran. Nothing was lost.</p>
-        <p><b class="lab do">What to do:</b> just delete the unused <code>-mv</code> script so it's clear which is canonical. No re-analysis needed.</p>
+          <p class="verdict"><b class="warn">CONFIRMED.</b> Heterozygotes never emitted on non-sex chromosomes. Confirm it was intended.</p>
+        </details>
       </div>
-      <details class="ev">
-        <summary><span class="idt">A4</span> Evidence</summary>
+
+      <div class="item qc">
+        <div class="ihead"><span class="idt">Q2</span><h3>Genome-build &amp; contig-naming lint (tracer-SNP assertions)</h3><span class="chip neutral">todo</span><span class="who">🔴 TL</span></div>
+        <div class="body">
+          <p><b class="lab what">What it is:</b> an automated check that <em>everything</em> is on the same build with the same chromosome naming. It uses <strong>tracer SNPs</strong> — SNPs whose coordinates are known in both builds, e.g. <code>rs1426654</code> SLC24A5 (hg19 <code>15:48426484</code> / hg38 <code>15:48134288</code>) and <code>rs12913832</code> HERC2 (hg19 <code>15:28365618</code> / hg38 <code>15:28120472</code>). For each positioned input (BAM <code>@SQ</code>/<code>.fai</code>, VCF/BCF contig lines, panel/BED, gene coords) it asserts the tracer sits at exactly one build's coordinate and all inputs agree; it also asserts one consistent naming convention (<code>chr1</code> vs <code>1</code>).</p>
+          <p><b class="lab why">Why it matters:</b> highest signal-to-effort check in the whole plan — ~20 lines that catch the two worst confirmed bugs automatically: the panel-vs-data mismatch (<strong>A2</strong>) and Denisova 3's naming (<strong>A1</strong>). Run before trusting any coordinate step, and re-run to <em>prove</em> B2 worked.</p>
+          <div class="qmeta">
+            <p><b class="lab ver">Verifies / relates:</b> A2, A1, B2.</p>
+            <p><b class="lab deliv">Deliverable:</b> <code>qc/check_build.sh</code>.</p>
+            <p><b class="lab acc">Acceptance:</b> all inputs agree on one build + one naming; tracer SNPs resolve to that build in every positioned file; script <strong>exits 0</strong>. Before B2 it exits non-zero (flagging A2/A1); after B2 it exits 0.</p>
+            <p><b class="lab art">Artifact:</b> a <strong>build-harmonization matrix</strong> — files (rows) × build/naming (cols), green/red.</p>
+          </div>
+          <ul class="subtasks">
+            <li>Encode the two tracer SNPs' hg19/hg38 coordinates.</li>
+            <li>Extract contig sets + tracer positions from every BAM/VCF/BED/<code>.fai</code>.</li>
+            <li>Assert single build + single naming; list any file that differs.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="item qc">
+        <div class="ihead"><span class="idt">Q4</span><h3>Allele &amp; annotation harmonization</h3><span class="chip warn">blocked · B2</span><span class="who">🟡 TL</span></div>
+        <div class="body">
+          <p><b class="lab what">What it is:</b> even on the right build, the <em>alleles</em> must be right. Catches ref/alt swaps, strand flips, and palindromic (A/T, C/G) SNPs, which silently invert scores and projections. For every panel SNP it does a <strong>REF-base check</strong> — assert the reference base at that position (<code>samtools faidx</code>) equals the panel/VCF <code>REF</code>; asserts each GWAS effect allele is the record's REF or ALT; flags palindromes and sets a policy (drop, or exclude by MAF &gt; 0.4); and asserts any annotator's build (VEP/SnpEff in B7) equals the data build.</p>
+          <p><b class="lab why">Why it matters:</b> allele mismatches are the classic <em>silent</em> killer — they don't error, they flip signs, so the directional score (B3) and projections (B4) come out wrong. The REF-base check fails loudly on build/coordinate <em>and</em> allele errors — a very high-value single test.</p>
+          <div class="qmeta">
+            <p><b class="lab ver">Verifies / relates:</b> B3 (score sign), B4 (projection), B7 (annotation build); re-confirms B2.</p>
+            <p><b class="lab deliv">Deliverable:</b> <code>qc/check_alleles.sh</code>.</p>
+            <p><b class="lab acc">Acceptance:</b> 0 REF-base mismatches on retained SNPs; every GWAS effect allele present as REF or ALT; palindromes flagged with a documented policy; annotator build = data build. Harmonization funnel reported.</p>
+            <p><b class="lab art">Artifact:</b> a <strong>SNP funnel</strong> — N panel SNPs → matched / ref-alt-swapped / effect-allele-absent / palindromic-dropped / lost.</p>
+          </div>
+          <ul class="subtasks">
+            <li>REF-base check: reference base = panel/VCF REF for every panel SNP.</li>
+            <li>Effect-allele-present check; count mismatches.</li>
+            <li>Flag palindromes; decide drop-vs-MAF policy.</li>
+            <li>Record annotator cache release + build in the manifest (Q1).</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="ihead"><span class="idt">A4</span><h3>Two versions of the pigmentation-calling script (tidy-up, not a bug)</h3><span class="chip neutral">downgraded</span><span class="who">⚪ LH/TL</span></div>
+        <div class="body">
+          <p><b class="lab what">What it is:</b> two scripts call ancient genotypes at the panel — one keeps every position (<code>bcftools call -c</code>), one keeps only positions that vary (<code>-mv</code>).</p>
+          <p><b class="lab why">Why it (barely) matters:</b> I first flagged the <code>-mv</code> one as dropping positions and biasing results. On checking, it <strong>didn't</strong>: the actual output file has all 222 positions, so the keep-everything script is the one that ran. Nothing was lost.</p>
+          <p><b class="lab do">What to do:</b> just delete the unused <code>-mv</code> script so it's clear which is canonical. No re-analysis needed.</p>
+        </div>
+        <details class="ev">
+          <summary><span class="idt">A4</span> Evidence</summary>
 <pre>$ grep -A1 'bcftools call' pigmentation_ancient_call.slurm  pig_call_miss.slurm
 pigmentation_ancient_call.slurm:  bcftools call -mv    <span class="cmt"># variants-only</span>
 pig_call_miss.slurm:              bcftools call -c     <span class="cmt"># keeps all positions</span>
 $ bcftools view -H ancient_pigmentation.vcf.gz | wc -l
 222     <span class="cmt"># full panel — nothing was dropped; the -c script is the one used</span></pre>
-        <p class="verdict"><b class="warn">DOWNGRADED.</b> Not an active bug — output has all 222 positions. (My original "bias" claim was wrong.)</p>
-      </details>
-    </div>
-
-    <div class="item">
-      <div class="ihead"><span class="idt">A5</span><h3>Two dead/broken scripts on the cluster</h3><span class="chip bad">confirmed</span><span class="who">⚪ LH/TL</span></div>
-      <div class="body">
-        <p><b class="lab what">What it is:</b> (i) <code>ancient_merge.slurm</code> merges files matching <code>*.wg.vcf.gz</code>, but the real file is <code>ancient_sgdp_wg.vcf.gz</code> (<code>_wg</code>, not <code>.wg</code>), so it matches nothing. (ii) <code>pca_ancient.slurm</code> points at a reference <code>hg19.fa</code> that isn't present, so it can't run, and its output is used nowhere.</p>
-        <p><b class="lab why">Why it matters:</b> only as clutter/confusion — neither is part of the working pipeline.</p>
-        <p><b class="lab do">What to do:</b> delete or fix them so the cluster reflects what actually runs.</p>
+          <p class="verdict"><b class="warn">DOWNGRADED.</b> Not an active bug — output has all 222 positions. (My original "bias" claim was wrong.)</p>
+        </details>
       </div>
-      <details class="ev">
-        <summary><span class="idt">A5</span> Evidence</summary>
+
+      <div class="item">
+        <div class="ihead"><span class="idt">A5</span><h3>Two dead/broken scripts on the cluster</h3><span class="chip bad">confirmed</span><span class="who">⚪ LH/TL</span></div>
+        <div class="body">
+          <p><b class="lab what">What it is:</b> (i) <code>ancient_merge.slurm</code> merges files matching <code>*.wg.vcf.gz</code>, but the real file is <code>ancient_sgdp_wg.vcf.gz</code> (<code>_wg</code>, not <code>.wg</code>), so it matches nothing. (ii) <code>pca_ancient.slurm</code> points at a reference <code>hg19.fa</code> that isn't present, so it can't run, and its output is used nowhere.</p>
+          <p><b class="lab why">Why it matters:</b> only as clutter/confusion — neither is part of the working pipeline. (Cleaning them up also removes the "which script is canonical?" ambiguity that Q10 formalizes.)</p>
+          <p><b class="lab do">What to do:</b> delete or fix them so the cluster reflects what actually runs.</p>
+        </div>
+        <details class="ev">
+          <summary><span class="idt">A5</span> Evidence</summary>
 <pre>$ ls ancient_wholegenome/*.wg.vcf.gz
 ls: cannot access '*.wg.vcf.gz': No such file or directory   <span class="cmt"># merge glob matches nothing</span>
 $ ls ancient_wholegenome/*_wg.vcf.gz
@@ -338,148 +475,305 @@ ancient_sgdp_wg.vcf.gz            <span class="cmt"># real file is _wg, not .wg<
 $ ls reference/ ; grep -n hg19.fa pca_ancient.slurm
 hs37d5.fa  hs37d5.fa.fai          <span class="cmt"># no hg19.fa</span>
 pca_ancient.slurm:19: REF=".../reference/hg19.fa"   <span class="cmt"># references a missing file</span></pre>
-        <p class="verdict"><b class="bad">CONFIRMED.</b> Both dead/broken — delete or fix.</p>
+          <p class="verdict"><b class="bad">CONFIRMED.</b> Both dead/broken — delete or fix.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- PHASE 2 -->
+  <section id="phase2">
+    <div class="phase">
+      <div class="phase-head"><span class="pnum">PHASE 2</span><h3>Positive controls &amp; PCA correctness</h3></div>
+      <p class="gate"><b>Gate:</b> before trusting any <em>novel</em> pigmentation result, the pipeline reproduces a result we already know (SGDP clusters by continental ancestry), and the PCA machinery is proven non-degenerate. If it can't reproduce the known, don't build on it.</p>
+
+      <div class="item qc">
+        <div class="ihead"><span class="idt">Q3</span><h3>Positive control — reproduce the SGDP whole-genome PCA</h3><span class="chip warn">blocked · Phase 1</span><span class="who">🔴 TL/LH</span></div>
+        <div class="body">
+          <p><b class="lab what">What it is:</b> before believing any novel pigmentation PCA, prove the PCA/merge/projection plumbing reproduces <em>textbook</em> human population structure. Encode the known result as assertions on the whole-genome PCA and the ancient projection.</p>
+          <p><b class="lab why">Why it matters:</b> if the pipeline can't recover continental structure from whole-genome data, the merge/subset/PCA machinery is broken and nothing downstream is trustworthy. Fastest single read on whether the core method works — the eigenvec files already exist.</p>
+          <div class="qmeta">
+            <p><b class="lab ver">Verifies / relates:</b> validates the machinery B4 depends on; depends on A3 (correct diploid WG calls) + Phase-1 harmonization.</p>
+            <p><b class="lab deliv">Deliverable:</b> <code>qc/positive_control_pca.R</code>.</p>
+            <p><b class="lab acc">Acceptance:</b> PC1 separates African vs non-African beyond a margin; East-Asian / West-Eurasian / Oceanian form distinct clusters on PC2–3; projected archaics fall among non-Africans on PC1 (the established introgression expectation).</p>
+            <p><b class="lab art">Artifact:</b> the control PCA figure with expected groupings annotated, shipped next to the real analysis.</p>
+          </div>
+          <ul class="subtasks">
+            <li>Label SGDP samples by continental region from the metadata (Q1).</li>
+            <li>Assert AFR / non-AFR split on PC1; assert cluster recovery on PC2–3.</li>
+            <li>Project archaics; assert they land among non-Africans.</li>
+            <li>Compare qualitatively to a published SGDP PCA figure.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="item qc">
+        <div class="ihead"><span class="idt">Q5</span><h3>PCA / projection non-degeneracy sanity checks</h3><span class="chip warn">blocked · B2</span><span class="who">🟡 TL/LH</span></div>
+        <div class="body">
+          <p><b class="lab what">What it is:</b> automated checks that the PCA isn't rank-deficient and the projection didn't collapse: assert ≥ <em>k</em> panel SNPs are polymorphic; assert eigenvalue ratio λ2/λ1 exceeds a floor (flags rank-1 collapse); assert projected ancient coordinates have non-zero spread (<code>sd(PC1) &gt; ε</code>, ≥2 archaics differ); and <strong>grep the projection script to assert it uses <code>no-mean-imputation</code></strong>.</p>
+          <p><b class="lab why">Why it matters:</b> directly catches the two confirmed degeneracies — the monomorphic panel (from <strong>A2</strong>) collapsing the pigmentation PCA to one axis, and the <strong>projection collapse</strong> where all 15 archaics get byte-identical coordinates. That second collapse has its own root cause: <code>plink2 --score</code> mean-imputes missing genotypes, and with <code>--variance-standardize</code> + high ancient missingness every sample collapses to the reference centroid. <strong>Fix: add <code>no-mean-imputation</code> to the <code>--score</code> modifiers in <code>pca_proj.py</code></strong> (confirmed canonical vs <code>pig_pca_proj.py</code>).</p>
+          <div class="qmeta">
+            <p><b class="lab ver">Verifies / relates:</b> A2, B4; includes the concrete <code>pca_proj.py</code> fix.</p>
+            <p><b class="lab deliv">Deliverable:</b> <code>qc/check_pca_degeneracy.R</code> + the one-line edit to <code>pca_proj.py</code>.</p>
+            <p><b class="lab acc">Acceptance:</b> ≥ <em>k</em> polymorphic panel SNPs; λ2/λ1 above floor; <code>sd(PC1)</code> across archaics above ε with ≥2 differing; <code>pca_proj.py</code> contains <code>no-mean-imputation</code>. After B2 + the fix, all four pass.</p>
+            <p><b class="lab art">Artifact:</b> a scree plot + a "projection spread" strip plot (spread out, or stacked on one point?).</p>
+          </div>
+          <ul class="subtasks">
+            <li>Add <code>no-mean-imputation</code> to <code>pca_proj.py</code>; document the missingness policy.</li>
+            <li>Assert polymorphic-SNP count, eigenvalue ratio, projection spread.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="item qc">
+        <div class="ihead"><span class="idt">Q6</span><h3>Per-sample coverage / depth expectations</h3><span class="chip neutral">todo</span><span class="who">🟡 LH</span></div>
+        <div class="body">
+          <p><b class="lab what">What it is:</b> for each sample, compare its <strong>realized</strong> panel depth and covered-SNP fraction against the <strong>expected</strong> genome-wide coverage from its source publication (recorded in the Q1 manifest). Alert on any nominally high-coverage genome that comes out sparse.</p>
+          <p><b class="lab why">Why it matters:</b> a "high-coverage" genome showing near-zero coverage is exactly the Denisova 3 red flag (<strong>A1</strong>) — this check would have caught it automatically, and it's the acceptance test that A1's fix worked. It's also the gate for choosing the "high-coverage set" used in the everyone-together PCA (B4 a).</p>
+          <div class="qmeta">
+            <p><b class="lab ver">Verifies / relates:</b> A1 (confirms the fix); feeds B4 (high-coverage set), B5 (missingness).</p>
+            <p><b class="lab deliv">Deliverable:</b> <code>qc/coverage_report.R</code>.</p>
+            <p><b class="lab acc">Acceptance:</b> every nominally high-coverage genome exceeds its depth / covered-fraction threshold; outliers raise an alert. After A1's fix, Denisova 3 passes.</p>
+            <p><b class="lab art">Artifact:</b> a per-sample QC table (expected vs realized coverage, covered/222, tier) with red/amber/green — the seed of the combined dashboard extended by Q7/Q8.</p>
+          </div>
+          <ul class="subtasks">
+            <li>Record expected genome-wide coverage per sample in the manifest (Q1).</li>
+            <li>Compute realized panel mean-depth + covered-SNP fraction per sample.</li>
+            <li>Assert high-coverage set above threshold; alert on outliers.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PHASE 3 -->
+  <section id="phase3">
+    <div class="phase">
+      <div class="phase-head"><span class="pnum">PHASE 3</span><h3>Ancient-DNA sample QC</h3></div>
+      <p class="gate"><b>Gate:</b> the archaic BAMs are the individuals we think they are, their sex is concordant, contamination is low, and DNA damage is assessed. Mislabeling and modern contamination are endemic in aDNA and would invalidate everything downstream — reviewers of ancient DNA will require this.</p>
+
+      <div class="item qc">
+        <div class="ihead"><span class="idt">Q7</span><h3>Sample identity, sex &amp; contamination</h3><span class="chip neutral">todo</span><span class="who">🟡 YP/LH</span></div>
+        <div class="body">
+          <p><b class="lab what">What it is:</b> per archaic BAM: a <strong>sex check</strong> (X/Y normalized depth ratio vs recorded sex), a <strong>contamination estimate</strong> (X-chromosome for males, or mtDNA-based, <code>contamMix</code>/<code>schmutzi</code>-style), and, where a published reference genotype exists (Vindija/Altai), a <strong>genotype-concordance</strong> check at a handful of sites to confirm identity.</p>
+          <p><b class="lab why">Why it matters:</b> a sample swap (is <code>den11</code> really Denisova 11?) or modern-human contamination (inflating heterozygosity, creating false variant calls) invalidates the downstream results silently. Standard, expected aDNA controls.</p>
+          <div class="qmeta">
+            <p><b class="lab ver">Verifies / relates:</b> guards all archaic genotype use (B3, B4, B7, Q9).</p>
+            <p><b class="lab deliv">Deliverable:</b> <code>qc/sex_contam.sh</code> (+ a concordance step).</p>
+            <p><b class="lab acc">Acceptance:</b> sex concordant with metadata for every sample; contamination below threshold (e.g. 2–5%); identity confirmed where a reference genotype exists.</p>
+            <p><b class="lab art">Artifact:</b> rows added to the per-sample QC dashboard: sex, contamination %, identity-confirmed flag.</p>
+          </div>
+          <ul class="subtasks">
+            <li>X/Y depth-ratio sex check vs recorded sex.</li>
+            <li>Contamination estimate per sample; assert below threshold.</li>
+            <li>Genotype concordance at published sites where available.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="item qc">
+        <div class="ihead"><span class="idt">Q8</span><h3>Ancient-DNA authenticity / damage handling</h3><span class="chip neutral">todo</span><span class="who">⚪ YP/LH</span></div>
+        <div class="body">
+          <p><b class="lab what">What it is:</b> run <code>mapDamage</code>/<code>PMDtools</code> on each BAM and assert the characteristic post-mortem deamination signal (5′ C&gt;T and 3′ G&gt;A) is present, in the authentic-aDNA range, and decays from the read ends as expected; record each sample's UDG-treatment status in the manifest; and run a robustness test — re-call with terminal bases trimmed/masked and assert the pigmentation genotype calls are stable.</p>
+          <p><b class="lab why">Why it matters:</b> this is ancient DNA — deamination at read ends creates false variants (C&gt;T/G&gt;A), called as real ALT alleles (worse under a <code>-mv</code> caller). No damage handling is visible in the current scripts, and reviewers will require it. Transition-heavy pigmentation sites are exactly the ones at risk.</p>
+          <div class="qmeta">
+            <p><b class="lab ver">Verifies / relates:</b> guards B3/B7 (false-variant risk); pairs with A4 (caller choice).</p>
+            <p><b class="lab deliv">Deliverable:</b> <code>qc/damage.sh</code>.</p>
+            <p><b class="lab acc">Acceptance:</b> damage rates in the authentic-aDNA range with expected end-decay; UDG status recorded per sample; pigmentation calls stable under terminal-base trimming.</p>
+            <p><b class="lab art">Artifact:</b> per-sample damage plots + a "damage-handled: yes/no" column in the QC dashboard.</p>
+          </div>
+          <ul class="subtasks">
+            <li>Run mapDamage/PMDtools; record rates + UDG status.</li>
+            <li>Re-call with trimmed ends; assert call stability at panel SNPs.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PHASE 4 -->
+  <section id="phase4">
+    <div class="phase">
+      <div class="phase-head"><span class="pnum">PHASE 4</span><h3>Analysis redesign — the science</h3><span style="margin-left:auto;font-size:.8rem;color:var(--ink-3)">from the 17 Jun meeting</span></div>
+      <p class="gate"><b>Gate:</b> deliver the analyses agreed on the 17 June call, on the now-trustworthy foundation, and cross-validate them against published results. This is the actual scientific contribution.</p>
+
+      <details class="ev" style="margin-top:16px">
+        <summary>The analyses we agreed on the 17 June call (transcript → item)</summary>
+        <ol style="margin:12px 0 4px; padding-left:22px; font-size:.9rem; color:var(--ink-2); line-height:1.7">
+          <li>Layered <strong>coverage</strong> of pigmentation loci across the four datasets → <strong>B1</strong>.</li>
+          <li><strong>"What color were they?"</strong>: (a) GWAS betas → a <strong>directionality</strong> score; (b) the <strong>MC1R</strong> red-hair check → <strong>B3</strong>.</li>
+          <li><strong>PCA redone</strong> three ways (pigmentation SNPs / whole pigmentation genes / genome-wide) × two designs → <strong>B4</strong>.</li>
+          <li><strong>Missingness</strong> strategy (masking all → &lt;50 SNPs; focus high-coverage, move to gene level) → <strong>B5</strong>.</li>
+          <li>Keep <strong>genes vs SNPs</strong> distinct (network = genes; pull gene start/stop coordinates) → <strong>B6</strong>.</li>
+          <li><strong>Functional / exome</strong>: synonymous:non-synonymous ratio; annotate coding effects → <strong>B7</strong>.</li>
+          <li><strong>Skin-specific gene</strong> focus (TYR, OCA2, TYRP1, DCT, PMEL, MLANA) → <strong>B7</strong>.</li>
+          <li>Plus <strong>"normalize everything to hg38"</strong> → <strong>B2</strong> (Phase 1; also the fix for bug A2).</li>
+        </ol>
       </details>
-    </div>
 
-    <div class="item">
-      <div class="ihead"><span class="idt">A6</span><h3>Website tidy-ups</h3><span class="chip neutral">cleanup</span><span class="who">⚪ LH</span></div>
-      <div class="body">
-        <p><b class="lab what">What it is:</b> small fixes in the website source: <code>introduction.Rmd</code> says the panel is "395 SNPs" but it's 222; the "View genetic PCAs" link points to the old <code>analysis.html</code> (should be <code>pca.html</code>); the <code>LICENSE</code> file is empty (license text only lives in <code>license.Rmd</code>); two built pages (<code>docs/analysis.html</code>, <code>docs/depth_spinoff.html</code>) have no source; and <code>cleaning.Rmd</code>/<code>process_links.R</code> hard-code Lily's laptop paths so they won't run elsewhere.</p>
-        <p><b class="lab do">What to do:</b> fix the number, the link, add license text, remove the orphaned pages, and replace the hard-coded paths.</p>
+      <div class="callout">
+        <h4>How the two kinds of dataset get used — directionality vs. genes-without-SNPs</h4>
+        <p><strong>SNP-level sources (GWAS Catalog, HIrisPlex-S)</strong> carry a signed effect per SNP (an effect allele + a direction), so they're the <strong>only</strong> sources that feed the directional score (B3): count each individual's copies (0/1/2) of the pigmentation-increasing allele and sum; the direction comes from the GWAS effect sign.</p>
+        <p><strong>Gene-level sources (melanogenesis network/Raghunath, Baxter, Bajpai, D'Arcy)</strong> are gene <em>regions</em>, not signed SNPs, so they <strong>can't</strong> enter the +1/−1 score. They're used as gene-region sets for the gene-level PCA (B4&nbsp;ii) and coverage (B1), and for functional interpretation (B7, via a variant-effect annotator) — kept descriptive.</p>
+        <p><strong>Bottom line:</strong> the directional score is SNP-only; gene lists drive the PCA, coverage, and functional annotation. Giving a gene a per-individual "direction" would need per-variant damage prediction (heavier, shaky on low-coverage ancient DNA) — optional, not part of the score.</p>
+      </div>
+
+      <div class="item">
+        <div class="ihead"><span class="idt">B1</span><h3>Base the coverage analysis on four datasets, not one</h3><span class="chip neutral">todo</span><span class="who">🔴 TL/LH</span></div>
+        <div class="body">
+          <p><b class="lab what">What it is:</b> so far the SNP list came from one source (the GWAS Catalog). Broaden it to the four complementary sources already assembled in <code>pigmentation-gene-network</code> (see Status §03): GWAS Catalog, a CRISPR screen, a melanogenesis gene network, and a cross-species gene set.</p>
+          <p><b class="lab why">Why it matters:</b> each source captures different pigmentation biology; one source undercounts. Report coverage in layers (GWAS-only, then each addition) so each source's contribution is visible.</p>
+          <p><b class="lab do">What to do:</b> wire the four datasets into the coverage code; produce the layered summary.</p>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="ihead"><span class="idt">B3</span><h3>Score pigmentation direction; check MC1R (red hair)</h3><span class="chip warn">blocked · B2</span><span class="who">🟡 TL/LH</span></div>
+        <div class="body">
+          <p><b class="lab what">What it is:</b> a <strong>polygenic score</strong> = one darker-vs-lighter number per individual. For each pigmentation SNP with a known direction, count copies (0/1/2 — everyone's diploid) of the pigmentation-<em>increasing</em> allele and add into a signed sum: increasing alleles push up, decreasing push down, so <strong>higher = predicted darker</strong>. Main version = sign only (each SNP equal weight); optional version weights by GWAS effect size. Heterozygotes count by allele copies; a SNP missing in an individual is skipped for them. Separately, the <strong>MC1R red-hair check</strong>: look up MC1R's red-hair variant positions in each archaic and report whether any carries a red-hair (loss-of-function) allele — expected: none (itself a citable result).</p>
+          <p><b class="lab why">Why it matters:</b> it answers "what color were they?" at the level the evidence supports, without over-claiming. The MC1R check is a specific FAQ.</p>
+          <p><b class="lab do">What to do:</b> score the 14 archaics (and the 15 SGDP moderns for comparison) at the panel — this <strong>needs genotype calls on a matched build, so it depends on B2 first</strong>. Effect direction comes from the GWAS Catalog. HIrisPlex-S supplies the marker subset incl. the exact MC1R red-hair variants (rs1805007, rs1805008, rs1805006) and blue-eye HERC2/OCA2 markers; its numeric weights are an optional fetch (Walsh 2017) for full color probabilities — being European-trained, the sign-only score is more defensible for archaics. <strong>Guarded by Q4 (allele sign) and Q9 (MC1R null + HIrisPlex-S concordance).</strong></p>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="ihead"><span class="idt">B4</span><h3>Redo the PCAs three ways, two designs each</h3><span class="chip warn">blocked · B2</span><span class="who">🟡 LH</span></div>
+        <div class="body">
+          <p><b class="lab what">What it is:</b> build the sample-clustering plots (PCA) from three position sets — (i) just the 222 pigmentation SNPs, (ii) whole pigmentation-related <em>genes</em> (every position inside them — gene list from the four datasets in Status §03, start/end coordinates from a gene database like Ensembl/BioMart, on the matched build), (iii) the whole genome as baseline. For each, two designs: <strong>(a)</strong> moderns + the 4 high-coverage archaics (Vindija 33.19, Chagyrskaya 8, Denisova 5, Denisova 25) together; <strong>(b)</strong> moderns only, then project all 14 archaics (incl. low-coverage) onto it.</p>
+          <p><b class="lab why">Why it matters:</b> it tests a hypothesis — pigmentation-gene clustering should <em>not</em> mirror whole-genome (ancestry) clustering; confirming they differ is the point, don't assume it. Design (b) is how you place gappy samples without their gaps distorting the axes.</p>
+          <p><b class="lab do">What to do:</b> after B2 (panel + gene coordinates + data all on one build), generate the six plots. <strong>Depends on Q3 (WG reproduces known structure), Q5 (no collapse), Q6 (high-coverage set).</strong></p>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="ihead"><span class="idt">B5</span><h3>Decide how to handle missing data</h3><span class="chip neutral">todo</span><span class="who">🟡 TL/LH</span></div>
+        <div class="body">
+          <p><b class="lab what">What it is:</b> many pigmentation SNPs are missing in many archaic samples. Requiring every sample to have data at a SNP leaves fewer than 50 of the 222 — too few.</p>
+          <p><b class="lab why">Why it matters:</b> the missingness approach decides which samples and SNPs are usable.</p>
+          <p><b class="lab do">What to do:</b> for SNP-level work, focus on high-coverage samples (as identified by Q6); to escape SNP-level sparsity, move to gene-level summaries (B4 (ii)).</p>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="ihead"><span class="idt">B6</span><h3>Keep gene-level and SNP-level sources separate</h3><span class="chip neutral">todo</span><span class="who">🟡 YP/TL</span></div>
+        <div class="body">
+          <p><b class="lab what">What it is:</b> of the four datasets, three (melanogenesis network, cross-species, CRISPR) are lists of <strong>genes</strong>; two (GWAS Catalog, HIrisPlex-S) are lists of individual <strong>SNPs</strong>. A gene covers a whole region; a SNP is one position.</p>
+          <p><b class="lab why">Why it matters:</b> they can't be pooled naively — a gene isn't one position, so analyses and weighting differ.</p>
+          <p><b class="lab do">What to do:</b> carry the gene-level and SNP-level layers explicitly and analyze each appropriately.</p>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="ihead"><span class="idt">B7</span><h3>Functional impact &amp; the skin-specific genes</h3><span class="chip warn">blocked · B2</span><span class="who">⚪ YP/LH</span></div>
+        <div class="body">
+          <p><b class="lab what">What it is:</b> two things. <strong>(1)</strong> A functional-impact summary: among DNA changes in/around the pigmentation genes, the ratio of <em>synonymous</em> (silent) to <em>non-synonymous</em> (protein-changing) changes — a rough read on whether the variation is functional / under selection. Needs each variant's coding effect from a variant-effect annotator (Ensembl VEP, SnpEff, or ANNOVAR) on the matched build. Most of the 222 panel SNPs are non-coding, so this ratio is over <strong>coding variants in the pigmentation genes</strong> (exome / whole-genome), not the panel SNPs — if suitable coding data isn't available for these samples, flag and defer. <strong>(2)</strong> A profile of the six skin-specific pigmentation genes (TYR, OCA2, TYRP1, DCT, PMEL, MLANA — see Glossary): a per-population moderns-vs-archaics allele-frequency/genotype comparison per gene.</p>
+          <p><b class="lab why">Why it matters:</b> those six genes are switched on mainly in skin (tissue-specific expression), so they're the cleanest "this is really <em>skin</em> pigmentation" story. (Six-gene shortlist: a conference poster by Yemko Pryor on skin-specific expression.)</p>
+          <p><b class="lab do">What to do:</b> run the annotator for coding effects + the synonymous:non-synonymous ratios (state which direction indicates functional constraint); build the per-gene moderns-vs-archaics profiles. <strong>The annotator build must match the data build — asserted by Q4.</strong></p>
+        </div>
+      </div>
+
+      <div class="item qc">
+        <div class="ihead"><span class="idt">Q9</span><h3>Cross-validation vs published results + an orthogonal predictor</h3><span class="chip warn">blocked · B2</span><span class="who">🟡 TL/LH</span></div>
+        <div class="body">
+          <p><b class="lab what">What it is:</b> check that the project's archaic calls agree with what's published, and that the home-grown directional score agrees with an established method. Assert MC1R known red-hair variants (rs1805007/8/6, etc.) are <strong>absent/reference</strong> in the archaics; assert genotypes at a set of loci with published archaic calls match; and compute both the directional score <strong>and</strong> a HIrisPlex-S-style prediction on the same samples and assert rank concordance.</p>
+          <p><b class="lab why">Why it matters:</b> disagreeing with well-established archaic genotypes is a red flag for calling errors; the MC1R null is both the expected, citable result <em>and</em> a check that MC1R is even being genotyped; and an orthogonal predictor guards against a bug in the home-grown score. The credibility check for the whole science phase.</p>
+          <div class="qmeta">
+            <p><b class="lab ver">Verifies / relates:</b> B3 (score), B7 (calls); the MC1R part is the QC twin of B3's MC1R check.</p>
+            <p><b class="lab deliv">Deliverable:</b> <code>qc/cross_validate.R</code>.</p>
+            <p><b class="lab acc">Acceptance:</b> MC1R red-hair variants absent/reference in all archaics; published-locus genotypes match; directional score and HIrisPlex-S-style prediction rank-concordant.</p>
+            <p><b class="lab art">Artifact:</b> a "known results reproduced" table (locus → expected → observed → ✓/✗).</p>
+          </div>
+          <ul class="subtasks">
+            <li>Assert MC1R red-hair variants absent/reference.</li>
+            <li>Assert concordance at a panel of published archaic genotypes.</li>
+            <li>Compute directional score vs HIrisPlex-S-style prediction; assert rank concordance.</li>
+          </ul>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- ANALYSIS -->
-  <section id="analysis">
-    <div class="sec-head"><span class="sec-num">06</span><h2>Analysis redesign</h2><span style="margin-left:auto;font-size:.8rem;color:var(--ink-3)">from the 17 Jun meeting</span></div>
+  <!-- PHASE 5 -->
+  <section id="phase5">
+    <div class="phase">
+      <div class="phase-head"><span class="pnum">PHASE 5</span><h3>Infrastructure &amp; reproducibility</h3></div>
+      <p class="gate"><b>Gate:</b> the pipeline is re-runnable by someone else, there's one unambiguous canonical path (no competing/dead scripts), derived data is preserved, and the repo is tidy. Can run partly in parallel with Phase 4.</p>
 
-    <details class="ev" style="margin-top:16px">
-      <summary>The analyses we agreed on the 17 June call (transcript → item)</summary>
-      <ol style="margin:12px 0 4px; padding-left:22px; font-size:.9rem; color:var(--ink-2); line-height:1.7">
-        <li>Layered <strong>coverage</strong> of pigmentation loci across the four datasets (GWAS-only, then + CRISPR, + melanogenesis network, + cross-species) → <strong>B1</strong>.</li>
-        <li><strong>"What color were they?"</strong>: (a) GWAS betas → a <strong>directionality</strong> score (optionally skin-pigmentation and/or ≥2-hit SNPs); (b) the <strong>MC1R</strong> red-hair check → <strong>B3</strong>.</li>
-        <li><strong>PCA redone</strong> three ways (pigmentation SNPs / whole pigmentation genes / genome-wide) × two designs → <strong>B4</strong>.</li>
-        <li><strong>Missingness</strong> strategy (masking all → &lt;50 SNPs; focus high-coverage, move to gene level) → <strong>B5</strong>.</li>
-        <li>Keep <strong>genes vs SNPs</strong> distinct (network = genes; pull gene start/stop coordinates) → <strong>B6</strong>.</li>
-        <li><strong>Functional / exome</strong>: synonymous:non-synonymous ratio; annotate coding effects → <strong>B7</strong>.</li>
-        <li><strong>Skin-specific gene</strong> focus (TYR, OCA2, TYRP1, DCT, PMEL, MLANA) across moderns and archaics → <strong>B7</strong>.</li>
-        <li>Plus <strong>"normalize everything to hg38"</strong> → <strong>B2</strong> (also the fix for bug A2).</li>
-      </ol>
-    </details>
-
-    <div class="callout">
-      <h4>How the two kinds of dataset get used — directionality vs. genes-without-SNPs</h4>
-      <p><strong>SNP-level sources (GWAS Catalog, HIrisPlex-S)</strong> carry a signed effect per SNP (an effect allele + a direction), so they're the <strong>only</strong> sources that feed the directional score (B3): count each individual's copies (0/1/2) of the pigmentation-increasing allele and sum; the direction comes from the GWAS effect sign.</p>
-      <p><strong>Gene-level sources (melanogenesis network/Raghunath, Baxter, Bajpai, D'Arcy)</strong> are gene <em>regions</em>, not signed SNPs, so they <strong>can't</strong> enter the +1/−1 score. They're used as gene-region sets for the gene-level PCA (B4&nbsp;ii) and coverage (B1), and for functional interpretation (B7, via a variant-effect annotator) — kept descriptive.</p>
-      <p><strong>Bottom line:</strong> the directional score is SNP-only; gene lists drive the PCA, coverage, and functional annotation. Giving a gene a per-individual "direction" would need per-variant damage prediction (heavier, shaky on low-coverage ancient DNA) — optional, not part of the score.</p>
-    </div>
-
-    <div class="item">
-      <div class="ihead"><span class="idt">B2</span><h3>Put everything on one genome build (hg38) — do this first</h3><span class="who">🔴 TL/LH</span></div>
-      <div class="body">
-        <p><b class="lab what">What it is:</b> as bug A2 shows, the SNP panel is on hg38 but the sequence data (archaic + SGDP) is on hg19, which is what breaks the pigmentation analyses. The four new datasets are also hg38. So standardize the whole project on <strong>hg38</strong>: convert the archaic + SGDP data up from hg19 to hg38 so it matches the panels.</p>
-        <p><b class="lab why">Why it matters:</b> this is the fix for the root bug (A2) <em>and</em> the prerequisite for using the four hg38 datasets. Nothing pigmentation-SNP-related is trustworthy until builds match.</p>
-        <p><b class="lab do">What to do:</b> lift the data to hg38 (or lift the panels to hg19 — but make everything one build), then re-run depth + PCA. <strong>Critical-path first step.</strong></p>
+      <div class="item done">
+        <div class="ihead"><span class="idt">C1</span><h3>Move the repo into the Lasisi Lab GitHub org</h3><span class="chip ok">done</span><span class="who">TL</span></div>
+        <div class="body"><p>Done — <code>lasisilab/paint-workflowr</code>. Just confirm Lily has access.</p></div>
       </div>
-    </div>
 
-    <div class="item">
-      <div class="ihead"><span class="idt">B1</span><h3>Base the coverage analysis on four datasets, not one</h3><span class="who">🔴 TL/LH</span></div>
-      <div class="body">
-        <p><b class="lab what">What it is:</b> so far the SNP list came from one source (the GWAS Catalog). Broaden it to the four complementary sources already assembled in <code>pigmentation-gene-network</code> (see Status §03): GWAS Catalog, a CRISPR screen, a melanogenesis gene network, and a cross-species gene set.</p>
-        <p><b class="lab why">Why it matters:</b> each source captures different pigmentation biology; one source undercounts. Report coverage in layers (GWAS-only, then each addition) so each source's contribution is visible.</p>
-        <p><b class="lab do">What to do:</b> wire the four datasets into the coverage code; produce the layered summary.</p>
+      <div class="item">
+        <div class="ihead"><span class="idt">C2</span><h3>Let Lily develop locally while heavy jobs run on the cluster</h3><span class="chip neutral">todo</span><span class="who">🟡 TL</span></div>
+        <div class="body"><p><b class="lab what">What it is:</b> Lily's laptop (8 GB RAM) can't run the big steps (PCAs, genotype calling — those stay on the cluster); only the plotting runs locally. Set the repo up so the code runs "as if the cluster folder were local": list the huge cluster files in <code>.gitignore</code> (so they never enter GitHub), but structure things so Lily edits locally and pings Tina to run heavy steps on the cluster. (Same pattern as the lab's PODFRIDGE project.)</p></div>
       </div>
-    </div>
 
-    <div class="item">
-      <div class="ihead"><span class="idt">B3</span><h3>Score pigmentation direction; check MC1R (red hair)</h3><span class="who">🟡 TL/LH</span></div>
-      <div class="body">
-        <p><b class="lab what">What it is:</b> a <strong>polygenic score</strong> = one darker-vs-lighter number per individual. For each pigmentation SNP with a known direction of effect, count how many copies (0/1/2 — everyone's diploid) of the pigmentation-<em>increasing</em> allele the individual carries and add them into a signed sum: increasing alleles push up, decreasing push down, so <strong>higher = predicted darker</strong>. Main version = sign only (each SNP equal weight); optional version weights by GWAS effect size. Heterozygotes count by allele copies; a SNP missing in an individual is skipped for them. Separately, the <strong>MC1R red-hair check</strong>: look up MC1R's known red-hair variant positions in each archaic individual and report whether any carries a red-hair (loss-of-function) allele — expected: none (itself a citable result).</p>
-        <p><b class="lab why">Why it matters:</b> it answers "what color were they?" at the level the evidence supports, without over-claiming. The MC1R check is a specific FAQ.</p>
-        <p><b class="lab do">What to do:</b> score the 14 archaics (and the 15 SGDP moderns for comparison) at the panel — this <strong>needs genotype calls on a matched build, so it depends on B2 first</strong>. Effect direction comes from the GWAS Catalog. HIrisPlex-S supplies the marker subset incl. the exact MC1R red-hair variants (rs1805007, rs1805008, rs1805006) and blue-eye HERC2/OCA2 markers; its numeric weights are an optional fetch (Walsh 2017) for full color probabilities — being European-trained, the sign-only score is more defensible for archaics.</p>
+      <div class="item">
+        <div class="ihead"><span class="idt">C3</span><h3>Back up the derived data</h3><span class="chip neutral">todo</span><span class="who">🟡 TL</span></div>
+        <div class="body"><p>The cluster's Turbo storage isn't permanent archival storage. The raw archaic BAMs can be re-downloaded from public sources, but the <em>derived</em> products (merged SGDP reference panels, archaic genotype call sets, PCA outputs) are expensive to regenerate — back them up or deposit them.</p></div>
       </div>
-    </div>
 
-    <div class="item">
-      <div class="ihead"><span class="idt">B4</span><h3>Redo the PCAs three ways, two designs each</h3><span class="who">🟡 LH</span></div>
-      <div class="body">
-        <p><b class="lab what">What it is:</b> build the sample-clustering plots (PCA) from three position sets — (i) just the 222 pigmentation SNPs, (ii) whole pigmentation-related <em>genes</em> (every position inside them — gene list from the four datasets in Status §03, start/end coordinates from a gene database like Ensembl/BioMart, on the matched build), (iii) the whole genome as baseline. For each, two designs: <strong>(a)</strong> moderns + the 4 high-coverage archaics (Vindija 33.19, Chagyrskaya 8, Denisova 5, Denisova 25) together; <strong>(b)</strong> moderns only, then project all 14 archaics (incl. low-coverage) onto it.</p>
-        <p><b class="lab why">Why it matters:</b> it tests a hypothesis — pigmentation-gene clustering should <em>not</em> mirror whole-genome (ancestry) clustering; confirming they differ is the point, don't assume it. Design (b) is how you place gappy samples without their gaps distorting the axes.</p>
-        <p><b class="lab do">What to do:</b> after B2 (panel + gene coordinates + data all on one build), generate the six plots.</p>
+      <div class="item">
+        <div class="ihead"><span class="idt">C4</span><h3>A "where everything lives" doc</h3><span class="chip neutral">todo</span><span class="who">⚪ LH</span></div>
+        <div class="body"><p>A short Google Doc listing where the dissertation, repos, and Drive folders are, so collaborators aren't hunting.</p></div>
       </div>
-    </div>
 
-    <div class="item">
-      <div class="ihead"><span class="idt">B5</span><h3>Decide how to handle missing data</h3><span class="who">🟡 TL/LH</span></div>
-      <div class="body">
-        <p><b class="lab what">What it is:</b> many pigmentation SNPs are missing in many archaic samples. Requiring every sample to have data at a SNP leaves fewer than 50 of the 222 — too few.</p>
-        <p><b class="lab why">Why it matters:</b> the missingness approach decides which samples and SNPs are usable.</p>
-        <p><b class="lab do">What to do:</b> for SNP-level work, focus on high-coverage samples; to escape SNP-level sparsity, move to gene-level summaries (B4 (ii)).</p>
+      <div class="item qc">
+        <div class="ihead"><span class="idt">Q10</span><h3>Reproducibility infrastructure (versions, seeds, pipeline-as-DAG, CI)</h3><span class="chip neutral">todo</span><span class="who">🟡 TL</span></div>
+        <div class="body">
+          <p><b class="lab what">What it is:</b> make the whole pipeline re-runnable to the same numbers. Pin the environment (conda <code>environment.yml</code> / a container / R <code>renv.lock</code>) and record tool versions in the manifest (the version-capture slice is <strong>Q10a</strong>, started in Phase 0); add <code>set.seed()</code> to the depth simulations so re-runs reproduce the figures (hash-checkable); <strong>encode the pipeline as a Snakemake/Nextflow (or Makefile) DAG</strong> so run order is explicit, the "which script is canonical" ambiguity (A4/A5) disappears, and the flow figure <strong>auto-generates</strong> and stays in sync; and add a tiny <strong>end-to-end fixture test</strong> (a few samples, a few SNPs) that runs in CI and asserts the invariants from Q2–Q6.</p>
+          <p><b class="lab why">Why it matters:</b> currently no version pinning, no seeds, competing/dead scripts, manual per-sample submission — so a reviewer (or future Lily) can't reproduce the numbers, and it's unclear which script ran. This pays down the two-pipeline confusion permanently.</p>
+          <div class="qmeta">
+            <p><b class="lab ver">Verifies / relates:</b> formalizes the cleanup begun in A4/A5; the fixture test exercises Q2–Q6; feeds C2/C3.</p>
+            <p><b class="lab deliv">Deliverable:</b> <code>environment.yml</code> (or <code>renv.lock</code>/container) + <code>Snakefile</code> (or <code>Makefile</code>) + a CI workflow.</p>
+            <p><b class="lab acc">Acceptance:</b> a fresh checkout reproduces the key figures/numbers from pinned versions + seeds; the DAG builds and auto-emits the flow figure; CI runs the fixture test green on every push.</p>
+            <p><b class="lab art">Artifact:</b> the auto-generated DAG figure + a green/red CI badge on the repo.</p>
+          </div>
+          <ul class="subtasks">
+            <li>Pin environment + record versions in the manifest (Q10a).</li>
+            <li>Add seeds to simulations; assert figure reproducibility by hash.</li>
+            <li>Encode the pipeline as a DAG; auto-generate the flow figure.</li>
+            <li>Add the CI fixture test asserting Q2–Q6 invariants.</li>
+          </ul>
+        </div>
       </div>
-    </div>
 
-    <div class="item">
-      <div class="ihead"><span class="idt">B6</span><h3>Keep gene-level and SNP-level sources separate</h3><span class="who">🟡 YP/TL</span></div>
-      <div class="body">
-        <p><b class="lab what">What it is:</b> of the four datasets, three (melanogenesis network, cross-species, CRISPR) are lists of <strong>genes</strong>; two (GWAS Catalog, HIrisPlex-S) are lists of individual <strong>SNPs</strong>. A gene covers a whole region; a SNP is one position.</p>
-        <p><b class="lab why">Why it matters:</b> they can't be pooled naively — a gene isn't one position, so analyses and weighting differ.</p>
-        <p><b class="lab do">What to do:</b> carry the gene-level and SNP-level layers explicitly and analyze each appropriately.</p>
-      </div>
-    </div>
-
-    <div class="item">
-      <div class="ihead"><span class="idt">B7</span><h3>Functional impact &amp; the skin-specific genes</h3><span class="who">⚪ YP/LH</span></div>
-      <div class="body">
-        <p><b class="lab what">What it is:</b> two things. <strong>(1)</strong> A functional-impact summary: among DNA changes in/around the pigmentation genes, the ratio of <em>synonymous</em> (silent) to <em>non-synonymous</em> (protein-changing) changes — a rough read on whether the variation is functional / under selection. Needs each variant's coding effect from a variant-effect annotator (Ensembl VEP, SnpEff, or ANNOVAR) on the matched build. Most of the 222 panel SNPs are non-coding, so this ratio is over <strong>coding variants in the pigmentation genes</strong> (exome / whole-genome), not the panel SNPs — if suitable coding data isn't available for these samples, flag and defer. <strong>(2)</strong> A profile of the six skin-specific pigmentation genes (TYR, OCA2, TYRP1, DCT, PMEL, MLANA — see Glossary): a per-population moderns-vs-archaics allele-frequency/genotype comparison per gene.</p>
-        <p><b class="lab why">Why it matters:</b> those six genes are switched on mainly in skin (tissue-specific expression), so they're the cleanest "this is really <em>skin</em> pigmentation" story. (Six-gene shortlist: a conference poster by Yemko Pryor on skin-specific expression.)</p>
-        <p><b class="lab do">What to do:</b> run the annotator for coding effects + the synonymous:non-synonymous ratios (state which direction indicates functional constraint); build the per-gene moderns-vs-archaics profiles.</p>
+      <div class="item">
+        <div class="ihead"><span class="idt">A6</span><h3>Website tidy-ups</h3><span class="chip neutral">cleanup</span><span class="who">⚪ LH</span></div>
+        <div class="body">
+          <p><b class="lab what">What it is:</b> small fixes in the website source: <code>introduction.Rmd</code> says the panel is "395 SNPs" but it's 222; the "View genetic PCAs" link points to the old <code>analysis.html</code> (should be <code>pca.html</code>); the <code>LICENSE</code> file is empty (license text only lives in <code>license.Rmd</code>); two built pages (<code>docs/analysis.html</code>, <code>docs/depth_spinoff.html</code>) have no source; and <code>cleaning.Rmd</code>/<code>process_links.R</code> hard-code Lily's laptop paths so they won't run elsewhere.</p>
+          <p><b class="lab do">What to do:</b> fix the number, the link, add license text, remove the orphaned pages, and replace the hard-coded paths.</p>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- INFRA -->
-  <section id="infra">
-    <div class="sec-head"><span class="sec-num">07</span><h2>Repo &amp; cluster infrastructure</h2></div>
-    <div class="item done">
-      <div class="ihead"><span class="idt">C1</span><h3>Move the repo into the Lasisi Lab GitHub org</h3><span class="chip ok">done</span><span class="who">TL</span></div>
-      <div class="body"><p>Done — <code>lasisilab/paint-workflowr</code>. Just confirm Lily has access.</p></div>
-    </div>
-    <div class="item">
-      <div class="ihead"><span class="idt">C2</span><h3>Let Lily develop locally while heavy jobs run on the cluster</h3><span class="who">🟡 TL</span></div>
-      <div class="body"><p><b class="lab what">What it is:</b> Lily's laptop (8 GB RAM) can't run the big steps (PCAs, genotype calling — those stay on the cluster); only the plotting runs locally. Set the repo up so the code runs "as if the cluster folder were local": list the huge cluster files in <code>.gitignore</code> (so they never enter GitHub), but structure things so Lily edits locally and pings Tina to run heavy steps on the cluster. (Same pattern as the lab's PODFRIDGE project.)</p></div>
-    </div>
-    <div class="item">
-      <div class="ihead"><span class="idt">C3</span><h3>Back up the derived data</h3><span class="who">🟡 TL</span></div>
-      <div class="body"><p>The cluster's Turbo storage isn't permanent archival storage. The raw archaic BAMs can be re-downloaded from public sources, but the <em>derived</em> products (merged SGDP reference panels, archaic genotype call sets, PCA outputs) are expensive to regenerate — back them up or deposit them.</p></div>
-    </div>
-    <div class="item">
-      <div class="ihead"><span class="idt">C4</span><h3>A "where everything lives" doc</h3><span class="who">⚪ LH</span></div>
-      <div class="body"><p>A short Google Doc listing where the dissertation, repos, and Drive folders are, so collaborators aren't hunting.</p></div>
-    </div>
-  </section>
+  <!-- PHASE 6 -->
+  <section id="phase6">
+    <div class="phase">
+      <div class="phase-head"><span class="pnum">PHASE 6</span><h3>Writing</h3></div>
+      <p class="gate"><b>Gate:</b> the two manuscripts are out. The review (D2) needs no new analysis — only the lit review (D1) — so it can start immediately and in parallel with the earlier phases.</p>
 
-  <!-- WRITING -->
-  <section id="writing">
-    <div class="sec-head"><span class="sec-num">08</span><h2>Writing</h2></div>
-    <div class="item">
-      <div class="ihead"><span class="idt">D1</span><h3>Literature review of archaic pigmentation</h3><span class="who">🔴 LH</span></div>
-      <div class="body"><p><b class="lab what">What it is:</b> become the person who knows everything published about pigmentation genes in archaic humans. Method: search the "Undermind" tool for "archaic skin", then use Claude to screen 50–100 papers (start from new-data / selection papers on archaics since ~2000, pull their supplements, then search them for the project's gene list).</p><p><b class="lab why">Why it matters:</b> feeds both papers and gives Lily authority in the field. Must-know anchors: the Lalueza-Fox 2007 MC1R paper + its rebuttals; Omer Gokcumen's (Buffalo) archaic/skin work.</p></div>
-    </div>
-    <div class="item">
-      <div class="ihead"><span class="idt">D2</span><h3>The TIG review manuscript</h3><span class="who">🔴 LH/TL</span></div>
-      <div class="body"><p>A review article for <em>Trends in Genetics</em>. Prioritize it — no new analysis needed, just the lit review (D1). Keep its tasks distinct from the primary paper (D3).</p></div>
-    </div>
-    <div class="item">
-      <div class="ihead"><span class="idt">D3</span><h3>The PAINT primary paper</h3><span class="who">🟡 TL/LH/YP</span></div>
-      <div class="body"><p>Draft title: <em>"The genetic landscape of pigmentation in archaic hominins."</em> Resolve the PAINT acronym (it stands for "Pigmentation Analysis of INtrogressed Neanderthal Traits," but introgression wasn't actually studied); Tina scopes target journals. Aim: publish the honest landscape before someone else does.</p></div>
+      <div class="item">
+        <div class="ihead"><span class="idt">D1</span><h3>Literature review of archaic pigmentation</h3><span class="chip neutral">todo</span><span class="who">🔴 LH</span></div>
+        <div class="body"><p><b class="lab what">What it is:</b> become the person who knows everything published about pigmentation genes in archaic humans. Method: search the "Undermind" tool for "archaic skin", then use Claude to screen 50–100 papers (start from new-data / selection papers on archaics since ~2000, pull their supplements, then search them for the project's gene list).</p><p><b class="lab why">Why it matters:</b> feeds both papers and gives Lily authority in the field. Must-know anchors: the Lalueza-Fox 2007 MC1R paper + its rebuttals; Omer Gokcumen's (Buffalo) archaic/skin work.</p></div>
+      </div>
+
+      <div class="item">
+        <div class="ihead"><span class="idt">D2</span><h3>The TIG review manuscript</h3><span class="chip neutral">todo</span><span class="who">🔴 LH/TL</span></div>
+        <div class="body"><p>A review article for <em>Trends in Genetics</em>. Prioritize it — no new analysis needed, just the lit review (D1). Keep its tasks distinct from the primary paper (D3).</p></div>
+      </div>
+
+      <div class="item">
+        <div class="ihead"><span class="idt">D3</span><h3>The PAINT primary paper</h3><span class="chip neutral">todo</span><span class="who">🟡 TL/LH/YP</span></div>
+        <div class="body"><p>Draft title: <em>"The genetic landscape of pigmentation in archaic hominins."</em> Resolve the PAINT acronym (it stands for "Pigmentation Analysis of INtrogressed Neanderthal Traits," but introgression wasn't actually studied); Tina scopes target journals. Aim: publish the honest landscape before someone else does.</p></div>
+      </div>
     </div>
   </section>
 
   <footer>
-    <p>This page renders <code>plan/plan.md</code>; the dated history of what was done/found/decided is in <code>plan/changelog.md</code>. If this page and <code>plan.md</code> disagree, <code>plan.md</code> wins.</p>
+    <p>This page renders <code>plan/plan.md</code>; the dated history of what was done/found/decided is in <code>plan/changelog.md</code>. The QC items <code>Q1</code>–<code>Q10</code> were merged in from the retired <code>evaluation_plan.md</code>. If this page and <code>plan.md</code> disagree, <code>plan.md</code> wins.</p>
   </footer>
 </div>
 

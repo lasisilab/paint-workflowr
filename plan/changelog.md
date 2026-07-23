@@ -6,6 +6,14 @@ Legend: **DONE** = action taken · **FOUND** = finding/evidence · **DECIDED** =
 
 ---
 
+## 2026-07-23 — Unified master plan: one phased, checkbox-tracked `plan.md`
+
+- **DECIDED / DONE** — Merged the two planning docs into a **single** source of truth. `plan.md` §4 was restructured from category-grouped (A bugs / B analysis / C infra / D writing) into **seven phases (0–6)**, ordered as execution order, each a gate that co-locates a fix/build with the QC check that proves it. The 10 reviewer-driven QC checks from `evaluation_plan.md` are now first-class tracked items **`Q1`–`Q10`**, fleshed to the same depth as the A/B items (with **Verifies/relates · Deliverable · Acceptance · Subtasks · Artifact**). Nothing is tracked outside `plan.md` anymore.
+- **DONE** — Added a status vocabulary applied to every item (`TODO` · `IN PROGRESS` · `BLOCKED(<dep>)` · `DONE`, plus the bug verdicts `CONFIRMED`/`DOWNGRADED`), a **phase-overview table** at the top of §4, and glossary entries for the QC-specific terms (checksum/manifest, tracer SNP, positive control, palindromic SNP, contamination, pipeline DAG). Folded the old §5 "Do B2 first" into Phase 1's ordering; renumbered Datasets→§5 and Name→§6.
+- **DONE (IDs preserved)** — All original IDs kept verbatim so `pipeline_workbook.md`, `verify/BUG_EVIDENCE.md`, and this changelog still resolve: A1–A6, B1–B7, C1–C4, D1–D3. **30 tracked items total** (A6+B7+C4+D3+Q10), each with a checkbox + status. Phase→item map: **P0** Q1 (+Q10a); **P1** A2, B2, A1, A3, Q2, Q4, A4, A5; **P2** Q3, Q5, Q6; **P3** Q7, Q8; **P4** B1, B3, B4, B5, B6, B7, Q9; **P5** C2, C3, C4, Q10, A6, C1(done); **P6** D1, D2, D3.
+- **DONE** — Retired `evaluation_plan.md` to a one-paragraph stub (a was→now table pointing each item to its `Q`-ID in `plan.md`) so existing links/changelog references don't break.
+- **DONE** — Regenerated `paint-plan.html` to mirror the phased plan (reused the existing teal/serif design system; QC items get a distinct left-border card with the acceptance/subtasks structure). Verified: 30 item cards (each ID once), all HTML tags balanced (section/table/details/pre/ul/div), and no literal `|` leaking into a rendered table (the only pipes left are inside `<pre>` shell-command evidence — safe).
+
 ## 2026-07-23 — Workbook table fix + reviewer-driven evaluation/QC plan
 
 - **FIX** — `pipeline_workbook.md` known-issues table row 7 rendered broken on GitHub: the cell contained literal `|` inside inline code (`(1|Coverage)`, `(1|Sample)`), which the Markdown table parser read as extra column separators. Rephrased the cell to drop the pipes. (Verified it was the only such offender; code fences balanced; mermaid diagram fine.)
