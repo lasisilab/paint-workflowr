@@ -6,6 +6,12 @@ Legend: **DONE** = action taken · **FOUND** = finding/evidence · **DECIDED** =
 
 ---
 
+## 2026-07-23 — Decided sample subset (justified), targeted re-acquisition, verify SGDP
+
+- **DECIDED (Tina)** — targeted re-acquisition; verify SGDP (not rebuild); exclude non-whole-genome (exome) and unreliable genomes; goal = **maximize reliably-genotyped pigmentation SNPs of interest, not genome count**, with the subset justified explicitly.
+- **DONE** — Wrote [`papers/SAMPLE_INCLUSION.md`](papers/SAMPLE_INCLUSION.md): explicit criteria (whole-genome-only, non-redundant, coverage, reliability-at-transition-SNPs), a quantitative Poisson table of expected usable panel SNPs per genome from published coverage, and a per-genome include/exclude decision. Key basis: the panel is **transition-heavy** (SLC24A5, HERC2, MC1R are transitions) and aDNA damage falls on transitions, so low-coverage genomes are least reliable exactly at the SNPs of interest; the 5 high-coverage genomes reliably genotype all 222 (incl. transitions) while every low-cov genome yields **0** SNPs at diploid-callable depth. **Subset:** Tier 1 (core) = Altai/Den5, Vindija 33.19, Denisova 3, Chagyrskaya 8, Denisova 25 + SGDP; Tier 2 (extended, GL uncertainty) = Les Cottés, Denisova 11, Goyet, Mezmaiskaya 1 (VCF); **excluded** = El Sidrón (exome), Vindija 87 (redundant = Vi 33.19), Mezmaiskaya 2 (1.7×), Spy 94a (1.0× + ~4% contamination), Hohlenstein-Stadel & Scladina (ultra-low ~0.02–0.05×).
+- **CONSEQUENCE (compute)** — targeted read re-acquisition needed for **only 3 genomes** (Les Cottés, Denisova 11, Goyet); high-cov = download VCFs; Mez1 = VCF; SGDP = verify; 6 genomes not downloaded at all. Propagated the decision to `rebuild_from_raw.md` (reuse-vs-rerun + net-rerun surface), `plan.md` §2, and the `pipeline.html` run log.
+
 ## 2026-07-23 — Per-paper QC & pipeline documented (all 11 sources)
 
 - **DONE** — Filled [`papers/PIPELINE_QC_BY_PAPER.md`](papers/PIPELINE_QC_BY_PAPER.md) from a completed paper-extraction workflow (11 sources × extract + adversarial verify; all verdicts SOLID; ~2.2M tokens). Per paper: reference build, read processing (aligner + verbatim params — e.g. BWA `-n 0.01 -o 2 -l 16500`, leeHom, bam-rmdup), MQ/BQ/length filters, damage handling (UDG vs non-UDG; snpAD vs terminal-masking), genotype calling (tool + ploidy), masks/filters (map35_100, TRF, GC central-95%, min-cov-10, FilterBed), contamination, sex, coverage, and a reuse implication.
