@@ -25,6 +25,6 @@ Sclad           1.856    91   64/222    B-low    ~0.02-0.03x / 78 Mbp (Peyregne 
 denny           1.252    20   121/222   B-low    ~2.6x (Slon 2018, Denisova 11 F1 hybrid)
 spy             0.743    22   75/222    B-low    ~1.0x (Hajdinjak 2018)
 Denisova3       0.495    6    69/222    ARTIFACT ~30x (Meyer 2012) -- true high-cov, mis-recovered (A1)
-mez1            0.180    2    37/222    B-low    ~1.9x (Pruefer 2017 added; Prufer 2014 orig)
+mez1            0.180    2    37/222    B-low    ~1.9x (Pruefer 2017 added; Prufer 2014 orig) -- low-cov snpAD VCF EXISTS (.../Vindija/VCF/Mez1/)
 hst             0.117    2    24/222    B-low    ~0.05x / 168 Mbp (Peyregne 2019, EARLY ~120ka)
 Sid1253         EMPTY    -    0/0       excluded exome-only ~12.5x over exome (Castellano 2014); no shotgun genome

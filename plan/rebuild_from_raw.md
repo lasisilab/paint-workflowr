@@ -31,11 +31,15 @@
 | Vindija 87 | **the Vindija 33.19 VCF** (same individual) | **No** | none extra — use Vi 33.19 | Vi 87 is the same person; the 1.3× library adds nothing for genotypes |
 | Denisova 11 "Denny" | BAM (ENA PRJEB24663) | **No hard call → ANGSD GLs** | re-acquire reads, reheader, mapDamage, max-depth cap, ANGSD GLs at panels, het-vs-depth, PCAngsd | ~2.6× hybrid; too low for hard calls; no VCF exists |
 | Goyet, Les Cottés, Spy, Mez 2 | BAM (ENA, Hajdinjak 2018) | **No hard call → ANGSD GLs** | full low-cov path (as Denisova 11) | 1–2.7×; BAM-only |
-| Mezmaiskaya 1 | BAM (ENA PRJEB21195) | **No hard call → ANGSD GLs** | full low-cov path | ~1.9×; BAM-only |
+| Mezmaiskaya 1 | **low-cov snpAD VCF** (`…/Vindija/VCF/Mez1/`) or BAM | reuse VCF (low-cov, with care) or GLs | apply FilterBed + lint; or GL path | ~1.9×; a snpAD VCF *does* exist (correction) |
 | Hohlenstein-Stadel, Scladina | BAM (ENA PRJEB29475) | **No hard call → ANGSD GLs** | full low-cov path; expect very few usable panel sites | ultra-low ~0.02–0.05× early Neanderthals |
 | El Sidrón 1253 | — | **Exclude** | (optional) check its exome VCF only for panel SNPs that fall in coding regions — most pigmentation SNPs are regulatory, so expect ~none | exome-capture only; no shotgun genome |
 | SGDP (15 moderns) | existing `pca/modern/sgdp.wg` (hg19, 9.2 M SNPs) | reuse | build/allele lint (Q2/Q4); subset to panels; positive-control PCA (Q3) | already on hg19 with the pigmentation SNPs by rsID; no re-acquisition |
 | **Pigmentation panel** | rsIDs (from `skin_pigmentation.tsv` / GWAS Catalog) | — | **lift to hg19 by rsID**, keep both builds; tracer lint (Q2) | fixes the root bug A2 |
+
+**Two method notes from the per-paper QC extraction** ([`papers/PIPELINE_QC_BY_PAPER.md`](papers/PIPELINE_QC_BY_PAPER.md)):
+- *Reused VCFs need their FilterBed.* Every published snpAD VCF carries only `mq25`+`map35_100`; the min-cov-10, GC-corrected central-95% (the max-depth cap), tandem-repeat, and indel filters ship as a **separate companion `FilterBed` mask that we must apply**, then intersect across genomes to a common site set. Prefer the **2017 snpAD reprocess** for Altai/Vindija/Denisova (the originals are GATK).
+- *Tier-B calling choice.* The low-coverage papers (Hajdinjak 2018, Peyrégne 2019, Slon 2018) did **not** genotype — they used **pseudo-haploid random single-read sampling + a deamination filter + transversions** (heffalump). Our default is **ANGSD genotype likelihoods** (retains more information at these depths), but we will **cross-check against the pseudo-haploid approach** since it is the field-validated method for these exact genomes; and for HST/Scladina the **deamination filter is load-bearing** (raw contamination 22.9%/64.8% → 2.0%/5.5%).
 
 **Net rerun surface (much smaller than "redo everything"):**
 - **Re-acquire reads for ~8 low-coverage genomes only** (Tier B) — targeted extraction at the SNP positions; the 5 high-coverage genomes need **no re-acquisition and no re-calling** (download the published VCFs).
