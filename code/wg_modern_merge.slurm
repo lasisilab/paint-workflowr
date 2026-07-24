@@ -25,15 +25,16 @@
 #SBATCH --output=/nfs/turbo/lsa-tlasisi1/sepia/scratch/sepia_modern_merge_%j.log
 set -uo pipefail
 
-REPO="${SEPIA_REPO:-/nfs/turbo/lsa-tlasisi1/sepia}"     # the cluster checkout (this repo)
-SRC=/nfs/turbo/lsa-tlasisi1/lheald_thesis/aDNA_data     # Lily's data — READ once to seed SEPIA
-SUB="$SRC/sgdp/subsets"                                  # 166 per-sample SGDP BCFs (*_sgdp.bcf)
-RES="$REPO/resources/sgdp"                               # completed modern reference (gitignored, reusable)
-SCR="$REPO/scratch/modern_merge"                         # big intermediates (gitignored)
-OUT="$REPO/output/pca_wg"                                # small synced results (tracked)
+REPO="${SEPIA_REPO:-/nfs/turbo/lsa-tlasisi1/sepia}"        # the cluster checkout (this repo)
+GENOMES="${SEPIA_GENOMES:-/nfs/turbo/lsa-tlasisi1/genomes}" # SHARED lab genomes (reusable across projects)
+SRC=/nfs/turbo/lsa-tlasisi1/lheald_thesis/aDNA_data        # Lily's data — READ once to seed SEPIA
+SUB="$SRC/sgdp/subsets"                                     # 166 per-sample SGDP BCFs (*_sgdp.bcf)
+RES="$GENOMES/SGDP"                                         # completed modern SGDP reference (shared, reusable)
+SCR="$REPO/scratch/modern_merge"                            # big intermediates (gitignored)
+OUT="$REPO/output/pca_wg"                                   # small synced results (tracked, in repo)
 mkdir -p "$RES" "$SCR" "$OUT"; cd "$SCR"
 
-echo "===== SEPIA modern SGDP merge ====="; date; echo "scratch: $SCR   resources: $RES   output: $OUT"
+echo "===== SEPIA modern SGDP merge ====="; date; echo "scratch: $SCR   shared-ref: $RES   output: $OUT"
 
 # ---- toolchain (ARC modules; conda fallback) ---------------------------------------
 module load Bioinformatics >/dev/null 2>&1 || true
