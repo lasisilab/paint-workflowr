@@ -6,6 +6,12 @@ Legend: **DONE** = action taken · **FOUND** = finding/evidence · **DECIDED** =
 
 ---
 
+## 2026-07-23 — Roadmap reconciled to hg19 (the build decision made explicit and consistent)
+
+- **DECIDED / CLARIFIED** — the project standardizes on **hg19/hs37d5**, not hg38. Rationale: all sequence data (SGDP + archaic VCFs/BAMs + `ancient_sgdp_wg`) is natively hg19, and the MPI-EVA archaic genomes are published only as hg19-aligned BAMs (no FASTQ → re-aligning to hg38 is heavy and partly unavailable). So we lift the 222-SNP panel — and the four hg38 pigmentation SNP-lists — **down** to hg19 (trivial, by rsID), rather than migrating terabytes of reads up. A hg38 migration (B2b) is optional/deferred, only if hg38 later becomes the committed standard.
+- **FOUND (roadmap drift, flagged by Tina)** — the early roadmap (from the "normalize everything to hg38" 17-Jun call) still framed **B2 as "put everything on hg38"** across `plan.md` and `sepia-plan.html`, contradicting the later hg19 decision in `rebuild_from_raw.md` and everything actually executed (the genome-wide sanity PCA is on hg19). Reconciled both docs: A2, B2 (header/What/Why/Do), the Phase-1 gate, the "single most unblocking step" text, the open-questions item, the B2a/B2b split, and the call-mapping now all say **hg19** (B2a = panel→hg19 is the route; B2b = data→hg38 optional/deferred). Factual hg38 mentions (the panel came from the hg38 GWAS Catalog; the four datasets are hg38; tracer coordinates) are left unchanged.
+- **STATUS** — the **genome-wide branch is already hg19-verified** (tracer rs1426654 at `15:48426484` in both SGDP and archaic data), so the build fix is effectively done for the genome-wide sanity PCA. The remaining build work is the panel lift hg38→hg19 + the formal Q2 lint, both in the pigmentation-panel arm (Phase 4). Override to hg38 remains available (B2b) if the pigmentation-network integration ever needs it — at the cost of re-aligning the archaic reads.
+
 ## 2026-07-23 — Why 7 SGDP BCFs dropped from the merge (truncated local copies, not source quality)
 
 - **FOUND** — 7 of the 166 per-sample SGDP BCFs in Lily's `sgdp/subsets/` are **truncated local copies**: near-full size (~460–528 MB, vs ~510 MB for good ones) but **missing the BGZF end-of-file marker and unindexed** (`.csi` absent), so bcftools cannot read/merge them. The other 159 are complete (valid EOF + index). Affected: `LP6005519-DNA_{G02,G03,G04,H04}`, `LP6005592-DNA_{A04,B02,B04}` — clustered on two plates.
