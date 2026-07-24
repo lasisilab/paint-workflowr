@@ -77,10 +77,10 @@ the current-state + open-questions snapshot. <strong>Update this whenever a deci
 <h2 id="current-state">Current state</h2>
 <ul>
 <li><strong>DONE:</strong> SEPIA rename+rebrand; Quarto reconciled (deploy gated); cluster reorg + shared genomes; <strong>SGDP 159-sample reference + Sanity-1 PCA</strong> (<code>output/pca_wg/</code>); SGDP metadata (<code>data/sgdp_metadata.tsv</code>, Mallick 2016/Reich); <strong>archaic high-cov VCFs</strong> (5 genomes, ~258 GB) + Den25 masks; cluster push fixed.</li>
+<li><strong>DONE → <a href="../data/panel_hg19_hg38_map.tsv"><code>data/panel_hg19_hg38_map.tsv</code></a> (+ <code>.SOURCE.md</code>)</strong> — the B2a rsID↔︎hg19↔︎hg38 map, <strong>222/222 resolved</strong> (Ensembl REST + dbSNP), per-build ref/alt; <strong>11 palindromic</strong> flagged (Q4), <strong>9 merged</strong> rsIDs. <strong>FOUND a uniform +1 off-by-one in the panel's hg38 coords</strong> (<code>snps.txt − true GRCh38 = +1</code> across all 222; a 0/1-based error). True tracers: <strong>SLC24A5 rs1426654 = <code>15:48134287</code></strong> (panel stored <code>48134288</code>), <strong>HERC2 rs12913832 = <code>15:28120472</code></strong>. hg19 was correct → genome-wide/SGDP work unaffected. The map re-pulls authoritative coords, so it <strong>corrects</strong> this. <em>Doc follow-up:</em> fix the tracer <em>definitions</em> (glossary/Q2) <code>48134288</code>→<code>48134287</code>; leave <code>BUG_EVIDENCE</code>/A2 (they quote the panel's buggy value on purpose).</li>
 <li><strong>IN FLIGHT (at this snapshot):</strong>
 <ul>
 <li><strong>Archaic acquisition round-2</strong> — SLURM <strong>job 54632488</strong> on the cluster: Chagyrskaya 8 VCFs+masks (http), Vindija-tree masks (per-genome subdirs), low-cov BAMs (https). Resume-safe; verify from <code>genomes/archaic/acquire_*.log</code>.</li>
-<li><strong>Background agent → <code>data/panel_hg19_hg38_map.tsv</code> (+ <code>.SOURCE.md</code>)</strong> — the B2a rsID↔︎hg19↔︎hg38 panel map + Q4 harmonization inputs. <em>(Review + commit when it lands.)</em></li>
 <li><strong>DONE → <a href="papers/GENE_NETWORK_DATASETS.html"><code>papers/GENE_NETWORK_DATASETS.md</code></a></strong> — gene-network inventory. Key findings: the repo's <strong>GWAS-Catalog pull is a superset of the 222 panel</strong> (212/222 present + ~860 new rsIDs, hg38); <strong>HIrisPlex-S adds 21 forensically-validated markers</strong> not in the panel (MC1R red-hair set complete + HERC2 <code>rs12913832</code> / OCA2 <code>rs1800407</code>) — the highest-value small addition; gene-level tables (Baxter 635, Bajpai 169, Raghunath, D'Arcy) are <strong>symbol-only → need a coordinate join</strong> (feed B6/B7). Repo is <strong>mixed-build</strong> (GWAS hg38, paper extracts hg19) → fold in by <strong>rsID</strong> (exactly what B2's map does).</li>
 </ul></li>
 <li><strong>QUEUED:</strong> <strong>Sanity 2</strong> — project the (pseudo-haploid) archaic calls onto the modern PCA; needs a newer plink2 (<code>allele-wts</code>) or smartpca <code>lsqproject</code>; runs on the cluster (parallel to the download). Uses the pre-existing <code>ancient_sgdp_wg</code> calls — no new data.</li>
@@ -95,10 +95,10 @@ the current-state + open-questions snapshot. <strong>Update this whenever a deci
 </ul>
 <h2 id="immediate-next-steps">Immediate next steps</h2>
 <ol type="1">
-<li>When the two agents land → review + <strong>commit</strong> <code>data/panel_hg19_hg38_map.tsv</code> and <code>plan/papers/GENE_NETWORK_DATASETS.md</code>.</li>
 <li>When acquisition round-2 lands → verify Chagyrskaya + masks + BAMs; commit the <code>MANIFEST</code> provenance (a first real cluster→GitHub push).</li>
 <li>Set up + run <strong>Sanity 2</strong> (archaic projection).</li>
-<li><strong>B2a</strong> — use the panel map to extract SGDP + archaic genotypes on hg38 and redo the pigmentation PCA (validates Lily) → then the gene-network integration.</li>
+<li><strong>B2a</strong> — the panel map now exists: use it to extract SGDP + archaic genotypes on hg38 and redo the pigmentation PCA (validates Lily) → then the gene-network integration. <em>(When building the Q2 lint, apply the tracer fix <code>48134288</code>→<code>48134287</code>.)</em></li>
+<li>Extend the rsID map from the 222 panel to the <strong>GWAS superset (~1,072) + HIrisPlex-S (+21)</strong> if Tina wants the wider SNP surface (open question below).</li>
 </ol>
 <h2 id="cluster-access-rules-still-binding">Cluster-access rules (still binding)</h2>
 <p><code>ssh -O check greatlakes</code> before batched commands; <strong>one batched command</strong> at a time; never hammer; heavy work via <code>sbatch</code>, not the login node. Full rules in <a href="CLUSTER_ACCESS.html"><code>CLUSTER_ACCESS.md</code></a>.</p>

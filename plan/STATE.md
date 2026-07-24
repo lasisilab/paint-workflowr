@@ -25,9 +25,9 @@ the current-state + open-questions snapshot. **Update this whenever a decision i
 
 ## Current state
 - **DONE:** SEPIA rename+rebrand; Quarto reconciled (deploy gated); cluster reorg + shared genomes; **SGDP 159-sample reference + Sanity-1 PCA** (`output/pca_wg/`); SGDP metadata (`data/sgdp_metadata.tsv`, Mallick 2016/Reich); **archaic high-cov VCFs** (5 genomes, ~258 GB) + Den25 masks; cluster push fixed.
+- **DONE → [`data/panel_hg19_hg38_map.tsv`](../data/panel_hg19_hg38_map.tsv) (+ `.SOURCE.md`)** — the B2a rsID↔hg19↔hg38 map, **222/222 resolved** (Ensembl REST + dbSNP), per-build ref/alt; **11 palindromic** flagged (Q4), **9 merged** rsIDs. **FOUND a uniform +1 off-by-one in the panel's hg38 coords** (`snps.txt − true GRCh38 = +1` across all 222; a 0/1-based error). True tracers: **SLC24A5 rs1426654 = `15:48134287`** (panel stored `48134288`), **HERC2 rs12913832 = `15:28120472`**. hg19 was correct → genome-wide/SGDP work unaffected. The map re-pulls authoritative coords, so it **corrects** this. *Doc follow-up:* fix the tracer *definitions* (glossary/Q2) `48134288`→`48134287`; leave `BUG_EVIDENCE`/A2 (they quote the panel's buggy value on purpose).
 - **IN FLIGHT (at this snapshot):**
   - **Archaic acquisition round-2** — SLURM **job 54632488** on the cluster: Chagyrskaya 8 VCFs+masks (http), Vindija-tree masks (per-genome subdirs), low-cov BAMs (https). Resume-safe; verify from `genomes/archaic/acquire_*.log`.
-  - **Background agent → `data/panel_hg19_hg38_map.tsv` (+ `.SOURCE.md`)** — the B2a rsID↔hg19↔hg38 panel map + Q4 harmonization inputs. *(Review + commit when it lands.)*
   - **DONE → [`papers/GENE_NETWORK_DATASETS.md`](papers/GENE_NETWORK_DATASETS.md)** — gene-network inventory. Key findings: the repo's **GWAS-Catalog pull is a superset of the 222 panel** (212/222 present + ~860 new rsIDs, hg38); **HIrisPlex-S adds 21 forensically-validated markers** not in the panel (MC1R red-hair set complete + HERC2 `rs12913832` / OCA2 `rs1800407`) — the highest-value small addition; gene-level tables (Baxter 635, Bajpai 169, Raghunath, D'Arcy) are **symbol-only → need a coordinate join** (feed B6/B7). Repo is **mixed-build** (GWAS hg38, paper extracts hg19) → fold in by **rsID** (exactly what B2's map does).
 - **QUEUED:** **Sanity 2** — project the (pseudo-haploid) archaic calls onto the modern PCA; needs a newer plink2 (`allele-wts`) or smartpca `lsqproject`; runs on the cluster (parallel to the download). Uses the pre-existing `ancient_sgdp_wg` calls — no new data.
 - **BLOCKED (by the above):** ANGSD GLs + mapDamage (Q7/Q8 — need the low-cov BAMs); the pigmentation-panel PCA + directional/HIrisPlex-S scores (B3/B4 — need the panel map + genotypes on hg38).
@@ -39,10 +39,10 @@ the current-state + open-questions snapshot. **Update this whenever a decision i
 - **Local folder rename** (`~/GitHub/paint-workflowr` → `sepia`) — cosmetic, do at a break (git works regardless).
 
 ## Immediate next steps
-1. When the two agents land → review + **commit** `data/panel_hg19_hg38_map.tsv` and `plan/papers/GENE_NETWORK_DATASETS.md`.
-2. When acquisition round-2 lands → verify Chagyrskaya + masks + BAMs; commit the `MANIFEST` provenance (a first real cluster→GitHub push).
-3. Set up + run **Sanity 2** (archaic projection).
-4. **B2a** — use the panel map to extract SGDP + archaic genotypes on hg38 and redo the pigmentation PCA (validates Lily) → then the gene-network integration.
+1. When acquisition round-2 lands → verify Chagyrskaya + masks + BAMs; commit the `MANIFEST` provenance (a first real cluster→GitHub push).
+2. Set up + run **Sanity 2** (archaic projection).
+3. **B2a** — the panel map now exists: use it to extract SGDP + archaic genotypes on hg38 and redo the pigmentation PCA (validates Lily) → then the gene-network integration. *(When building the Q2 lint, apply the tracer fix `48134288`→`48134287`.)*
+4. Extend the rsID map from the 222 panel to the **GWAS superset (~1,072) + HIrisPlex-S (+21)** if Tina wants the wider SNP surface (open question below).
 
 ## Cluster-access rules (still binding)
 `ssh -O check greatlakes` before batched commands; **one batched command** at a time; never hammer; heavy work via `sbatch`, not the login node. Full rules in [`CLUSTER_ACCESS.md`](CLUSTER_ACCESS.md).
