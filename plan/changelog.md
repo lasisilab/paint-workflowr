@@ -6,6 +6,14 @@ Legend: **DONE** = action taken · **FOUND** = finding/evidence · **DECIDED** =
 
 ---
 
+## 2026-07-23 — Cleanup, shared lab genomes, and Sanity check 1 (SGDP PCA) submitted
+
+- **DONE** — deleted the redundant `quarto-migration` branch (local + remote; fully merged into main) and removed the vestigial workflowr `docs/` (457 files — regenerable in Quarto; the `introgression_app` **source** is kept in `analysis/`). Renamed the local working folder `paint-workflowr` → `sepia` (git/remote intact; cosmetic).
+- **DECIDED (salvage vs. scratch)** — **rebuild the analyses from scratch**, following the plan. Salvage only the *shell*: framing prose (`about`, `license`, `introduction` background), the `index` landing page, the 222-SNP panel + `data/skin_pigmentation.tsv`, the `introgression_app` source, and the Quarto scaffold. Rationale: the old analysis outputs carry the documented bugs (build mismatch, 15-sample degenerate PCA, mean imputation) and their inputs are laptop-only, so every SEPIA figure is regenerated from the cluster pipeline into `output/`, page by page (`sanity_sgdp_pca.qmd` is the first).
+- **DONE (shared lab genomes)** — created `/nfs/turbo/lsa-tlasisi1/genomes/{SGDP,reference,archaic}` as a lab-wide reusable resource, symlinked it into the project (`sepia/resources/genomes` → it; gitignored), and made the pipeline honor `$SEPIA_GENOMES` (default that path). Other studies call the same SGDP reference — no duplication. Options considered: plain absolute path (works as-is on the shared allocation), symlink (repo-relative convenience), env var (portability) — did the latter two on top of the first.
+- **DONE (Sanity check 1)** — submitted `code/wg_modern_merge.slurm` (**job 54590566**): completes the 166-sample SGDP merge → reference to the shared genomes dir, PCA coords to `output/pca_wg/`. Added `sanity_sgdp_pca.qmd` (in the navbar) — a narrated modern-only PCA check (eigenvalue elbow + PC1/PC2 continental separation, contrasted with the old 15-sample degenerate result); renders once the merge output exists.
+- **OPEN** — SGDP region labels (`data/sgdp_metadata.tsv`, small public metadata) to colour the PCA; read the merge log + render the sanity page when the job finishes; then Sanity check 2 (project the archaics onto the modern PCA).
+
 ## 2026-07-23 — Executed the reorg: gh rename, Quarto reconciled onto main, cluster cloned
 
 - **DONE (rename)** — renamed the GitHub repo `lasisilab/paint-workflowr` → `lasisilab/sepia` via `gh` (ADMIN confirmed) and repointed the local remote. GitHub 301-redirects old links. Local working folder stays `paint-workflowr` (cosmetic — GitHub Desktop labels by folder name; rename at a break, don't while a session is live in it).
