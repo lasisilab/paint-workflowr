@@ -135,6 +135,16 @@
   details.ev .cmt { color: var(--ink-3); }
   details.ev .verdict { font-size: .82rem; margin: 0; }
   details.ev .verdict b.ok { color: var(--ok); } details.ev .verdict b.warn { color: var(--warn); } details.ev .verdict b.bad { color: var(--bad); }
+
+  /* foldaway reference sections (glossary etc.) — collapsed by default so they don't dominate the scroll */
+  details.fold { margin-top: 14px; }
+  details.fold > summary { cursor: pointer; font-family: var(--sans); font-size: .9rem; font-weight: 600; color: var(--accent); list-style: none; display: inline-flex; align-items: center; gap: 9px; padding: 9px 15px; border: 1px solid var(--line); border-radius: 9px; background: var(--surface-2); user-select: none; box-shadow: var(--shadow); }
+  details.fold > summary:hover { border-color: var(--accent); }
+  details.fold > summary::-webkit-details-marker { display: none; }
+  details.fold > summary::before { content: "\25B8"; font-size: .78rem; }
+  details.fold[open] > summary::before { content: "\25BE"; }
+  details.fold > summary .fold-hint { color: var(--ink-3); font-weight: 400; }
+  details.fold[open] > summary { margin-bottom: 14px; }
   footer { padding: 34px 0 70px; color: var(--ink-3); font-size: .82rem; }
   footer p { max-width: none; }
 </style>
@@ -166,7 +176,7 @@
 
 <div class="wrap">
   <header class="hero">
-    <p class="eyebrow">Project plan &amp; roadmap · 23 Jul 2026</p>
+    <p class="eyebrow">Project plan &amp; roadmap · 24 Jul 2026</p>
     <h1 class="title">SEPIA — what's next</h1>
     <p class="subtitle">Pigmentation genetics in Neanderthals &amp; Denisovans, as one phased plan: make the foundation trustworthy, verify each step, then do the science and the two papers.</p>
     <div class="meta-row">
@@ -192,8 +202,10 @@
   <section id="glossary">
     <div class="sec-head"><span class="sec-num">02</span><h2>Glossary</h2></div>
     <p class="lede">Read once; the rest of the plan assumes nothing beyond this.</p>
+    <details class="fold">
+      <summary>Show the 29 terms&nbsp;<span class="fold-hint">— collapsed so it stays out of your way; expand when you hit an unfamiliar term</span></summary>
     <dl class="glossary">
-      <div><dt>Genome build (hg19 vs hg38)</dt><dd>The "reference genome" is the standard map of human DNA that everyone's sequence is compared against. It's been re-released over the years; <strong>hg19</strong> (GRCh37, 2009) and <strong>hg38</strong> (GRCh38, 2013) are the two that matter here. <strong>The same SNP has a different coordinate number in each build.</strong> Example: the SLC24A5 skin-color SNP is at <code>15:48,134,288</code> in hg38 but <code>15:48,426,484</code> in hg19 — ~292 kb apart. A coordinate from one build, looked up in the other, points at the wrong place.</dd></div>
+      <div><dt>Genome build (hg19 vs hg38)</dt><dd>The "reference genome" is the standard map of human DNA that everyone's sequence is compared against. It's been re-released over the years; <strong>hg19</strong> (GRCh37, 2009) and <strong>hg38</strong> (GRCh38, 2013) are the two that matter here. <strong>The same SNP has a different coordinate number in each build.</strong> Example: the SLC24A5 skin-color SNP is at <code>15:48,134,287</code> in hg38 but <code>15:48,426,484</code> in hg19 — ~292 kb apart. A coordinate from one build, looked up in the other, points at the wrong place.</dd></div>
       <div><dt>SNP</dt><dd>A single genome position where people differ by one DNA letter (A vs G, etc.). "Pigmentation SNPs" are positions known to affect skin/hair/eye color.</dd></div>
       <div><dt>The panel</dt><dd>The fixed list of <strong>222 pigmentation SNP positions</strong> this project focuses on. Its coordinates came from the GWAS Catalog and are on <strong>hg38</strong>.</dd></div>
       <div><dt>The sequence data ("the data")</dt><dd>The actual DNA reads for each individual — <strong>both</strong> the <strong>archaic samples</strong> (Neanderthal/Denisovan) and the <strong>modern SGDP genomes</strong>. All aligned to the <strong>hg19</strong> reference (<code>hs37d5.fa</code>).</dd></div>
@@ -217,12 +229,13 @@
       <div><dt>Tissue-specific expression</dt><dd>A gene is "expressed" where it's switched on. "Skin-specific" pigmentation genes are switched on mainly in skin (vs. active all over the body).</dd></div>
       <div><dt>The six skin-specific genes</dt><dd>Referenced in B7: TYR (tyrosinase — key melanin enzyme), OCA2, TYRP1, DCT, PMEL, MLANA — all melanocyte/melanin-pathway genes.</dd></div>
       <div><dt>Checksum / manifest</dt><dd>A <em>checksum</em> (e.g. an <code>sha256</code> hash) is a short fingerprint of a file's bytes; change one byte and it changes — so it proves a file is intact and is the exact copy you think it is. A <em>manifest</em> lists every input with its checksum, source, and build — the "these are the exact ingredients" ledger. (Building it is item Q1.)</dd></div>
-      <div><dt>Tracer SNP</dt><dd>A SNP whose coordinate is known in <em>both</em> builds (e.g. SLC24A5 = <code>15:48,426,484</code> hg19 / <code>15:48,134,288</code> hg38). Look up where a file puts it and you instantly know that file's build — a cheap, decisive build check (item Q2).</dd></div>
+      <div><dt>Tracer SNP</dt><dd>A SNP whose coordinate is known in <em>both</em> builds (e.g. SLC24A5 = <code>15:48,426,484</code> hg19 / <code>15:48,134,287</code> hg38). Look up where a file puts it and you instantly know that file's build — a cheap, decisive build check (item Q2). <em>(The panel actually stored <code>48,134,288</code> — one base high; see B2/the changelog for that off-by-one.)</em></dd></div>
       <div><dt>Positive control</dt><dd>A test where you already know the right answer, run first to prove the machinery works before trusting it on a new question. Here: does the whole-genome PCA reproduce the textbook result (Africans separate from non-Africans on PC1)? If it can't reproduce the known, don't believe the novel result (item Q3).</dd></div>
       <div><dt>Palindromic SNP</dt><dd>A SNP whose two alleles are DNA complements — <strong>A/T</strong> or <strong>C/G</strong>. Because you can't tell from the letters alone which DNA strand a dataset reported, merging two datasets can silently flip the allele and invert a score. They're flagged and usually dropped (item Q4).</dd></div>
       <div><dt>Contamination (aDNA)</dt><dd>Modern human DNA (from excavators, lab staff, environment) mixed into an ancient sample. It looks like extra "normal" DNA, inflating heterozygosity and creating false variant calls — so its fraction must be estimated and kept low (item Q7).</dd></div>
       <div><dt>Pipeline DAG</dt><dd>A "directed acyclic graph" describing the pipeline as which step feeds which — the recipe written so a tool (Snakemake / Nextflow / Make) runs it in the right order automatically. It removes any "which script is canonical" ambiguity and auto-generates the flow diagram (item Q10).</dd></div>
     </dl>
+    </details>
   </section>
 
   <!-- STATUS -->
@@ -391,7 +404,7 @@
       <div class="item">
         <div class="ihead"><span class="idt">A2</span><h3>The SNP list and the data are on different genome builds — the root problem</h3><span class="chip bad">confirmed</span><span class="who">🔴 TL/LH</span></div>
         <div class="body">
-          <p><b class="lab what">What it is:</b> the 222 pigmentation SNP positions ("the panel") were taken from the GWAS Catalog, which uses the <strong>hg38</strong> genome build. But every individual's DNA — the archaic samples <em>and</em> the SGDP genomes — is aligned to the <strong>hg19</strong> build. Since the same SNP sits at different coordinates in the two builds (SLC24A5 = <code>15:48,134,288</code> in hg38 vs <code>15:48,426,484</code> in hg19), looking up the panel's hg38 positions in the hg19 data hits the <strong>wrong places</strong> in the genome.</p>
+          <p><b class="lab what">What it is:</b> the 222 pigmentation SNP positions ("the panel") were taken from the GWAS Catalog, which uses the <strong>hg38</strong> genome build. But every individual's DNA — the archaic samples <em>and</em> the SGDP genomes — is aligned to the <strong>hg19</strong> build. Since the same SNP sits at different coordinates in the two builds (the panel lists SLC24A5 at <code>15:48,134,288</code>, an hg38-style coordinate, vs <code>15:48,426,484</code> in hg19), looking up the panel's hg38 positions in the hg19 data hits the <strong>wrong places</strong> in the genome.</p>
           <p><b class="lab why">Why it matters:</b> it breaks both analyses. <strong>(1)</strong> The wrong hg19 positions are essentially random spots, and at random spots all 15 modern genomes carry the same letter (221 of 222 are <em>monomorphic</em> — no variation). Positions with no variation give the PCA nothing to separate samples on, so it collapses to one axis and every archaic sample lands on the <em>same</em> point — the figure is meaningless. <strong>(2)</strong> The depth/missingness reported "at each pigmentation SNP" is measured at a spot that can be far off — hundreds of kb (~292 kb for SLC24A5), differing per SNP — so it isn't the intended loci.</p>
           <p><b class="lab do">What to do:</b> put the panel and the data on the same build first (item B2). Plan's choice: <strong>report on hg38</strong> via a verified rsID↔hg19↔hg38 map — for each SNP re-pull both builds' coordinates + ref/alt by rsID (keeping both), read the genotype from the hg19 data at the hg19 coordinate, and express it on hg38. A genotype is build-independent, so this is lossless relabeling, not re-alignment. Until the map is in place, treat the pigmentation PCA and pigmentation-depth results as unreliable. <strong>Proven fixed by Q2 + Q5.</strong></p>
         <p><b class="lab" style="color:var(--bad)">Consequence (demonstrated):</b> the pigmentation PCA is rank-1 (<code>pigmentation.pca.eigenval</code>: PC1 = 0.063, PC2–10 ≈ 3e-18); only 1 of 222 SNPs (a non-canonical rs76285708) carries any loading; modern PC1 takes just <strong>3 discrete values</strong> — so the thesis's "PC1 differentiates Bantu and Yoruba" (Fig 8) and "archaics fall near Africans / a small number of loci" (Discussion, p.32) are <strong>one-SNP artifacts</strong>. The whole-genome PCA (Fig 7) and the <em>aggregate</em> missingness result are <strong>not</strong> affected.</p>
@@ -469,7 +482,7 @@ $ bcftools view -H -r 1 ancient_sgdp_wg.vcf.gz | head
       <div class="item qc">
         <div class="ihead"><span class="idt">Q2</span><h3>Genome-build &amp; contig-naming lint (tracer-SNP assertions)</h3><span class="chip neutral">todo</span><span class="who">🔴 TL</span></div>
         <div class="body">
-          <p><b class="lab what">What it is:</b> an automated check that <em>everything</em> is on the same build with the same chromosome naming. It uses <strong>tracer SNPs</strong> — SNPs whose coordinates are known in both builds, e.g. <code>rs1426654</code> SLC24A5 (hg19 <code>15:48426484</code> / hg38 <code>15:48134288</code>) and <code>rs12913832</code> HERC2 (hg19 <code>15:28365618</code> / hg38 <code>15:28120472</code>). For each positioned input (BAM <code>@SQ</code>/<code>.fai</code>, VCF/BCF contig lines, panel/BED, gene coords) it asserts the tracer sits at exactly one build's coordinate and all inputs agree; it also asserts one consistent naming convention (<code>chr1</code> vs <code>1</code>).</p>
+          <p><b class="lab what">What it is:</b> an automated check that <em>everything</em> is on the same build with the same chromosome naming. It uses <strong>tracer SNPs</strong> — SNPs whose coordinates are known in both builds, e.g. <code>rs1426654</code> SLC24A5 (hg19 <code>15:48426484</code> / hg38 <code>15:48134287</code>) and <code>rs12913832</code> HERC2 (hg19 <code>15:28365618</code> / hg38 <code>15:28120472</code>). For each positioned input (BAM <code>@SQ</code>/<code>.fai</code>, VCF/BCF contig lines, panel/BED, gene coords) it asserts the tracer sits at exactly one build's coordinate and all inputs agree; it also asserts one consistent naming convention (<code>chr1</code> vs <code>1</code>).</p>
           <p><b class="lab why">Why it matters:</b> highest signal-to-effort check in the whole plan — ~20 lines that catch the two worst confirmed bugs automatically: the panel-vs-data mismatch (<strong>A2</strong>) and Denisova 3's naming (<strong>A1</strong>). Run before trusting any coordinate step, and re-run to <em>prove</em> B2 worked.</p>
           <div class="qmeta">
             <p><b class="lab ver">Verifies / relates:</b> A2, A1, B2.</p>
