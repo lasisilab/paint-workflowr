@@ -3,16 +3,16 @@
 # SEPIA — complete the MODERN SGDP reference merge (prerequisite for the genome-wide
 # "where does everyone cluster" sanity PCA).
 #
-# WHY: pca/modern/sgdp.wg holds only 15 individuals, but 166 per-sample SGDP BCFs sit
-# in sgdp/subsets/ (Lily's merge was left incomplete — see merge_continue.slurm). 15
-# samples cannot define global structure. This finishes the merge Lily's
-# sgdp_merge_pca.slurm intended (it globs *_sgdp.bcf), LD-prunes, and runs a
-# projection-ready PCA (allele weights + allele freqs) so the pseudo-haploid archaics
-# can later be PROJECTED onto it.
+# WHY: Lily's pca/modern/sgdp.wg holds only 15 individuals, but 166 per-sample SGDP
+# BCFs sit in her sgdp/subsets/ (her merge was left incomplete — see merge_continue.slurm).
+# 15 samples cannot define global structure. This finishes that merge, LD-prunes, and
+# runs a projection-ready PCA (allele weights + allele freqs) so the pseudo-haploid
+# archaics can later be PROJECTED onto it.
 #
-# Writes ONLY to $B/rebuild/wg_pca/ — nothing of Lily's is modified. Submit with:
-#     sbatch plan/wg_modern_merge.slurm
-# then read rebuild/wg_pca/modern_merge_<jobid>.log
+# LAYOUT (repo-is-workdir): run from the SEPIA cluster checkout. Big outputs go to the
+# gitignored resources/ + scratch/; only the small PCA coords go to output/ (tracked,
+# synced). Lily's folder is READ once (SRC) and never modified. Submit from the checkout:
+#     cd /nfs/turbo/lsa-tlasisi1/sepia && sbatch code/wg_modern_merge.slurm
 # =====================================================================================
 #SBATCH --job-name=sepia_modern_merge
 #SBATCH --account=tlasisi0
@@ -22,15 +22,18 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=64G
 #SBATCH --time=24:00:00
-#SBATCH --output=/nfs/turbo/lsa-tlasisi1/lheald_thesis/aDNA_data/rebuild/wg_pca/modern_merge_%j.log
+#SBATCH --output=/nfs/turbo/lsa-tlasisi1/sepia/scratch/sepia_modern_merge_%j.log
 set -uo pipefail
 
-B=/nfs/turbo/lsa-tlasisi1/lheald_thesis/aDNA_data
-SUB="$B/sgdp/subsets"          # 166 per-sample SGDP BCFs (*_sgdp.bcf)
-W="$B/rebuild/wg_pca"          # fresh workspace
-mkdir -p "$W"; cd "$W"
+REPO="${SEPIA_REPO:-/nfs/turbo/lsa-tlasisi1/sepia}"     # the cluster checkout (this repo)
+SRC=/nfs/turbo/lsa-tlasisi1/lheald_thesis/aDNA_data     # Lily's data — READ once to seed SEPIA
+SUB="$SRC/sgdp/subsets"                                  # 166 per-sample SGDP BCFs (*_sgdp.bcf)
+RES="$REPO/resources/sgdp"                               # completed modern reference (gitignored, reusable)
+SCR="$REPO/scratch/modern_merge"                         # big intermediates (gitignored)
+OUT="$REPO/output/pca_wg"                                # small synced results (tracked)
+mkdir -p "$RES" "$SCR" "$OUT"; cd "$SCR"
 
-echo "===== SEPIA modern SGDP merge ====="; date; echo "workspace: $W"
+echo "===== SEPIA modern SGDP merge ====="; date; echo "scratch: $SCR   resources: $RES   output: $OUT"
 
 # ---- toolchain (ARC modules; conda fallback) ---------------------------------------
 module load Bioinformatics >/dev/null 2>&1 || true
@@ -72,6 +75,11 @@ echo "===== 5. PCA (10 PCs, allele-wts) + allele freqs ====="
 echo "  eigenvec samples: $(tail -n +2 sgdp166_pca.eigenvec 2>/dev/null | wc -l)"
 echo "  --- eigenvalues (want a clear PC1/PC2 gap, not a flat tail) ---"
 cat sgdp166_pca.eigenval 2>/dev/null
+
+# ---- 6. place outputs: reusable reference -> resources/ ; small coords -> output/ ----
+cp -f sgdp166.bed sgdp166.bim sgdp166.fam sgdp166_pca.eigenvec.allele sgdp166_pca.afreq "$RES/" 2>/dev/null || true
+cp -f sgdp166_pca.eigenvec sgdp166_pca.eigenval "$OUT/" 2>/dev/null || true
+echo "  reference -> $RES ; PCA coords -> $OUT (tracked)"
 
 echo "===== modern merge done ====="; date
 echo "NEXT: reheader+intersect ancient_sgdp_wg -> project onto sgdp166_pca (no-mean-imputation),"
