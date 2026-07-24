@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<title>PAINT — Plan &amp; Roadmap</title>
+<title>SEPIA — Plan &amp; Roadmap</title>
 <style>
   :root {
     --bg: #E8EAE6; --surface: #F6F7F4; --surface-2: #FCFDFB; --ink: #1A1E1C; --ink-2: #434A47;
@@ -143,7 +143,7 @@
 
 <div class="topbar">
   <div class="wrap row">
-    <span class="brand">PAINT · plan</span>
+    <span class="brand">SEPIA · plan</span>
     <nav>
       <a href="#about">What it is</a>
       <a href="#glossary">Glossary</a>
@@ -167,7 +167,7 @@
 <div class="wrap">
   <header class="hero">
     <p class="eyebrow">Project plan &amp; roadmap · 23 Jul 2026</p>
-    <h1 class="title">PAINT — what's next</h1>
+    <h1 class="title">SEPIA — what's next</h1>
     <p class="subtitle">Pigmentation genetics in Neanderthals &amp; Denisovans, as one phased plan: make the foundation trustworthy, verify each step, then do the science and the two papers.</p>
     <div class="meta-row">
       <div class="m"><span class="k">Team</span><span class="v">Lasisi (PI) · Heald · Pryor</span></div>
@@ -185,7 +185,7 @@
   <!-- ABOUT -->
   <section id="about">
     <div class="sec-head"><span class="sec-num">01</span><h2>What this project is</h2></div>
-    <p class="lede">The recurring public question is "what did Neanderthals and Denisovans look like?" PAINT asks whether their <strong>pigmentation</strong> (skin/hair/eye color) can actually be read off their ancient DNA. The honest answer so far is <em>not confidently</em> — the ancient DNA is patchy and shallow, and pigmentation genes don't track ancestry the way the rest of the genome does. So the contribution is an honest <strong>map of what the pigmentation genetics does and doesn't support</strong>, with the uncertainty kept front and center.</p>
+    <p class="lede">The recurring public question is "what did Neanderthals and Denisovans look like?" SEPIA asks whether their <strong>pigmentation</strong> (skin/hair/eye color) can actually be read off their ancient DNA. The honest answer so far is <em>not confidently</em> — the ancient DNA is patchy and shallow, and pigmentation genes don't track ancestry the way the rest of the genome does. So the contribution is an honest <strong>map of what the pigmentation genetics does and doesn't support</strong>, with the uncertainty kept front and center.</p>
   </section>
 
   <!-- GLOSSARY -->
@@ -230,7 +230,7 @@
     <div class="sec-head"><span class="sec-num">03</span><h2>Where things stand</h2></div>
     <p class="lede">Three places hold the work, all now reviewed. The big shift for the next phase: the pigmentation datasets we want already exist (on hg38) in one public repo, so the work moves from <em>assembling</em> data to <em>fixing</em> a few pipeline bugs, <em>verifying</em> the foundation, and <em>integrating</em> that data.</p>
     <div class="sources">
-      <div class="src"><span class="tag">Reviewed</span><h3>Repo</h3><p><code>lasisilab/paint-workflowr</code> — the analysis website (built with the R tool <em>workflowr</em>), small data files, and scripts.</p></div>
+      <div class="src"><span class="tag">Reviewed</span><h3>Repo</h3><p><code>lasisilab/sepia</code> — the analysis website (built with the R tool <em>workflowr</em>), small data files, and scripts.</p></div>
       <div class="src"><span class="tag">Reviewed</span><h3>Thesis</h3><p>Lily's 41-page honors thesis (20 Apr 2026) — the completed first version of the work.</p></div>
       <div class="src"><span class="tag">Inventoried</span><h3>Cluster</h3><p>110 GB on UMich "Great Lakes" — the full ~19-job compute pipeline and all the large genomic files. Full inventory + step-by-step audit: <code>plan/cluster_inventory.md</code> and <code>plan/pipeline_workbook.md</code> in the repo.</p></div>
     </div>
@@ -241,7 +241,7 @@
         <table>
           <thead><tr><th>Dataset (→ source file)</th><th>Where it came from</th><th>What it is</th><th>Level</th></tr></thead>
           <tbody>
-            <tr><td><a href="https://github.com/tinalasisi/pigmentation-gene-network/blob/main/data/processed/raghunath_edges_typed_signed.csv"><strong>Melanogenesis network</strong> ("Raghunath")</a></td><td>Raghunath et al. 2015, <em>BMC Res Notes</em> — cleaned/curated <strong>in-lab as earlier PAINT work</strong></td><td>A 265-gene / 429-link map of how melanin-making genes regulate each other — the mechanistic backbone everything else attaches to</td><td>genes</td></tr>
+            <tr><td><a href="https://github.com/tinalasisi/pigmentation-gene-network/blob/main/data/processed/raghunath_edges_typed_signed.csv"><strong>Melanogenesis network</strong> ("Raghunath")</a></td><td>Raghunath et al. 2015, <em>BMC Res Notes</em> — cleaned/curated <strong>in-lab as earlier SEPIA work</strong></td><td>A 265-gene / 429-link map of how melanin-making genes regulate each other — the mechanistic backbone everything else attaches to</td><td>genes</td></tr>
             <tr><td><a href="https://github.com/tinalasisi/pigmentation-gene-network/blob/main/data/external/gwas_catalog/pigmentation_gwas_catalog.csv"><strong>GWAS Catalog</strong></a></td><td>NHGRI-EBI (Sollis 2023), pulled via API</td><td>1,072 pigmentation-associated lead SNPs from association studies</td><td>SNPs</td></tr>
             <tr><td><a href="https://github.com/tinalasisi/pigmentation-gene-network/blob/main/data/processed/bajpai2023_crispr_hits.csv"><strong>CRISPR screen</strong></a></td><td>Bajpai et al. 2023, <em>Science</em></td><td>169 genes whose disruption changed pigmentation in a genome-wide lab screen</td><td>genes</td></tr>
             <tr><td><a href="https://github.com/tinalasisi/pigmentation-gene-network/blob/main/data/processed/baxter2018_650_pigmentation_genes.csv"><strong>Cross-species</strong></a></td><td>Baxter et al. 2018/19, <em>PCMR</em></td><td>635 curated pigmentation genes with mouse/zebrafish counterparts</td><td>genes</td></tr>
@@ -768,7 +768,7 @@ pca_ancient.slurm:19: REF=".../reference/hg19.fa"   <span class="cmt"># referenc
 
       <div class="item done">
         <div class="ihead"><span class="idt">C1</span><h3>Move the repo into the Lasisi Lab GitHub org</h3><span class="chip ok">done</span><span class="who">TL</span></div>
-        <div class="body"><p>Done — <code>lasisilab/paint-workflowr</code>. Just confirm Lily has access.</p></div>
+        <div class="body"><p>Done — <code>lasisilab/sepia</code>. Just confirm Lily has access.</p></div>
       </div>
 
       <div class="item">
@@ -834,8 +834,8 @@ pca_ancient.slurm:19: REF=".../reference/hg19.fa"   <span class="cmt"># referenc
       </div>
 
       <div class="item">
-        <div class="ihead"><span class="idt">D3</span><h3>The PAINT primary paper</h3><span class="chip neutral">todo</span><span class="who">🟡 TL/LH/YP</span></div>
-        <div class="body"><p>Draft title: <em>"The genetic landscape of pigmentation in archaic hominins."</em> Resolve the PAINT acronym (it stands for "Pigmentation Analysis of INtrogressed Neanderthal Traits," but introgression wasn't actually studied); Tina scopes target journals. Aim: publish the honest landscape before someone else does.</p></div>
+        <div class="ihead"><span class="idt">D3</span><h3>The SEPIA primary paper</h3><span class="chip neutral">todo</span><span class="who">🟡 TL/LH/YP</span></div>
+        <div class="body"><p>Draft title: <em>"The genetic landscape of pigmentation in archaic hominins."</em> Resolve the SEPIA acronym (it stands for "Pigmentation Analysis of INtrogressed Neanderthal Traits," but introgression wasn't actually studied); Tina scopes target journals. Aim: publish the honest landscape before someone else does.</p></div>
       </div>
     </div>
   </section>

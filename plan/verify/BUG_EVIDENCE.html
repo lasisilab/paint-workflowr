@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>PAINT — Bug evidence log</title>
+<title>SEPIA — Bug evidence log</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <style>
@@ -46,13 +46,13 @@
 </style>
 </head>
 <body>
-<div class="docbar"><span class="b">PAINT</span> &nbsp;·&nbsp; <a href="../paint-plan.html">← roadmap</a> &nbsp;·&nbsp; <a href="../docs.html">all docs</a></div>
+<div class="docbar"><span class="b">SEPIA</span> &nbsp;·&nbsp; <a href="../sepia-plan.html">← roadmap</a> &nbsp;·&nbsp; <a href="../docs.html">all docs</a></div>
 <main>
-<h1 class="title">PAINT — Bug evidence log</h1>
-<h1 id="paint--bug-evidence-log">PAINT — Bug evidence log</h1>
-<p>Every issue in <a href="../paint-plan.html"><code>../plan.md</code></a>, with the <strong>exact commands to reproduce it</strong>, the <strong>actual output</strong> observed, <strong>and — added 2026-07-23 — the downstream consequence</strong> each error had on the analyses, figures, and conclusions. Verdicts are honest: one claim (A4) did <strong>not</strong> hold up and is downgraded; several bugs are shown to have had <strong>no</strong> downstream consequence, which is stated plainly.</p>
+<h1 class="title">SEPIA — Bug evidence log</h1>
+<h1 id="sepia--bug-evidence-log">SEPIA — Bug evidence log</h1>
+<p>Every issue in <a href="../sepia-plan.html"><code>../plan.md</code></a>, with the <strong>exact commands to reproduce it</strong>, the <strong>actual output</strong> observed, <strong>and — added 2026-07-23 — the downstream consequence</strong> each error had on the analyses, figures, and conclusions. Verdicts are honest: one claim (A4) did <strong>not</strong> hold up and is downgraded; several bugs are shown to have had <strong>no</strong> downstream consequence, which is stated plainly.</p>
 <ul>
-<li><strong>Local</strong> commands run against the committed repo (<code>paint-workflowr/data/</code>, <code>analysis/</code>, <code>docs/</code>).</li>
+<li><strong>Local</strong> commands run against the committed repo (<code>sepia/data/</code>, <code>analysis/</code>, <code>docs/</code>).</li>
 <li><strong>Cluster</strong> commands run over SSH against <code>/nfs/turbo/lsa-tlasisi1/lheald_thesis/aDNA_data</code> (<code>$B</code>). They need the authenticated ControlMaster socket up (<code>ssh -O check greatlakes</code> → <code>Master running</code>); UMich requires Kerberos+Duo, so establish it once interactively.</li>
 <li>Runnable version of the replication commands: <a href="verify_bugs.sh"><code>verify_bugs.sh</code></a>.</li>
 </ul>
@@ -72,7 +72,7 @@
 <p><strong>Reproduce — SGDP is monomorphic at the hg38 positions</strong> (cluster; afreq built by <code>pig_pca.slurm</code>):</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ssh</span> greatlakes <span class="st">&quot;awk &#39;NR&gt;1{n++; if(</span><span class="dt">\$</span><span class="st">5+0==0)z++} END{print </span><span class="dt">\&quot;</span><span class="st">sites=</span><span class="dt">\&quot;</span><span class="st">n</span><span class="dt">\&quot;</span><span class="st">  ALT_FREQ==0: </span><span class="dt">\&quot;</span><span class="st">z}&#39; </span><span class="va">$B</span><span class="st">/pca/pigmentation/pigmentation_snps_freq.afreq&quot;</span></span></code></pre></div>
 <pre><code>sites=222  ALT_FREQ==0: 221     ← only 1 of 222 sites carries any variation</code></pre>
-<p><strong>Verdict: CONFIRMED.</strong> The single biggest issue; the reason <a href="../paint-plan.html">B2 (normalize to hg38)</a> is a correctness fix.</p>
+<p><strong>Verdict: CONFIRMED.</strong> The single biggest issue; the reason <a href="../sepia-plan.html">B2 (normalize to hg38)</a> is a correctness fix.</p>
 <p><strong>Downstream consequences (verified 2026-07-23):</strong></p>
 <ul>
 <li><strong>[DEMONSTRATED] The pigmentation PCA is rank-1 (degenerate).</strong> <code>data/pigmentation.pca.eigenval</code> and <code>data/pigmentation_snps_pca.eigenval</code> are byte-identical: <strong>PC1 = 0.0627529, PC2–PC10 = 2.9703e-18</strong> (machine-epsilon zero). The whole-genome PCA on the same samples is full-rank (2.29579, 1.54548, … 0.95114). PC1/PC2 ratio: <strong>~2×10¹⁶</strong> (pigmentation) vs <strong>1.49</strong> (whole-genome). One informative axis, because 221/222 SNPs carry no variation.</li>
@@ -89,7 +89,7 @@
 <p><strong>Reproduce</strong> (local):</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="at">-F</span><span class="st">&#39;,&#39;</span> <span class="st">&#39;NR&gt;1{print $5}&#39;</span> data/ancient.projected.pig.sscore <span class="kw">|</span> <span class="fu">sort</span> <span class="at">-u</span>        <span class="co"># distinct PC1_AVG values</span></span></code></pre></div>
 <pre><code>0.0335547        ← exactly ONE value for all 15 archaic samples</code></pre>
-<p><strong>Verdict: CONFIRMED.</strong> Two compounding causes: (1) the near-monomorphic panel from the build bug (rank-1 substrate), and (2) the <code>--score</code> step mean-imputes missing genotypes to the reference-frequency mean without <code>no-mean-imputation</code>, so with high archaic missingness every sample maps to the reference centroid. Fix in <a href="../paint-plan.html">Q5</a>: add <code>no-mean-imputation</code>, and harmonize the build (B2).</p>
+<p><strong>Verdict: CONFIRMED.</strong> Two compounding causes: (1) the near-monomorphic panel from the build bug (rank-1 substrate), and (2) the <code>--score</code> step mean-imputes missing genotypes to the reference-frequency mean without <code>no-mean-imputation</code>, so with high archaic missingness every sample maps to the reference centroid. Fix in <a href="../sepia-plan.html">Q5</a>: add <code>no-mean-imputation</code>, and harmonize the build (B2).</p>
 <p><strong>Downstream consequences (verified 2026-07-23):</strong></p>
 <ul>
 <li><strong>[DEMONSTRATED] Zero per-sample resolution.</strong> All 15 rows of <code>data/ancient.projected.pig.sscore</code> share <code>PC1_AVG=0.0335547</code> and identical PC2–PC10 (~1e-11), <strong>despite differing inputs</strong> (<code>NAMED_ALLELE_DOSAGE_SUM</code> = 444, 440, 443, 436, …). Different genotypes → byte-identical outputs. The <strong>whole-genome</strong> projection <code>data/ancient.projected.sgdp.sscore</code> does <strong>not</strong> collapse (15 distinct PC1 values), proving the defect is specific to the pigmentation panel.</li>

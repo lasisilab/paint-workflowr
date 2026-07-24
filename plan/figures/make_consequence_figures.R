@@ -1,6 +1,6 @@
 #!/usr/bin/env Rscript
 # ---------------------------------------------------------------------------
-# PAINT — "consequence" figures for the before/after record of the build fix.
+# SEPIA — "consequence" figures for the before/after record of the build fix.
 #
 # WHY THIS EXISTS
 #   The genome-build mismatch (bug A2), the projection collapse, and the
@@ -42,7 +42,7 @@ pretty_name <- c(vindija33="Vindija 33.19", Chagyrskaya8="Chagyrskaya 8",
   spy="Spy", hst="Hohlenstein-Stadel", Sclad="Scladina", vindija87="Vindija 87",
   Sid1253="El Sidron")
 
-theme_paint <- theme_bw(base_size = 12) +
+theme_sepia <- theme_bw(base_size = 12) +
   theme(plot.title = element_text(face = "bold"),
         plot.background = element_rect(fill = "white", colour = NA),
         panel.background = element_rect(fill = "white", colour = NA),
@@ -73,7 +73,7 @@ figA <- ggplot(cov, aes(mean_depth, label, colour = tier)) +
   labs(title = sprintf("[%s] Realised coverage over the 222-SNP pigmentation panel", tag),
        subtitle = "Mean depth (and covered/222) per archaic sample. A declared high-coverage genome sitting with the low group is the A1 fingerprint.",
        x = "Mean depth over panel positions", y = NULL) +
-  theme_paint
+  theme_sepia
 ggsave(file.path(outdir, paste0(state, "_coverage.png")), figA,
        width = 8.5, height = 5.2, dpi = 150, bg = "white")
 
@@ -101,7 +101,7 @@ figB <- ggplot(proj, aes(PC1, PC2, colour = group)) +
   labs(title = sprintf("[%s] Archaic samples projected onto the modern PCA", tag),
        subtitle = "Each point is one archaic individual. Left: all 15 collapse to a single coordinate (projection + build bug). Right: whole-genome projection is spread.",
        x = "PC1", y = "PC2") +
-  theme_paint
+  theme_sepia
 if (nrow(collapse_note)) {
   figB <- figB + geom_text(data = collapse_note,
     aes(x = PC1, y = PC2, label = sprintf("all %d archaics\noverplotted here", n)),
@@ -130,7 +130,7 @@ figC <- ggplot(scree, aes(factor(PC), eig_plot, fill = panel)) +
   labs(title = sprintf("[%s] PCA eigenvalue spectrum (scree)", tag),
        subtitle = "Pigmentation panel is rank-1 (only PC1 > 0; PC2-10 ~ 3e-18) vs the healthy declining whole-genome spectrum.",
        x = "Principal component", y = "Eigenvalue") +
-  theme_paint
+  theme_sepia
 ggsave(file.path(outdir, paste0(state, "_scree.png")), figC,
        width = 9, height = 4.4, dpi = 150, bg = "white")
 

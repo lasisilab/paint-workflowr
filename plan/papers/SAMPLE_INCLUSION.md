@@ -1,4 +1,4 @@
-# PAINT — which archaic genomes to include, and why
+# SEPIA — which archaic genomes to include, and why
 
 **Decision goal (Tina, 2026-07-23):** *not* to maximize the number of genomes, but to choose — and explicitly justify — the **best subset that maximizes the number of pigmentation SNPs of interest we can genotype reliably.** Anything that is not whole-genome shotgun (i.e. exome-capture), redundant, or too unreliable to contribute trustworthy calls at the panel is excluded, with the reason recorded here.
 

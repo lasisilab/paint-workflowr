@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>PAINT — bioinformatics pipeline workbook</title>
+<title>SEPIA — bioinformatics pipeline workbook</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <style>
@@ -46,15 +46,15 @@
 </style>
 </head>
 <body>
-<div class="docbar"><span class="b">PAINT</span> &nbsp;·&nbsp; <a href="paint-plan.html">← roadmap</a> &nbsp;·&nbsp; <a href="docs.html">all docs</a></div>
+<div class="docbar"><span class="b">SEPIA</span> &nbsp;·&nbsp; <a href="sepia-plan.html">← roadmap</a> &nbsp;·&nbsp; <a href="docs.html">all docs</a></div>
 <main>
-<h1 class="title">PAINT — bioinformatics pipeline workbook</h1>
-<h1 id="paint--bioinformatics-pipeline-workbook">PAINT — bioinformatics pipeline workbook</h1>
-<p>A step-by-step, audit-oriented record of the PAINT pipeline: every step, its inputs and outputs (path · format · upstream source), the exact command + tool, key parameters, and what a reviewing bioinformatician should double-check. <strong>The goal is auditability</strong> — the "⚠ Verify" notes are the reviewer's worklist, and it is fine to change results as long as each step is done well.</p>
+<h1 class="title">SEPIA — bioinformatics pipeline workbook</h1>
+<h1 id="sepia--bioinformatics-pipeline-workbook">SEPIA — bioinformatics pipeline workbook</h1>
+<p>A step-by-step, audit-oriented record of the SEPIA pipeline: every step, its inputs and outputs (path · format · upstream source), the exact command + tool, key parameters, and what a reviewing bioinformatician should double-check. <strong>The goal is auditability</strong> — the "⚠ Verify" notes are the reviewer's worklist, and it is fine to change results as long as each step is done well.</p>
 <ul>
 <li><strong>Snapshot:</strong> 2026-07-23. Scripts read verbatim from the cluster (<code>/nfs/turbo/lsa-tlasisi1/lheald_thesis/aDNA_data</code>) and the repo (<code>analysis/</code>).</li>
 <li><strong>Repo-only:</strong> this file is not published to the website (it lists internal cluster paths).</li>
-<li><strong>Related:</strong> <a href="cluster_inventory.html"><code>cluster_inventory.md</code></a> (what's on disk), <a href="paint-plan.html"><code>plan.md</code></a> (roadmap), <a href="verify/BUG_EVIDENCE.html"><code>verify/BUG_EVIDENCE.md</code></a> (bug evidence).</li>
+<li><strong>Related:</strong> <a href="cluster_inventory.html"><code>cluster_inventory.md</code></a> (what's on disk), <a href="sepia-plan.html"><code>plan.md</code></a> (roadmap), <a href="verify/BUG_EVIDENCE.html"><code>verify/BUG_EVIDENCE.md</code></a> (bug evidence).</li>
 </ul>
 <blockquote>
 <p><strong>Two-pipeline warning.</strong> Several stages have <strong>two competing implementations</strong> (an early/buggy one and a corrected twin, or an "Approach A" per-sample path and an "Approach B" merge-first path). They write overlapping filenames, so <em>the last one run wins</em>. Wherever this happens it's flagged, and §"Which scripts are canonical" summarizes the best current guess — <strong>but the reviewer must confirm from file timestamps / SLURM logs which script actually produced the thesis results.</strong></p>
@@ -293,7 +293,7 @@
 <h1 id="stage-e--downstream-r-analysis--visualization-8">Stage E — Downstream R analysis / visualization (§8)</h1>
 <h2 id="e8a-cleaningrmd--derived-csvs">E8a. <code>cleaning.Rmd</code> → derived CSVs</h2>
 <p><code>read.csv(skin_pigmentation.tsv)</code> → keep only rows whose <code>riskAllele</code> matches <code>^rs\d+</code> → <code>write.csv(pigmentation_snps.csv)</code>; merge <code>simons_metadata.csv</code> + <code>simons_whole.csv</code> (dedup <code>slice(1)</code> per <code>sample_id</code>, inner <code>merge</code>) → <code>modern_metadata.csv</code>. Packages: data.table, stringr, tidyverse, readr, dplyr.
-<strong>⚠</strong> All paths hardcoded to <code>/Users/lilyheald/Documents/GitHub/PAINT/data/</code>; outputs written <strong>outside</strong> the repo <code>data/</code> → downstream relative reads can't find them, and <code>pigmentation_snps.csv</code>/<code>modern_metadata.csv</code> are <strong>absent from the repo</strong>. <code>simons_*</code> inputs missing/unreproducible. (Fixed to relative paths in the Quarto branch.)</p>
+<strong>⚠</strong> All paths hardcoded to <code>/Users/lilyheald/Documents/GitHub/SEPIA/data/</code>; outputs written <strong>outside</strong> the repo <code>data/</code> → downstream relative reads can't find them, and <code>pigmentation_snps.csv</code>/<code>modern_metadata.csv</code> are <strong>absent from the repo</strong>. <code>simons_*</code> inputs missing/unreproducible. (Fixed to relative paths in the Quarto branch.)</p>
 <h2 id="e8b-introductionrmd--maps--snp-chart">E8b. <code>introduction.Rmd</code> → maps + SNP chart</h2>
 <p>Reads <code>data/neo_uvi.csv</code> (UV grid, <strong>missing</strong>), <code>data/pigmentation_snps.csv</code> (<strong>missing</strong>), and a <strong>live</strong> SGDP metadata URL (<code>sf-web-assets-prod.s3.amazonaws.com/…</code>). Packages incl. sf/raster/rnaturalearth (need GDAL). <code>target_genes = SLC24A5, SLC45A2, TYR, OCA2, HERC2, MC1R, ASIP, ADAMTS12</code>.
 <strong>⚠</strong> Live-URL fetch is non-reproducible; <strong>copy-paste bug</strong> <code>modern_sf &lt;- st_as_sf(sites,…)</code> uses the archaic <code>sites</code> frame (dead/misassigned — fixed on the Quarto branch); UV grid orientation assumed by hardcoded <code>seq()</code>. kable tables are hand-typed (editorial, not computed).</p>

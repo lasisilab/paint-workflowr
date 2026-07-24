@@ -1,4 +1,4 @@
-# PAINT — cluster access (the SSH tunnel) & Claude's rules
+# SEPIA — cluster access (the SSH tunnel) & Claude's rules
 
 How Claude reaches Great Lakes, why the shared connection broke, and the **rules Claude follows** so it doesn't break again.
 

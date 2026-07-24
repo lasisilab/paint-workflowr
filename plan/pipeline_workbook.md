@@ -1,6 +1,6 @@
-# PAINT — bioinformatics pipeline workbook
+# SEPIA — bioinformatics pipeline workbook
 
-A step-by-step, audit-oriented record of the PAINT pipeline: every step, its inputs and outputs (path · format · upstream source), the exact command + tool, key parameters, and what a reviewing bioinformatician should double-check. **The goal is auditability** — the "⚠ Verify" notes are the reviewer's worklist, and it is fine to change results as long as each step is done well.
+A step-by-step, audit-oriented record of the SEPIA pipeline: every step, its inputs and outputs (path · format · upstream source), the exact command + tool, key parameters, and what a reviewing bioinformatician should double-check. **The goal is auditability** — the "⚠ Verify" notes are the reviewer's worklist, and it is fine to change results as long as each step is done well.
 
 - **Snapshot:** 2026-07-23. Scripts read verbatim from the cluster (`/nfs/turbo/lsa-tlasisi1/lheald_thesis/aDNA_data`) and the repo (`analysis/`).
 - **Repo-only:** this file is not published to the website (it lists internal cluster paths).
@@ -243,7 +243,7 @@ plink2 --bfile data/ancient_pigment --read-freq data/pigmentation.freq.afreq \
 
 ## E8a. `cleaning.Rmd` → derived CSVs
 `read.csv(skin_pigmentation.tsv)` → keep only rows whose `riskAllele` matches `^rs\d+` → `write.csv(pigmentation_snps.csv)`; merge `simons_metadata.csv` + `simons_whole.csv` (dedup `slice(1)` per `sample_id`, inner `merge`) → `modern_metadata.csv`. Packages: data.table, stringr, tidyverse, readr, dplyr.
-**⚠** All paths hardcoded to `/Users/lilyheald/Documents/GitHub/PAINT/data/`; outputs written **outside** the repo `data/` → downstream relative reads can't find them, and `pigmentation_snps.csv`/`modern_metadata.csv` are **absent from the repo**. `simons_*` inputs missing/unreproducible. (Fixed to relative paths in the Quarto branch.)
+**⚠** All paths hardcoded to `/Users/lilyheald/Documents/GitHub/SEPIA/data/`; outputs written **outside** the repo `data/` → downstream relative reads can't find them, and `pigmentation_snps.csv`/`modern_metadata.csv` are **absent from the repo**. `simons_*` inputs missing/unreproducible. (Fixed to relative paths in the Quarto branch.)
 
 ## E8b. `introduction.Rmd` → maps + SNP chart
 Reads `data/neo_uvi.csv` (UV grid, **missing**), `data/pigmentation_snps.csv` (**missing**), and a **live** SGDP metadata URL (`sf-web-assets-prod.s3.amazonaws.com/…`). Packages incl. sf/raster/rnaturalearth (need GDAL). `target_genes = SLC24A5, SLC45A2, TYR, OCA2, HERC2, MC1R, ASIP, ADAMTS12`.

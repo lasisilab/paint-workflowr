@@ -5,8 +5,8 @@ type: software
 authors:
   - family-names: Heald
     given-names: Lily
-repository-code: "https://github.com/lilyheald/PAINT"
-url: "https://lilyheald.github.io/PAINT/"
+repository-code: "https://github.com/lasisilab/sepia"
+url: "https://lasisilab.github.io/sepia/"
 license: MIT
 version: "0.1.0"
 date-released: 2026-05-07

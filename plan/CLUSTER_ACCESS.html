@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>PAINT — cluster access (the SSH tunnel) &amp; Claude's rules</title>
+<title>SEPIA — cluster access (the SSH tunnel) &amp; Claude's rules</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <style>
@@ -46,10 +46,10 @@
 </style>
 </head>
 <body>
-<div class="docbar"><span class="b">PAINT</span> &nbsp;·&nbsp; <a href="paint-plan.html">← roadmap</a> &nbsp;·&nbsp; <a href="docs.html">all docs</a></div>
+<div class="docbar"><span class="b">SEPIA</span> &nbsp;·&nbsp; <a href="sepia-plan.html">← roadmap</a> &nbsp;·&nbsp; <a href="docs.html">all docs</a></div>
 <main>
-<h1 class="title">PAINT — cluster access (the SSH tunnel) &amp; Claude's rules</h1>
-<h1 id="paint--cluster-access-the-ssh-tunnel--claudes-rules">PAINT — cluster access (the SSH tunnel) &amp; Claude's rules</h1>
+<h1 class="title">SEPIA — cluster access (the SSH tunnel) &amp; Claude's rules</h1>
+<h1 id="sepia--cluster-access-the-ssh-tunnel--claudes-rules">SEPIA — cluster access (the SSH tunnel) &amp; Claude's rules</h1>
 <p>How Claude reaches Great Lakes, why the shared connection broke, and the <strong>rules Claude follows</strong> so it doesn't break again.</p>
 <h2 id="what-the-tunnel-is-ssh-connection-multiplexing">What the "tunnel" is (SSH connection multiplexing)</h2>
 <p>Claude runs on Tina's laptop, in a sandbox. It cannot log in to Great Lakes itself (UMich requires a Kerberos password + Duo/Okta, which Claude must never handle). The only way Claude runs a cluster command is by <strong>borrowing an SSH connection Tina has already authenticated</strong> — a feature called <strong>connection multiplexing</strong> (<code>ControlMaster</code>):</p>

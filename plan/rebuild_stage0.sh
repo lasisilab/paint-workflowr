@@ -1,22 +1,22 @@
 #!/bin/bash
 # =====================================================================================
-# PAINT rebuild — STAGE 0 (setup + acquire high-cov VCFs + lift panel + verify SGDP)
+# SEPIA rebuild — STAGE 0 (setup + acquire high-cov VCFs + lift panel + verify SGDP)
 # Run as ONE SLURM batch job so it does NOT hammer the login node:
 #     sbatch plan/rebuild_stage0.sh
-# Then read paint_stage0_<jobid>.log.  Nothing existing is overwritten — all output
+# Then read sepia_stage0_<jobid>.log.  Nothing existing is overwritten — all output
 # goes to a NEW  $B/rebuild/  workspace.
 #
 # This is a ready-to-submit DRAFT: paths/URLs are the verified ones from
 # papers/REFERENCES.md + PIPELINE_QC_BY_PAPER.md, but we validate on first run and
 # fix any specifics live. Heavy compute (ANGSD/mapDamage) is Stage 2/4, not here.
 # =====================================================================================
-#SBATCH --job-name=paint_stage0
+#SBATCH --job-name=sepia_stage0
 #SBATCH --account=tlasisi0
 #SBATCH --partition=standard
 #SBATCH --cpus-per-task=4
 #SBATCH --mem=16G
 #SBATCH --time=02:00:00
-#SBATCH --output=paint_stage0_%j.log
+#SBATCH --output=sepia_stage0_%j.log
 set -uo pipefail
 
 # ---- config (confirm) --------------------------------------------------------------
@@ -28,7 +28,7 @@ PANEL_BED="$B/snps/snps.chr.bed"        # 222/395-SNP panel (hg38, rsID in col4)
 mkdir -p "$WORK"/{vcf,panel,logs}
 cd "$WORK"
 
-echo "===== PAINT Stage 0  =====";  date;  echo "workspace: $WORK"
+echo "===== SEPIA Stage 0  =====";  date;  echo "workspace: $WORK"
 
 # ---- toolchain: ARC modules first (reliable inside sbatch), conda fallback ----------
 # (ANGSD/PCAngsd/mapDamage are NOT ARC modules -> added via conda in Stage 2/4.)

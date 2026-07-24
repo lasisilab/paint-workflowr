@@ -1,4 +1,4 @@
-# PAINT — evaluation & QC plan (retired — now merged into `plan.md`)
+# SEPIA — evaluation & QC plan (retired — now merged into `plan.md`)
 
 > **This file has been retired.** Its 10 reviewer-driven, unit-test-style QC checks are now tracked as first-class items **`Q1`–`Q10`** inside the single master plan, [`plan.md`](plan.md) §4, interleaved with the fixes/builds they verify (each `Q` item sits in the phase whose work it proves, with full acceptance criteria, subtasks, deliverable, and communication artifact). There is no longer a separate QC to-do list — track everything in `plan.md`.
 

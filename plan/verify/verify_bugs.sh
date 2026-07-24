@@ -2,7 +2,7 @@
 # Reproduce every issue in plan.md §3.A. See BUG_EVIDENCE.md for expected output + verdicts.
 #
 # Usage:
-#   cd paint-workflowr && bash plan/verify/verify_bugs.sh
+#   cd sepia && bash plan/verify/verify_bugs.sh
 #
 # LOCAL checks run against committed repo data. CLUSTER checks need the authenticated
 # ControlMaster socket up:  ssh -O check greatlakes   ->  "Master running"

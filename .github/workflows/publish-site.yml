@@ -1,4 +1,4 @@
-# Publish the PAINT site to GitHub Pages via the native Pages-from-Actions path.
+# Publish the SEPIA site to GitHub Pages via the native Pages-from-Actions path.
 #
 # NOTE ON BUILD SYSTEM: this repo is a **workflowr** (R Markdown) project, not
 # Quarto. The workflowr site is built locally with wflow_publish() and the output
@@ -8,7 +8,7 @@
 # tinalasisi/pigmentation-gene-network, adapted to workflowr.
 #
 # It also copies plan/*.html into /plan/ so the roadmap resolves at a direct link
-# (https://lasisilab.github.io/paint-workflowr/plan/) but is NOT in the site navbar.
+# (https://lasisilab.github.io/sepia/plan/) but is NOT in the site navbar.
 # The internal plan.md / changelog.md sources are deliberately NOT published.
 #
 # Action versions pinned to current Node-24 majors (checked 2026-07; GitHub is

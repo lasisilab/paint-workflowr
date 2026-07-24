@@ -46,7 +46,7 @@ No datasets. The hg19 BAMs, the panel, and the SGDP data are all already on the 
 
 ```bash
 #!/bin/bash
-#SBATCH --job-name=paint_b2a
+#SBATCH --job-name=sepia_b2a
 #SBATCH --account=tlasisi0
 #SBATCH --partition=standard
 #SBATCH --cpus-per-task=8

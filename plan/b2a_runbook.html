@@ -46,7 +46,7 @@
 </style>
 </head>
 <body>
-<div class="docbar"><span class="b">PAINT</span> &nbsp;·&nbsp; <a href="paint-plan.html">← roadmap</a> &nbsp;·&nbsp; <a href="docs.html">all docs</a></div>
+<div class="docbar"><span class="b">SEPIA</span> &nbsp;·&nbsp; <a href="sepia-plan.html">← roadmap</a> &nbsp;·&nbsp; <a href="docs.html">all docs</a></div>
 <main>
 <h1 class="title">B2a runbook — put the pigmentation panel on hg19 (the fast, lossless build fix)</h1>
 <h1 id="b2a-runbook--put-the-pigmentation-panel-on-hg19-the-fast-lossless-build-fix">B2a runbook — put the pigmentation panel on hg19 (the fast, lossless build fix)</h1>
@@ -132,7 +132,7 @@
 <h2 id="2-compute-resources">2. Compute resources</h2>
 <p><strong>B2a is light.</strong> Every step is restricted to the 222 panel positions — there is no whole-genome operation. A single modest batch job covers the whole thing:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --job-name=paint_b2a</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --job-name=sepia_b2a</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --account=tlasisi0</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --partition=standard</span></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --cpus-per-task=8</span></span>

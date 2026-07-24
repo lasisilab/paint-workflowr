@@ -1,4 +1,4 @@
-# PAINT — per-sample coverage: realized (current, from committed data) vs published genome-wide
+# SEPIA — per-sample coverage: realized (current, from committed data) vs published genome-wide
 # Computed 2026-07-23 from data/<sample>_depth.txt; published coverage verified from source papers
 # (see plan/papers/REFERENCES.md). Realized = mean depth over the 222 panel positions.
 #

@@ -1,13 +1,13 @@
-# PAINT — Project Plan & Roadmap
+# SEPIA — Project Plan & Roadmap
 
-**Project:** PAINT — a study of what skin/hair/eye pigmentation genetics can (and can't) tell us about Neanderthals and Denisovans, and how they compare to modern humans.
+**Project:** SEPIA (*Systematic Evaluation of Pigmentation In Archaic hominins*) — a study of what skin/hair/eye pigmentation genetics can (and can't) tell us about Neanderthals and Denisovans, and how they compare to modern humans. Continues and re-evaluates the prior honors thesis **PAINT** (Lily Heald).
 **Team:** Tina Lasisi (PI / advisor) · Lily Heald · Yemko Pryor.
 **Last updated:** 2026-07-23. **Status:** living document.
 
 ## How to read this
 - **`plan.md`** (this file) = the single canonical plan. Edit here first. It now holds **everything**: the bug fixes, the analysis redesign, the infrastructure work, the writing, **and** the reviewer-driven QC/verification checks (items `Q1`–`Q10`). There is no separate to-do list.
 - **`changelog.md`** = dated log of what was done / found / decided.
-- **`paint-plan.html`** = a nicer, shareable rendering of this file.
+- **`sepia-plan.html`** = a nicer, shareable rendering of this file.
 - **`evaluation_plan.md`** = retired. Its 10 QC items are now tracked here as `Q1`–`Q10` (Phases 0–5). It survives only as a one-line pointer so old links don't break.
 - **The roadmap (§4) is ordered as execution order.** It is grouped into **phases**, not categories. Each phase is a goal you can't safely pass until its items are done, and it deliberately puts each *fix/build* next to *the check that proves it worked*. Do the phases top to bottom.
 - **Every item is written to stand on its own** — you should be able to jump to any single item and understand what it is, why it matters, and what to do, without having read anything else. Terms are in the Glossary just below, and load-bearing ones are re-explained inline.
@@ -73,11 +73,11 @@ Owner tags: **(TL)** Tina · **(LH)** Lily · **(YP)** Yemko. Priority: 🔴 hig
 ---
 
 ## 1. What this project is
-The recurring public question is "what did Neanderthals and Denisovans look like?" PAINT asks whether their **pigmentation** (skin/hair/eye color) can actually be read off their ancient DNA. The honest finding so far is *not confidently* — the ancient DNA is patchy and shallow, and pigmentation genes don't behave like ancestry markers — so the project's contribution is an honest **map of what the pigmentation genetics does and doesn't support**, with the uncertainty made explicit.
+The recurring public question is "what did Neanderthals and Denisovans look like?" SEPIA asks whether their **pigmentation** (skin/hair/eye color) can actually be read off their ancient DNA. The honest finding so far is *not confidently* — the ancient DNA is patchy and shallow, and pigmentation genes don't behave like ancestry markers — so the project's contribution is an honest **map of what the pigmentation genetics does and doesn't support**, with the uncertainty made explicit.
 
 ## 2. Where things stand (July 2026)
 Three places hold the work, all now reviewed:
-- **The repo** `lasisilab/paint-workflowr` — the analysis website (built with the R tool *workflowr*), plus small data files and the analysis scripts.
+- **The repo** `lasisilab/sepia` — the analysis website (built with the R tool *workflowr*), plus small data files and the analysis scripts.
 - **The thesis** — Lily's 41-page honors thesis (20 Apr 2026); the completed first version of this work.
 - **The cluster** — a 110 GB working directory on the University of Michigan "Great Lakes" system (`/nfs/turbo/lsa-tlasisi1/lheald_thesis/aDNA_data`) holding the full computational pipeline (~19 batch jobs) and all the genomic data (the big files too large for the repo). **Full inventory:** [`cluster_inventory.md`](cluster_inventory.md) (directory layout, the pipeline stages, data products, access instructions). **Step-by-step pipeline audit:** [`pipeline_workbook.md`](pipeline_workbook.md).
 
@@ -364,7 +364,7 @@ Plus the call's "normalize everything to hg38" → **B2** (Phase 1; also the fix
 ### Phase 5 — Infrastructure & reproducibility
 **Gate:** the pipeline is re-runnable by someone else, there's one unambiguous canonical path (no competing/dead scripts), derived data is preserved, and the repo is tidy. This can run partly in parallel with Phase 4.
 
-- [x] **C1 · Move the repo into the Lasisi Lab GitHub org** · (TL) · **DONE** — `lasisilab/paint-workflowr`; just confirm Lily has access.
+- [x] **C1 · Move the repo into the Lasisi Lab GitHub org** · (TL) · **DONE** — `lasisilab/sepia`; just confirm Lily has access.
 
 - [ ] **C2 · Let Lily develop locally while heavy jobs run on the cluster** · 🟡 (TL) · **TODO**
   - **What it is:** Lily's laptop (8 GB RAM) can't run the big steps (the PCAs and genotype calling must run on the cluster); only the visualization runs locally. Set up the repo so the code runs "as if the cluster folder were local" — i.e. list the huge cluster files in `.gitignore` (so they never enter GitHub) but structure the code so Lily edits it locally and pings Tina to run the heavy steps on the cluster. (Same pattern as the lab's PODFRIDGE project.)
@@ -405,8 +405,8 @@ Plus the call's "normalize everything to hg38" → **B2** (Phase 1; also the fix
 - [ ] **D2 · The TIG review manuscript** · 🔴 (LH/TL) · **TODO**
   - A review article for *Trends in Genetics*. Prioritize it — it needs no new analysis, just the lit review (D1). Keep its tasks distinct from the primary paper (D3).
 
-- [ ] **D3 · The PAINT primary paper** · 🟡 (TL/LH/YP) · **TODO**
-  - Draft title: *"The genetic landscape of pigmentation in archaic hominins."* Resolve the PAINT acronym (§6); Tina scopes target journals. Aim: publish the honest landscape of archaic pigmentation genetics before someone else does; added complexity can come during review.
+- [ ] **D3 · The SEPIA primary paper** · 🟡 (TL/LH/YP) · **TODO**
+  - Draft title: *"The genetic landscape of pigmentation in archaic hominins."* Resolve the SEPIA acronym (§6); Tina scopes target journals. Aim: publish the honest landscape of archaic pigmentation genetics before someone else does; added complexity can come during review.
 
 ---
 
@@ -415,7 +415,7 @@ The next phase uses four complementary pigmentation datasets plus one prediction
 
 | Dataset | Where it came from | What it is | Gene- or SNP-level |
 |---|---|---|---|
-| **Melanogenesis network** ("Raghunath") | Raghunath et al. 2015, *BMC Res Notes* — cleaned/curated **in-lab as earlier PAINT work** | A 265-gene, 429-link map of how melanin-making genes regulate each other; the mechanistic backbone everything else attaches to | genes |
+| **Melanogenesis network** ("Raghunath") | Raghunath et al. 2015, *BMC Res Notes* — cleaned/curated **in-lab as earlier SEPIA work** | A 265-gene, 429-link map of how melanin-making genes regulate each other; the mechanistic backbone everything else attaches to | genes |
 | **GWAS Catalog** | NHGRI-EBI GWAS Catalog (Sollis 2023), pulled via its API | 1,072 pigmentation-associated lead SNPs found in association studies | SNPs |
 | **CRISPR screen** | Bajpai et al. 2023, *Science* | 169 genes whose disruption changed pigmentation in a genome-wide lab screen | genes |
 | **Cross-species** | Baxter et al. 2018/19, *Pigment Cell Melanoma Res* | 635 curated pigmentation genes with mouse/zebrafish counterparts | genes |
@@ -431,5 +431,5 @@ The next phase uses four complementary pigmentation datasets plus one prediction
 - PPI (D'Arcy): [`data/raw/darcy2023/`](https://github.com/tinalasisi/pigmentation-gene-network/tree/main/data/raw/darcy2023)
 - **HIrisPlex-S markers:** [`data/processed/hirisplexs2018_markers.csv`](https://github.com/tinalasisi/pigmentation-gene-network/blob/main/data/processed/hirisplexs2018_markers.csv) (extraction notebook: [`notebooks/01c_extract_hirisplex_markers.ipynb`](https://github.com/tinalasisi/pigmentation-gene-network/blob/main/notebooks/01c_extract_hirisplex_markers.ipynb))
 
-## 6. The name "PAINT"
-PAINT currently stands for "Pigmentation Analysis of **IN**trogressed Neanderthal Traits," but the study never actually looked at introgression (the mixing of archaic DNA into modern humans). So the acronym should be re-worked (e.g. "integumentary" — skin/hair/nail — traits), to be settled together with the manuscript title in D3.
+## 6. The name "SEPIA"
+SEPIA currently stands for "Pigmentation Analysis of **IN**trogressed Neanderthal Traits," but the study never actually looked at introgression (the mixing of archaic DNA into modern humans). So the acronym should be re-worked (e.g. "integumentary" — skin/hair/nail — traits), to be settled together with the manuscript title in D3.

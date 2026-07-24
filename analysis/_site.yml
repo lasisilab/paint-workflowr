@@ -1,7 +1,7 @@
-name: PAINT
+name: SEPIA
 output_dir: ../docs
 navbar:
-  title: PAINT
+  title: SEPIA
   left:
   - text: Home
     href: index.html
@@ -18,7 +18,7 @@ navbar:
   right:
   - icon: fab fa-github
     text: Source code
-    href: https://github.com/lilyheald/PAINT
+    href: https://github.com/lasisilab/sepia
 output:
   workflowr::wflow_html:
     toc: yes

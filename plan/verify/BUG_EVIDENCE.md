@@ -1,8 +1,8 @@
-# PAINT — Bug evidence log
+# SEPIA — Bug evidence log
 
 Every issue in [`../plan.md`](../plan.md), with the **exact commands to reproduce it**, the **actual output** observed, **and — added 2026-07-23 — the downstream consequence** each error had on the analyses, figures, and conclusions. Verdicts are honest: one claim (A4) did **not** hold up and is downgraded; several bugs are shown to have had **no** downstream consequence, which is stated plainly.
 
-- **Local** commands run against the committed repo (`paint-workflowr/data/`, `analysis/`, `docs/`).
+- **Local** commands run against the committed repo (`sepia/data/`, `analysis/`, `docs/`).
 - **Cluster** commands run over SSH against `/nfs/turbo/lsa-tlasisi1/lheald_thesis/aDNA_data` (`$B`). They need the authenticated ControlMaster socket up (`ssh -O check greatlakes` → `Master running`); UMich requires Kerberos+Duo, so establish it once interactively.
 - Runnable version of the replication commands: [`verify_bugs.sh`](verify_bugs.sh).
 

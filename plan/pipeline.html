@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<title>PAINT — Data &amp; Pipeline (living record)</title>
+<title>SEPIA — Data &amp; Pipeline (living record)</title>
 <style>
   :root {
     --bg: #E8EAE6; --surface: #F6F7F4; --surface-2: #FCFDFB; --ink: #1A1E1C; --ink-2: #434A47;
@@ -88,11 +88,11 @@
 </head>
 <body>
 <div class="topbar"><div class="wrap row">
-  <span class="brand">PAINT · data &amp; pipeline</span>
+  <span class="brand">SEPIA · data &amp; pipeline</span>
   <nav>
     <a href="#what">BAM vs VCF</a><a href="#raw">Raw data</a><a href="#flow">Flow</a>
     <a href="#did">What the pipeline does</a><a href="#same">Are they the same?</a><a href="#log">Run log</a>
-    <a href="docs.html">All docs</a><a href="paint-plan.html">← Roadmap</a>
+    <a href="docs.html">All docs</a><a href="sepia-plan.html">← Roadmap</a>
   </nav>
 </div></div>
 
@@ -101,7 +101,7 @@
     <p class="eyebrow">Living record · started 23 Jul 2026</p>
     <h1 class="title">The data, and what we do to it</h1>
     <p class="subtitle">What the raw archaic data actually is, the difference between reads (BAM) and genotype calls (VCF), what the pipeline transforms, and a running log we update as we rebuild.</p>
-    <div style="margin-top:16px;font-size:.85rem;color:var(--ink-3)">Companion to the <a href="paint-plan.html">roadmap</a>. Full audit of the original pipeline: <code>plan/pipeline_workbook.md</code>. Bug evidence: <a href="verify/BUG_EVIDENCE.html">BUG_EVIDENCE.md</a>. Rebuild plan: <a href="rebuild_from_raw.html">rebuild_from_raw.md</a>.</div>
+    <div style="margin-top:16px;font-size:.85rem;color:var(--ink-3)">Companion to the <a href="sepia-plan.html">roadmap</a>. Full audit of the original pipeline: <code>plan/pipeline_workbook.md</code>. Bug evidence: <a href="verify/BUG_EVIDENCE.html">BUG_EVIDENCE.md</a>. Rebuild plan: <a href="rebuild_from_raw.html">rebuild_from_raw.md</a>.</div>
   </header>
 
   <!-- BAM VS VCF -->
@@ -144,7 +144,7 @@
     <p style="font-size:.82rem;color:var(--ink-3);margin-top:10px">Modern comparison: the <strong>Simons Genome Diversity Project</strong> (SGDP), 15 individuals, downloaded as whole-genome <strong>VCFs</strong> on hg19 (thesis: a 34.4 M-SNP whole-genome panel; <code>pca/modern/sgdp.wg</code> on the cluster — verified hg19, contains the pigmentation SNPs by rsID).</p>
 
     <h3 style="font-size:1.1rem;margin:26px 0 4px">Coverage — exact, current</h3>
-    <p style="font-size:.9rem;color:var(--ink-2);max-width:var(--measure)">Per-sample mean depth over the panel, computed exactly from the committed <code>*_depth.txt</code> (full record + caveats: <a href="https://github.com/lasisilab/paint-workflowr/blob/main/plan/coverage_current.tsv"><code>coverage_current.tsv</code></a>). <strong>Read these as caveated:</strong> they're measured at the panel's <em>current (hg38) mis-located</em> coordinates (bug A2), so they are realized depths at the wrong positions, not true per-locus coverage; <strong>Denisova 3's 0.5× is artifactual</strong> (bug A1 — its true coverage is ~30×); and a max far above the mean (Vindija 87, Scladina) is a <strong>pileup artifact</strong> that motivates the max-depth cap. True per-locus coverage comes after the rebuild (Q6). <strong>10 of the 14 samples are under ~3.2× — which is why hard-calling is the wrong tool and we move to genotype likelihoods (ANGSD).</strong></p>
+    <p style="font-size:.9rem;color:var(--ink-2);max-width:var(--measure)">Per-sample mean depth over the panel, computed exactly from the committed <code>*_depth.txt</code> (full record + caveats: <a href="https://github.com/lasisilab/sepia/blob/main/plan/coverage_current.tsv"><code>coverage_current.tsv</code></a>). <strong>Read these as caveated:</strong> they're measured at the panel's <em>current (hg38) mis-located</em> coordinates (bug A2), so they are realized depths at the wrong positions, not true per-locus coverage; <strong>Denisova 3's 0.5× is artifactual</strong> (bug A1 — its true coverage is ~30×); and a max far above the mean (Vindija 87, Scladina) is a <strong>pileup artifact</strong> that motivates the max-depth cap. True per-locus coverage comes after the rebuild (Q6). <strong>10 of the 14 samples are under ~3.2× — which is why hard-calling is the wrong tool and we move to genotype likelihoods (ANGSD).</strong></p>
     <div class="table-scroll"><table>
       <thead><tr><th>Sample</th><th>Mean depth (panel)</th><th>Max</th><th>Covered / 222</th><th>Tier</th></tr></thead>
       <tbody>
@@ -258,7 +258,7 @@
   </section>
 
   <footer>
-    <p>Living record — kept in step with <code>plan/plan.md</code>, <code>plan/rebuild_from_raw.md</code>, and <code>plan/verify/BUG_EVIDENCE.md</code>. If this page and the plan disagree, the plan wins. Back to the <a href="paint-plan.html">roadmap</a>.</p>
+    <p>Living record — kept in step with <code>plan/plan.md</code>, <code>plan/rebuild_from_raw.md</code>, and <code>plan/verify/BUG_EVIDENCE.md</code>. If this page and the plan disagree, the plan wins. Back to the <a href="sepia-plan.html">roadmap</a>.</p>
   </footer>
 </div>
 

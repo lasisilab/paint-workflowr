@@ -1,4 +1,4 @@
-# PAINT — QC baked into each published archaic VCF
+# SEPIA — QC baked into each published archaic VCF
 
 We are reusing the published, damage-aware genotype VCFs for the high-coverage archaics rather than re-calling. This documents **exactly what QC/filters each release already carries** — so we know what we're inheriting, and what we still must add before comparing across genomes. Sources: the MPI-EVA release READMEs, the filename-encoded parameters, and the papers.
 

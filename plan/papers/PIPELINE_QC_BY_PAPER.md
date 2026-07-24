@@ -1,4 +1,4 @@
-# PAINT — per-paper QC & pipeline (what each source actually did)
+# SEPIA — per-paper QC & pipeline (what each source actually did)
 
 For every genome, this records **what the source authors report doing for QC and their bioinformatic pipeline** — extracted from each paper's Methods **and** Supplementary, with load-bearing parameters quoted verbatim, then **adversarially verified** (a second agent re-read each source; all 11 verdicts were SOLID). Evidence base for the "reuse vs. rerun" decision in [`../rebuild_from_raw.md`](../rebuild_from_raw.md). Provenance/URLs: [`REFERENCES.md`](REFERENCES.md); baked-in VCF QC summary: [`VCF_QC.md`](VCF_QC.md).
 

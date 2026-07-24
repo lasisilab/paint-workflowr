@@ -1,4 +1,4 @@
-# PAINT — source-paper references & data provenance (every genome)
+# SEPIA — source-paper references & data provenance (every genome)
 
 Provenance for **every** genome in the project, verified against MPI-EVA / ENA / the source papers (2026-07-23). This is the citation + data-source manifest; it feeds the Q1 provenance manifest.
 

@@ -1,4 +1,4 @@
-# PAINT — cluster inventory
+# SEPIA — cluster inventory
 
 A snapshot of everything on the cluster, so the compute side is accounted for in the repo. **Not published to the website** (this is a `.md`; the Pages workflow only serves `plan/*.html`) because it lists internal cluster paths.
 
