@@ -1,9 +1,9 @@
 ---
-title: "Sanity check 1 — modern SGDP PCA"
-subtitle: "Does the rebuilt modern reference recover global human structure?"
+title: "Modern reference panel PCA (SGDP)"
+subtitle: "Quality control: does the modern reference recover global human structure?"
 ---
 
-## Why this is step one
+## Why this check comes first
 
 Before SEPIA compares any archaic genome to modern humans, we check that the
 **modern reference behaves sensibly on its own**. If the modern samples don't
@@ -40,7 +40,7 @@ have_pca <- file.exists(eig_file) && file.exists(val_file)
 cat("::: {.callout-note}\n",
     "**Not yet rendered with data.** Submit `code/wg_modern_merge.slurm` on Great Lakes; ",
     "it writes `output/pca_wg/sgdp166_pca.eigenvec` and `.eigenval`. Re-render this page ",
-    "(`quarto render sanity_sgdp_pca.qmd`) and the scree + PCA plots below will appear.\n:::\n",
+    "(`quarto render sgdp_reference_pca.qmd`) and the scree + PCA plots below will appear.\n:::\n",
     sep = "")
 ```
 
@@ -56,8 +56,29 @@ scree <- data.frame(PC = factor(seq_along(val)), eigenvalue = val)
 ggplot(scree, aes(PC, eigenvalue, group = 1)) +
   geom_line(colour = "grey60") + geom_point(size = 2) +
   labs(x = "Principal component", y = "Eigenvalue",
-       title = "SGDP (166) PCA — eigenvalue spectrum",
+       title = "SGDP PCA — eigenvalue spectrum",
        subtitle = "A clear drop after PC1–PC2 indicates real global structure") +
+  theme_bw(base_size = 12)
+```
+
+## Old vs. new reference
+
+Direct before/after: the inherited reference had only 15 individuals; the SEPIA rebuild
+uses the full set (159 after dropping truncated downloads). Overlaid as **% variance
+explained** per PC (so the different sample counts are comparable), a rebuild that
+recovered real structure should concentrate more variance in the leading PCs, whereas the
+15-sample spectrum stays flat.
+
+```{r compare, eval=have_pca, fig.width=6.5, fig.height=4}
+old_file <- "data/sgdp.wg.pca.eigenval"          # legacy 15-sample modern PCA (committed)
+mk <- function(f, label) { v <- scan(f, quiet = TRUE); data.frame(PC = seq_along(v), pct = 100 * v / sum(v), set = label) }
+df <- mk(val_file, "SEPIA rebuild")
+if (file.exists(old_file)) df <- rbind(df, mk(old_file, "legacy (15-sample)"))
+ggplot(df, aes(PC, pct, colour = set)) +
+  geom_line() + geom_point(size = 2) +
+  scale_x_continuous(breaks = 1:10) +
+  labs(x = "Principal component", y = "% variance explained", colour = NULL,
+       title = "Reference PCA: legacy 15-sample vs SEPIA rebuild") +
   theme_bw(base_size = 12)
 ```
 
@@ -100,9 +121,9 @@ p
   problem is fixed). A still-flat spectrum would mean the merge didn't actually add
   diversity — investigate before going further.
 - **Continental separation on PC1/PC2** (Africa vs the rest, then finer structure) →
-  the modern panel is trustworthy to project archaics onto (Sanity check 2).
+  the modern panel is trustworthy to project archaics onto (the archaic-projection step).
 - Add the region colouring by dropping an SGDP `IID → region/population` table at
   `data/sgdp_metadata.tsv` (public SGDP metadata; small).
 
-Next: **Sanity check 2** projects the archaic genomes onto this PCA (with
+Next: **the archaic-projection QC (next)** projects the archaic genomes onto this PCA (with
 `no-mean-imputation`) to see whether they fall out as a sensible outgroup.
