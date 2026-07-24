@@ -39,7 +39,8 @@ module load samtools       >/dev/null 2>&1 || true
 echo "===== SEPIA archaic acquisition ====="; date; echo "dest: $A"
 for t in curl bcftools samtools md5sum; do printf "%s: " "$t"; command -v "$t" || echo MISSING; done
 
-fetch(){  # $1=url  $2=dest  — resume-safe download + manifest row
+fetch(){  # $1=url  $2=dest  — resume-safe download + manifest row (skip if already complete)
+  [ -s "$2" ] && return 0
   curl -C - -fSL --retry 3 --retry-delay 5 -s "$1" -o "$2" || { echo "  MISS $1"; return 1; }
   printf "%s\t%s\t%s\thg19\t%s\n" "$2" "$1" "$(md5sum "$2" 2>/dev/null | cut -d' ' -f1)" "$(date +%F)" >> "$MAN"
 }
@@ -66,10 +67,10 @@ for G in Altai Vindija33.19 Denisova Mez1; do
   done
   echo "  $G: $(ls "$A/vcf/$G"/*.vcf.gz 2>/dev/null | wc -l) chr VCFs"
 done
-# Chagyrskaya 8 — separate release on ftp (chrN.noRB.vcf.gz)
+# Chagyrskaya 8 — separate release; use http (ftp egress is blocked; http 302-redirects, -L follows)
 mkdir -p "$A/vcf/Chagyrskaya8"
-CH=ftp://ftp.eva.mpg.de/neandertal/Chagyrskaya/VCF
-for c in $CHRS; do f="chr${c}.noRB.vcf.gz"; fetch "$CH/$f" "$A/vcf/Chagyrskaya8/$f" && vcf_ok "$A/vcf/Chagyrskaya8/$f"; done
+CH=http://ftp.eva.mpg.de/neandertal/Chagyrskaya/VCF
+for c in $CHRS; do f="chr${c}.noRB.vcf.gz"; fetch "$CH/$f" "$A/vcf/Chagyrskaya8/$f" && fetch "$CH/$f.tbi" "$A/vcf/Chagyrskaya8/$f.tbi"; vcf_ok "$A/vcf/Chagyrskaya8/$f"; done
 echo "  Chagyrskaya8: $(ls "$A/vcf/Chagyrskaya8"/*.vcf.gz 2>/dev/null | wc -l) chr VCFs (0 => ftp egress blocked; use xfer node)"
 # Denisova 25 — PROVISIONAL (preprint; may be gated / not yet public)
 mkdir -p "$A/vcf/Denisova25"
@@ -80,9 +81,10 @@ echo "  Denisova25: $(ls "$A/vcf/Denisova25"/*.vcf.gz 2>/dev/null | wc -l) chr V
 # ---- 2. FilterBed masks (best-effort: probe each release's dir listing) --------------
 echo "===== 2. FilterBed masks ====="
 probe_masks(){ mkdir -p "$2"; for u in $(curl -sfL "$1/" 2>/dev/null | grep -oiE 'href="[^"?/][^"]*\.bed(\.gz)?"' | sed -E 's/href="//;s/"//'); do fetch "$1/$u" "$2/$(basename "$u")"; done; }
-probe_masks "$VB/../FilterBed"                                        "$A/mask/Vindija2017"
-probe_masks "ftp://ftp.eva.mpg.de/neandertal/Chagyrskaya/FilterBed"   "$A/mask/Chagyrskaya8"
-probe_masks "http://cdna.eva.mpg.de/denisova/Den25/FilterBed"        "$A/mask/Denisova25"
+# Vindija-tree FilterBed is per-genome subdirs (FilterBed/Altai/, /Denisova/, /Vindija33.19/)
+for G in Altai Denisova Vindija33.19 Mez1; do probe_masks "http://cdna.eva.mpg.de/neandertal/Vindija/FilterBed/$G" "$A/mask/$G"; done
+probe_masks "http://ftp.eva.mpg.de/neandertal/Chagyrskaya/FilterBed"  "$A/mask/Chagyrskaya8"
+probe_masks "http://cdna.eva.mpg.de/denisova/Den25/FilterBed"         "$A/mask/Denisova25"
 echo "  masks downloaded: $(find "$A/mask" -type f -name '*.bed*' 2>/dev/null | wc -l) (0 => confirm mask filenames from the release README)"
 
 # ---- 3. LOW-COVERAGE BAMs (resolve via ENA filereport; verify + index) ---------------
@@ -90,7 +92,7 @@ echo "===== 3. low-coverage BAMs ====="
 resolve_bam(){  # $1=genome  $2=ENA-accession
   local G="$1" acc="$2"; mkdir -p "$A/bam/$G"
   echo "  $G ($acc): resolving BAM URL via ENA filereport..."
-  local urls; urls=$(curl -sfL "https://www.ebi.ac.uk/ena/portal/api/filereport?accession=$acc&result=read_run&fields=submitted_ftp&format=tsv" 2>/dev/null | tr ';' '\n' | grep -iE '\.bam$' | sed 's#^#ftp://#')
+  local urls; urls=$(curl -sfL "https://www.ebi.ac.uk/ena/portal/api/filereport?accession=$acc&result=read_run&fields=submitted_ftp&format=tsv" 2>/dev/null | tr ';' '\n' | grep -iE '\.bam$' | sed -E 's#^(ftp://)?#https://#')
   [ -z "$urls" ] && { echo "    no submitted BAM at ENA (likely FASTQ, or EVA-only) -> resolve from EVA mirror manually"; return; }
   for u in $urls; do b=$(basename "$u"); fetch "$u" "$A/bam/$G/$b" && samtools quickcheck "$A/bam/$G/$b" 2>/dev/null && samtools index "$A/bam/$G/$b" 2>/dev/null && echo "    OK $b" || echo "    BAD/again $b"; done
 }
