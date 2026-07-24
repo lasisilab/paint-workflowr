@@ -30,10 +30,16 @@ cd "$WORK"
 
 echo "===== PAINT Stage 0  =====";  date;  echo "workspace: $WORK"
 
-# ---- toolchain (conda; ANGSD/PCAngsd/mapDamage come in Stage 2/4) -------------------
-source /home/tlasisi/tlasisi/miniconda3/etc/profile.d/conda.sh 2>/dev/null || true
-conda activate align 2>/dev/null || conda activate base 2>/dev/null || true
+# ---- toolchain: ARC modules first (reliable inside sbatch), conda fallback ----------
+# (ANGSD/PCAngsd/mapDamage are NOT ARC modules -> added via conda in Stage 2/4.)
+module load Bioinformatics 2>/dev/null || true
+module load samtools/1.13-filn7ja bcftools/1.21 2>/dev/null \
+  || module load samtools bcftools 2>/dev/null || true
+if ! command -v bcftools >/dev/null 2>&1; then
+  source /home/tlasisi/tlasisi/miniconda3/etc/profile.d/conda.sh 2>/dev/null && conda activate align 2>/dev/null || true
+fi
 echo "--- tools ---"; for t in bcftools samtools tabix awk curl; do printf "%s: " "$t"; command -v "$t" || echo MISSING; done
+echo "  (bcftools/samtools used to index+validate downloaded VCFs; panel lift + SGDP verify need only awk)"
 
 # ---- internet check (compute nodes may lack egress) --------------------------------
 NET=1; curl -sfI https://cdna.eva.mpg.de/ >/dev/null 2>&1 || NET=0
