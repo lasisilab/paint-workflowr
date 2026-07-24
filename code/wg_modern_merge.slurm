@@ -19,7 +19,7 @@
 #SBATCH --partition=standard
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=8
+#SBATCH --cpus-per-task=16
 #SBATCH --mem=64G
 #SBATCH --time=24:00:00
 #SBATCH --output=/nfs/turbo/lsa-tlasisi1/sepia/scratch/sepia_modern_merge_%j.log
@@ -62,16 +62,27 @@ echo "  usable: $N   dropped: $ND"
 [ "$ND" -gt 0 ] && { echo "  --- dropped (excluded from the reference) ---"; cat sgdp_bcf.dropped; }
 [ "$N" -ge 100 ] || { echo "!! only $N usable BCFs (<100); aborting"; exit 3; }
 
-# ---- 2. merge -> bgzipped VCF (plink2 --bcf is unimplemented in this build) ---------
-# THIN FIRST: the subsets are all-sites at ~34.4M SGDP positions; merging all of them
-# x159 is enormous and slow (and the PCA only needs common SNPs after LD-pruning). Take
-# every 25th SGDP position (~1.4M) and merge ONLY those -> ~25x less data, minutes not
-# hours. Genome-wide random thinning preserves global structure; LD-pruning reduces it
-# further in step 4.
-echo "===== 2. thin SGDP positions, then merge $N usable BCFs -> VCF.gz ====="
-awk 'NR%25==0{print $1"\t"$2}' "$SRC/snps/sgdp.snps.pos" > thin.regions
-echo "  thinned merge positions: $(wc -l < thin.regions)  (of 34.4M)"
-bcftools merge -R thin.regions -l sgdp_bcf.list --threads 8 -Oz -o merged_sgdp.vcf.gz
+# ---- 2. thin each sample by STREAMING (parallel), then merge the small results ------
+# The subsets are all-sites at ~34.4M SGDP positions. Two traps we avoid:
+#   (a) merging all 34M x159 -> a ~5B-genotype VCF, slow to write;
+#   (b) `merge -R <1.4M scattered regions>` -> an index SEEK per region x159 files, which
+#       is death on NFS (~800 rec/min observed). `-T` STREAMS each file once (sequential
+#       reads, NFS-friendly) and keeps the target sites. We do that per-sample IN PARALLEL
+#       (one linear pass per file, 16 at a time), then merge the tiny per-sample results.
+echo "===== 2. thin (stream, parallel) then merge $N samples ====="
+awk 'NR%25==0{print $1"\t"$2}' "$SRC/snps/sgdp.snps.pos" > thin.regions   # ~1.4M sites (plain -T targets)
+echo "  thin target positions: $(wc -l < thin.regions)  (of 34.4M)"
+mkdir -p thinned
+i=0
+while read -r f; do
+  b=$(basename "$f" .bcf)
+  ( bcftools view -T thin.regions "$f" -Ob -o "thinned/$b.bcf" 2>/dev/null && bcftools index -f "thinned/$b.bcf" 2>/dev/null ) &
+  i=$((i+1)); [ $((i % 16)) -eq 0 ] && wait
+done < sgdp_bcf.list
+wait
+ls thinned/*.bcf > thinned.list 2>/dev/null
+echo "  per-sample thinned files: $(wc -l < thinned.list)"
+bcftools merge -l thinned.list --threads 16 -Oz -o merged_sgdp.vcf.gz   # small files, no seeks
 bcftools index -t -f merged_sgdp.vcf.gz
 NS=$(bcftools query -l merged_sgdp.vcf.gz | wc -l)
 echo "  merged samples: $NS   sites: $(bcftools index -n merged_sgdp.vcf.gz)"
