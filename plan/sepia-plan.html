@@ -297,9 +297,9 @@
       <table>
         <thead><tr><th>Phase</th><th>Goal (the gate)</th><th>Items</th><th>Status</th></tr></thead>
         <tbody>
-          <tr><td><a href="#phase0"><strong>0 · Provenance &amp; environment</strong></a></td><td>Nothing trusted until every input is traced to a source, build &amp; checksum</td><td>Q1, Q10a</td><td><span class="chip neutral">todo</span></td></tr>
+          <tr><td><a href="#phase0"><strong>0 · Provenance &amp; environment</strong></a></td><td>Nothing trusted until every input is traced to a source, build &amp; checksum</td><td>Q1, Q10a</td><td><span class="chip neutral">in progress</span></td></tr>
           <tr><td><a href="#phase1"><strong>1 · One genome build, verified</strong></a></td><td>Panel + all data on one build, proven — and called genotypes correct</td><td>A2, B2, A1, A3, Q2, Q4, A4, A5</td><td><span class="chip neutral">todo</span></td></tr>
-          <tr><td><a href="#phase2"><strong>2 · Positive controls &amp; PCA correctness</strong></a></td><td>Reproduce a known result before building novel ones</td><td>Q3, Q5, Q6</td><td><span class="chip neutral">todo</span></td></tr>
+          <tr><td><a href="#phase2"><strong>2 · Positive controls &amp; PCA correctness</strong></a></td><td>Reproduce a known result before building novel ones</td><td>Q3, Q5, Q6</td><td><span class="chip neutral">in progress · Sanity 1 ✓</span></td></tr>
           <tr><td><a href="#phase3"><strong>3 · aDNA sample QC</strong></a></td><td>Samples authentic, correctly labelled &amp; damage-aware</td><td>Q7, Q8</td><td><span class="chip neutral">todo</span></td></tr>
           <tr><td><a href="#phase4"><strong>4 · Analysis redesign (the science)</strong></a></td><td>Deliver the analyses agreed on 17 June</td><td>B1, B3, B4, B5, B6, B7, Q9</td><td><span class="chip neutral">todo</span></td></tr>
           <tr><td><a href="#phase5"><strong>5 · Infrastructure &amp; reproducibility</strong></a></td><td>A re-runnable, unambiguous pipeline; repo tidy</td><td>C2, C3, C4, Q10, A6, C1&nbsp;✓</td><td><span class="chip warn">in progress</span></td></tr>
@@ -554,7 +554,7 @@ pca_ancient.slurm:19: REF=".../reference/hg19.fa"   <span class="cmt"># referenc
       <p class="gate"><b>Gate:</b> before trusting any <em>novel</em> pigmentation result, the pipeline reproduces a result we already know (SGDP clusters by continental ancestry), and the PCA machinery is proven non-degenerate. If it can't reproduce the known, don't build on it.</p>
 
       <div class="item qc">
-        <div class="ihead"><span class="idt">Q3</span><h3>Positive control — reproduce the SGDP whole-genome PCA</h3><span class="chip warn">blocked · Phase 1</span><span class="who">🔴 TL/LH</span></div>
+        <div class="ihead"><span class="idt">Q3</span><h3>Positive control — reproduce the SGDP whole-genome PCA</h3><span class="chip neutral">in progress · Sanity 1 ✓</span><span class="who">🔴 TL/LH</span></div>
         <div class="body">
           <p><b class="lab what">What it is:</b> before believing any novel pigmentation PCA, prove the PCA/merge/projection plumbing reproduces <em>textbook</em> human population structure. Encode the known result as assertions on the whole-genome PCA and the ancient projection.</p>
           <p><b class="lab why">Why it matters:</b> if the pipeline can't recover continental structure from whole-genome data, the merge/subset/PCA machinery is broken and nothing downstream is trustworthy. Fastest single read on whether the core method works — the eigenvec files already exist.</p>

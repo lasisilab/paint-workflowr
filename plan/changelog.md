@@ -6,6 +6,12 @@ Legend: **DONE** = action taken · **FOUND** = finding/evidence · **DECIDED** =
 
 ---
 
+## 2026-07-24 — Archaic data acquired to the shared resource; cluster→GitHub push fixed (SSH + SSO)
+
+- **DONE (archaic acquisition — round 1 + fixes → round 2)** — `code/acquire_archaic.slurm` round 1 completed: **5 of 6 high-coverage genomes fully downloaded** to `/nfs/turbo/lsa-tlasisi1/genomes/archaic/vcf/` — Altai/Den5, **Denisova 3**, **Denisova 25** (turned out *not* gated), Mez1, Vindija 33.19 (23–24 chr snpAD VCFs each, ~258 GB) — integrity-verified (Denisova SLC24A5 tracer at hg19 `15:48426484`). Two gaps hit URL/server problems → fixed + re-running (job 54632488): **Chagyrskaya 8** (`ftp://` blocked on the compute node → `http://`, 302-followed), **Vindija-tree FilterBed masks** (they live in per-genome subdirs), **low-cov BAMs** Les Cottés/Denisova 11/Goyet (ENA `ftp://` threw 502/503 → `https://`). `fetch` now skips already-complete files, so the re-run only fills the gaps. Provenance ledger at `genomes/archaic/MANIFEST.tsv` (the archaic half of Q1).
+- **DONE (infra — resolves the earlier OPEN)** — the cluster checkout can now **push to GitHub**: switched the remote to SSH (`git@github.com:lasisilab/sepia.git`); Tina added an SSH key on Great Lakes and **authorized it for the `lasisilab` SAML SSO** — the missing step (the key authenticated as `tinalasisi` but couldn't touch the org repo until SSO-authorized). `git push --dry-run` → `Everything up-to-date`. (The *original* block was the HTTPS remote with no cached creds — the SSH key was never even consulted; both are fixed now.) Results (PCA coords, QC tables, manifests) now sync straight from Great Lakes — no laptop relay.
+- **STATUS** — modern reference built + **Sanity 1 passed**; archaic high-cov VCFs in place; Chagyrskaya + low-cov BAMs finishing. Parallelizable next-work mapped in `plan.md` §2.
+
 ## 2026-07-24 — Sanity check 1 PASSED (159-sample modern reference); archaic acquisition launched
 
 - **DONE (merge — architecture-sensitive on NFS, took 3 tries)** — plain merge of all 34M all-sites × 159 was slow; `bcftools merge -R <1.4M scattered regions>` was catastrophic (an index *seek* per region on the Turbo NFS → ~800 rec/min ≈ 28 h). Fix: **stream-thin each sample once with `-T` (sequential reads, NFS-friendly) across 16 cores, then merge the small results** → completed in **11.5 min** (job 54603634). 7 truncated SGDP BCFs dropped → a **159-sample** reference in `genomes/SGDP/`; PCA coords committed to `output/pca_wg/`.

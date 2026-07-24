@@ -116,9 +116,9 @@ The QC phases below (0–3, the `Q` items) are **not starting from zero** — th
 
 | Phase | Goal (the gate) | Items | Status |
 |---|---|---|---|
-| **0 · Provenance & environment** | Nothing is trusted until every input is traced to a source, build, and checksum | Q1, Q10a (see Q10) | TODO |
+| **0 · Provenance & environment** | Nothing is trusted until every input is traced to a source, build, and checksum | Q1, Q10a (see Q10) | in progress |
 | **1 · One reporting build (hg38), verified** | Panel + gene-network + genotypes resolve to hg38 via a verified rsID↔hg19↔hg38 map — and the called genotypes correct | A2, B2, A1, A3, Q2, Q4, A4, A5 | TODO |
-| **2 · Positive controls & PCA correctness** | Reproduce a known result before building novel ones | Q3, Q5, Q6 | TODO |
+| **2 · Positive controls & PCA correctness** | Reproduce a known result before building novel ones | Q3, Q5, Q6 | in progress (Sanity 1 ✓) |
 | **3 · aDNA sample QC** | Samples are authentic, correctly labelled, and damage-aware | Q7, Q8 | TODO |
 | **4 · Analysis redesign (the science)** | Deliver the analyses agreed on 17 June | B1, B3, B4, B5, B6, B7, Q9 | TODO |
 | **5 · Infrastructure & reproducibility** | A re-runnable, unambiguous pipeline; repo tidy | C2, C3, C4, Q10, A6, C1 (DONE) | in progress |
@@ -143,6 +143,7 @@ The QC phases below (0–3, the `Q` items) are **not starting from zero** — th
     - [ ] For gene coordinates (needed by B4 ii / B6): record source (Ensembl/RefSeq release # + build) and assert every gene resolves to exactly one region.
   - **Artifact:** the manifest table itself + a one-line "inputs ledger" badge (N inputs · N fully-provenanced · N unknown), modeled on `pigmentation-gene-network/DATA_SOURCES.md`.
   - **Progress (2026-07-23):** the genome-level half of this is done — [`papers/REFERENCES.md`](papers/REFERENCES.md) has verified source paper, DOI, coverage, exact VCF/BAM/ENA URLs, and data tier for **all 15 archaic genomes + SGDP**, and [`papers/VCF_QC.md`](papers/VCF_QC.md) documents the QC each published VCF already carries. Open-access PDFs are pulled into the git-ignored `papers/pdf/`. Still to do for full Q1: the SNP-panel BED characterization, gene-coordinate provenance, checksums, and folding all of it into `qc/manifest.tsv`.
+  - **Progress (2026-07-24):** archaic + SGDP genome data re-acquired into the shared lab resource `/nfs/turbo/lsa-tlasisi1/genomes/` with a `genomes/archaic/MANIFEST.tsv` (path · source URL · md5 · build · date) written by [`code/acquire_archaic.slurm`](../code/acquire_archaic.slurm). Feeds directly into `qc/manifest.tsv`.
 
 - **Q10a (environment capture) — do the first slice of Q10 now.** Alongside Q1, pin and record the tool versions (`bcftools`, `plink2`, `samtools`, R + packages) into the manifest so Phase 1's results are reproducible from the start. The full reproducibility build (DAG + CI) is tracked as **Q10** in Phase 5.
 
@@ -229,7 +230,8 @@ All A-items here were reproduced with commands + real output — see [`verify/BU
 ### Phase 2 — Positive controls & PCA correctness
 **Gate:** before trusting any *novel* pigmentation result, the pipeline reproduces a result we already know (SGDP clusters by continental ancestry), and the PCA machinery is proven non-degenerate. If it can't reproduce the known, don't build on it.
 
-- [ ] **Q3 · Positive control — reproduce the SGDP whole-genome PCA** · 🔴 (TL/LH) · **BLOCKED(Phase 1)**
+- [ ] **Q3 · Positive control — reproduce the SGDP whole-genome PCA** · 🔴 (TL/LH) · **IN PROGRESS (modern half done — Sanity 1 ✓)**
+  - **Progress (2026-07-24):** the modern half is done — the rebuilt **159-sample** SGDP PCA recovers textbook global structure (PC1 = Africa vs the rest; PC2 = west↔east; dominant PC1 vs the flat 15-sample legacy). Coords committed to `output/pca_wg/`; narrated page `sgdp_reference_pca.qmd`. Remaining: **Sanity 2** — project the archaic calls onto it (next).
   - **What it is:** before believing any novel pigmentation PCA, prove the PCA/merge/projection plumbing reproduces *textbook* human population structure. Encode the known result as assertions on the whole-genome PCA (`modern_pca` / `sgdp_merge_pca`) and the ancient projection.
   - **Why it matters:** if the pipeline can't recover continental structure from whole-genome data, the merge/subset/PCA machinery is broken and nothing downstream is trustworthy. This is the fastest single read on whether the core method works — and the eigenvec files already exist.
   - **Verifies/relates:** validates the machinery that B4 depends on; depends on A3 (correct diploid WG calls) and Phase-1 build harmonization.
