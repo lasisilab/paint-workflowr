@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>PAINT — cluster access (the SSH tunnel) &amp; Claude's rules</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<style>
+  :root {
+    --bg:#E8EAE6;--surface:#F6F7F4;--surface-2:#FCFDFB;--ink:#1A1E1C;--ink-2:#434A47;--ink-3:#6C736F;
+    --line:#D2D6CF;--line-2:#E1E4DD;--accent:#1E5A54;--accent-2:#2C7A70;--accent-soft:#DDE8E4;
+    --ok:#2F7D4F;--ok-soft:#DCEBE0;--warn:#8F6410;--warn-soft:#F0E6CE;--bad:#A5433A;--bad-soft:#F1DAD5;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  }
+  @media (prefers-color-scheme: dark){:root{
+    --bg:#12150F;--surface:#1A1E17;--surface-2:#20251D;--ink:#E7EAE4;--ink-2:#B0B7B0;--ink-3:#838A84;
+    --line:#2B3129;--line-2:#242A22;--accent:#63B6A9;--accent-2:#7FCBBE;--accent-soft:#182723;
+    --ok:#6FCB8F;--ok-soft:#16241A;--warn:#D6A63C;--warn-soft:#2A2312;--bad:#E28A7E;--bad-soft:#2C1815;}}
+  :root[data-theme="light"]{--bg:#E8EAE6;--surface:#F6F7F4;--surface-2:#FCFDFB;--ink:#1A1E1C;--ink-2:#434A47;--ink-3:#6C736F;--line:#D2D6CF;--line-2:#E1E4DD;--accent:#1E5A54;--accent-2:#2C7A70;--accent-soft:#DDE8E4;--ok:#2F7D4F;--ok-soft:#DCEBE0;--warn:#8F6410;--warn-soft:#F0E6CE;--bad:#A5433A;--bad-soft:#F1DAD5;}
+  :root[data-theme="dark"]{--bg:#12150F;--surface:#1A1E17;--surface-2:#20251D;--ink:#E7EAE4;--ink-2:#B0B7B0;--ink-3:#838A84;--line:#2B3129;--line-2:#242A22;--accent:#63B6A9;--accent-2:#7FCBBE;--accent-soft:#182723;--ok:#6FCB8F;--ok-soft:#16241A;--warn:#D6A63C;--warn-soft:#2A2312;--bad:#E28A7E;--bad-soft:#2C1815;}
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased;}
+  .docbar{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:10px 24px;font-family:var(--mono);font-size:.78rem;letter-spacing:.03em;}
+  .docbar a{color:var(--accent-2);text-decoration:none;} .docbar a:hover{text-decoration:underline;}
+  .docbar .b{color:var(--accent);font-weight:600;text-transform:uppercase;letter-spacing:.12em;}
+  main{max-width:900px;margin:0 auto;padding:14px 24px 90px;}
+  h1,h2,h3,h4{font-family:var(--serif);font-weight:600;line-height:1.15;letter-spacing:-.01em;}
+  h1{font-size:clamp(1.7rem,4vw,2.4rem);margin:24px 0 4px;}
+  h2{font-size:clamp(1.3rem,3vw,1.7rem);margin:34px 0 6px;padding-top:10px;border-top:1px solid var(--line-2);}
+  h3{font-size:1.15rem;margin:22px 0 4px;} h4{font-size:1rem;margin:16px 0 2px;}
+  p,li{max-width:80ch;} a{color:var(--accent-2);}
+  code{font-family:var(--mono);font-size:.85em;background:var(--surface-2);border:1px solid var(--line-2);padding:1px 5px;border-radius:5px;}
+  pre{overflow-x:auto;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-family:var(--mono);font-size:.8rem;line-height:1.5;}
+  pre code{background:none;border:none;padding:0;}
+  blockquote{margin:16px 0;padding:10px 16px;border-left:3px solid var(--accent);background:var(--accent-soft);border-radius:0 8px 8px 0;color:var(--ink-2);}
+  blockquote p{margin:6px 0;}
+  table{border-collapse:collapse;width:100%;font-size:.86rem;margin:16px 0;display:block;overflow-x:auto;}
+  th,td{padding:8px 11px;border:1px solid var(--line-2);text-align:left;vertical-align:top;}
+  thead th{background:var(--surface-2);font-family:var(--mono);font-size:.66rem;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-3);white-space:nowrap;}
+  hr{border:none;border-top:1px solid var(--line);margin:26px 0;}
+  ul,ol{padding-left:22px;} li{margin:3px 0;}
+  strong{color:var(--ink);}
+  .title{border-bottom:1px solid var(--line);padding-bottom:10px;}
+</style>
+</head>
+<body>
+<div class="docbar"><span class="b">PAINT</span> &nbsp;·&nbsp; <a href="paint-plan.html">← roadmap</a> &nbsp;·&nbsp; <a href="docs.html">all docs</a></div>
+<main>
+<h1 class="title">PAINT — cluster access (the SSH tunnel) &amp; Claude's rules</h1>
+<h1 id="paint--cluster-access-the-ssh-tunnel--claudes-rules">PAINT — cluster access (the SSH tunnel) &amp; Claude's rules</h1>
+<p>How Claude reaches Great Lakes, why the shared connection broke, and the <strong>rules Claude follows</strong> so it doesn't break again.</p>
+<h2 id="what-the-tunnel-is-ssh-connection-multiplexing">What the "tunnel" is (SSH connection multiplexing)</h2>
+<p>Claude runs on Tina's laptop, in a sandbox. It cannot log in to Great Lakes itself (UMich requires a Kerberos password + Duo/Okta, which Claude must never handle). The only way Claude runs a cluster command is by <strong>borrowing an SSH connection Tina has already authenticated</strong> — a feature called <strong>connection multiplexing</strong> (<code>ControlMaster</code>):</p>
+<ul>
+<li>Tina's <code>~/.ssh/config</code> has, for <code>Host greatlakes</code>: <code>ControlMaster auto</code> + a <code>ControlPath</code> (a socket file, e.g. <code>~/.ssh/sockets/…</code>) + <code>ControlPersist</code>.</li>
+<li>The <strong>first</strong> <code>ssh greatlakes</code> authenticates once (password + Duo) and leaves an authenticated <strong>master</strong> connection running in the background; the socket file is its "door."</li>
+<li><strong>Every later</strong> <code>ssh greatlakes</code> on the laptop — Tina's <em>and Claude's</em> — walks through that door and <strong>reuses the master</strong>: no re-authentication, no Duo. That is how Claude's commands run silently.</li>
+</ul>
+<p>Two consequences that matter:</p>
+<ol type="1">
+<li><strong>The master is pinned to one login node.</strong> All multiplexed traffic goes to whichever node the master first authenticated to.</li>
+<li><strong>If the master dies but its socket file lingers,</strong> new <code>ssh greatlakes</code> attempts keep diving into the dead tunnel and bounce straight back (<code>Shared connection … closed</code>) — and can't escape to a healthy node.</li>
+</ol>
+<h2 id="why-it-broke-2026-07-23">Why it broke (2026-07-23)</h2>
+<ul>
+<li>The pinned login node (gl-login1) got <strong>overloaded</strong> and started refusing/killing sessions ("Unable to create login session — heavy load").</li>
+<li>The stale socket lingered, so both Tina's and Claude's <code>ssh greatlakes</code> kept reusing a dead/overloaded master and closing instantly.</li>
+<li><strong>Claude made it worse:</strong> it fired <em>many</em> rapid <code>ssh greatlakes</code> commands (piling channels onto the master + adding load), ran non-trivial work on the login node (conda, scans over ~1 GB files), which likely tripped a <strong>connection-rate limit</strong> — which is when the Duo pushes started.</li>
+<li>Fix was to kill the master (<code>ssh -O exit greatlakes</code>) and reconnect cleanly.</li>
+</ul>
+<h2 id="robust-config-prevents-silent-death">Robust config (prevents silent death)</h2>
+<p>Add these to the <code>Host greatlakes</code> block in <code>~/.ssh/config</code> (keeps the master alive across blips, cleans up, detects dead links):</p>
+<pre><code>Host greatlakes
+    HostName greatlakes.arc-ts.umich.edu
+    User tlasisi
+    ControlMaster auto
+    ControlPath ~/.ssh/sockets/%r@%h:%p
+    ControlPersist 30m
+    ServerAliveInterval 60
+    ServerAliveCountMax 3
+    TCPKeepAlive yes</code></pre>
+<p>(<code>mkdir -p ~/.ssh/sockets</code> once.) <code>ServerAliveInterval/CountMax</code> make SSH notice a dead master within ~3 min instead of hanging; <code>ControlPersist 30m</code> keeps the master for reuse but not forever.</p>
+<h2 id="re-establishing-the-tunnel">Re-establishing the tunnel</h2>
+<ol type="1">
+<li>(Optional but recommended) add the config above; <code>mkdir -p ~/.ssh/sockets</code>.</li>
+<li>Tina reconnects with <strong>plain</strong> <code>ssh greatlakes</code> (no <code>ControlPath=none</code>) → creates the master (one Duo). Keep the terminal open.</li>
+<li>Tina tells Claude "connected." Claude runs <code>ssh -O check greatlakes</code> (local socket check, no auth) to confirm the master, then one tiny command to verify — and follows the rules below.</li>
+</ol>
+<h2 id="claudes-rules-for-cluster-access-binding">Claude's rules for cluster access (binding)</h2>
+<ol type="1">
+<li><strong>Never handle credentials.</strong> Claude never types the password or Duo/Okta. If a command would trigger authentication (no master present), Claude STOPS and asks Tina to (re)connect — it never initiates a login itself.</li>
+<li><strong>Check before use.</strong> Start any cluster work with <code>ssh -O check greatlakes</code>. If no master, stop and ask Tina to reconnect (don't run <code>ssh</code> that would auth).</li>
+<li><strong>One connection, batched.</strong> Never fire many separate <code>ssh</code> calls. Put multiple commands in ONE invocation (<code>ssh greatlakes 'bash -s' &lt; script</code>). <strong>Serialize — never run cluster commands in parallel.</strong></li>
+<li><strong>Login node = orchestration only.</strong> Only tiny, read-only commands there (<code>ls</code>, <code>wc</code>, <code>grep -m1</code>, submit <code>sbatch</code>, <code>tail</code> a log). <strong>All real work — conda solves, scans over large files, genotype calling, ANGSD, mapDamage, downloads of many files — goes through <code>sbatch</code></strong> on compute nodes.</li>
+<li><strong>Keep commands short (&lt; ~30 s).</strong> Anything longer → <code>sbatch</code>.</li>
+<li><strong>Text-only.</strong> Never <code>cat</code>/<code>head</code>/<code>less</code> a binary (<code>.bam</code>/<code>.bcf</code>/<code>.vcf.gz</code>); use <code>samtools view -H</code> / <code>bcftools view -H</code> / counts. (Dumping binaries once scrambled the terminal.)</li>
+<li><strong>No auto-retry.</strong> On any <code>connection closed</code> / timeout / auth prompt, STOP and report — never loop retries (that worsens load and triggers Duo).</li>
+<li><strong>Read-mostly; confirm writes.</strong> Output goes to a dedicated <code>rebuild/</code> workspace; never overwrite existing data without confirming.</li>
+<li><strong>Back off under load.</strong> If the cluster is slow/refusing, pause — don't hammer.</li>
+<li><strong>Prefer the log.</strong> After an <code>sbatch</code> job, read its log file rather than re-running things interactively.</li>
+</ol>
+</main>
+</body>
+</html>
