@@ -49,7 +49,7 @@ Allocation root: `/nfs/turbo/lsa-tlasisi1`.
 | SEPIA cluster checkout (repo = workdir) | `/nfs/turbo/lsa-tlasisi1/sepia` | jobs run here; big data in its gitignored `resources/` + `scratch/` |
 | **Shared lab genomes** (reusable across studies) | `/nfs/turbo/lsa-tlasisi1/genomes` | `SGDP/` (completed 166-sample reference), `reference/` (hs37d5.fa, hg19), `archaic/`; referenced via `$SEPIA_GENOMES` or the symlink `sepia/resources/genomes` |
 | Completed modern SGDP reference (plink + freqs) | `…/genomes/SGDP/sgdp166.{bed,bim,fam}`, `sgdp166_freq.afreq` | built by `code/wg_modern_merge.slurm` |
-| SGDP per-sample source BCFs (166) | `/nfs/turbo/lsa-tlasisi1/lheald_thesis/aDNA_data/sgdp/subsets` | Lily's; read once to build the reference; one file dropped as truncated |
+| SGDP per-sample source BCFs (166) | `/nfs/turbo/lsa-tlasisi1/lheald_thesis/aDNA_data/sgdp/subsets` | Lily's; read once to build the reference. **7 are truncated local copies** (missing BGZF EOF + index — a streamed-download integrity gap, not SGDP quality; see changelog) → **159 usable**; re-acquire the 7 for the full 166 |
 | Archaic whole-genome genotypes at SGDP SNPs | `…/lheald_thesis/aDNA_data/ancient_wholegenome/ancient_sgdp_wg.vcf.gz` | pseudo-haploid; 15 archaics |
 | Archaic panel-region BAMs | `…/lheald_thesis/aDNA_data/results/filtered/*.bam` | tiny (panel only); whole-genome BAMs no longer on cluster → re-acquire from ENA/EVA when needed |
 | hg19 reference FASTA | `…/lheald_thesis/aDNA_data/reference/hs37d5.fa` | to be copied into `…/genomes/reference/` |

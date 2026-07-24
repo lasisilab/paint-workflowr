@@ -6,6 +6,12 @@ Legend: **DONE** = action taken · **FOUND** = finding/evidence · **DECIDED** =
 
 ---
 
+## 2026-07-23 — Why 7 SGDP BCFs dropped from the merge (truncated local copies, not source quality)
+
+- **FOUND** — 7 of the 166 per-sample SGDP BCFs in Lily's `sgdp/subsets/` are **truncated local copies**: near-full size (~460–528 MB, vs ~510 MB for good ones) but **missing the BGZF end-of-file marker and unindexed** (`.csi` absent), so bcftools cannot read/merge them. The other 159 are complete (valid EOF + index). Affected: `LP6005519-DNA_{G02,G03,G04,H04}`, `LP6005592-DNA_{A04,B02,B04}` — clustered on two plates.
+- **CAUSE** — `get_simons.slurm` built each BCF by streaming a **presigned S3 URL** with no completeness check (`wget -q -O - "$url" | bcftools view -Ob`, then `bcftools index`). When a stream dropped or a URL expired mid-download (those URLs expire 48 h after minting; the job had 40 h wall-time), wget ended early, bcftools wrote an incomplete BCF, and `bcftools index` failed silently (`-q`). The clustering on consecutive samples is the signature of interrupted download stretches. **SGDP source data is fine; the local copies are incomplete** — the exact input-integrity gap SEPIA's Q1 (provenance + checksums) exists to catch.
+- **DECIDED** — proceed with the **159-sample** reference (still spans all 7 SGDP regions; ample for the reference PCA). Re-acquiring the 7 for the full 166 needs fresh SGDP access (expired URLs) — logged as a follow-up; any re-download must verify per-file EOF + index. `code/wg_modern_merge.slurm` now validates/indexes each BCF and drops (with a logged list) the unusable ones instead of letting one truncated file abort the merge.
+
 ## 2026-07-23 — Cleanup, shared lab genomes, and Sanity check 1 (SGDP PCA) submitted
 
 - **DONE** — deleted the redundant `quarto-migration` branch (local + remote; fully merged into main) and removed the vestigial workflowr `docs/` (457 files — regenerable in Quarto; the `introgression_app` **source** is kept in `analysis/`). Renamed the local working folder `paint-workflowr` → `sepia` (git/remote intact; cosmetic).
