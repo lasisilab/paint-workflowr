@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>SEPIA — current state &amp; handoff</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<style>
+  :root {
+    --bg:#E8EAE6;--surface:#F6F7F4;--surface-2:#FCFDFB;--ink:#1A1E1C;--ink-2:#434A47;--ink-3:#6C736F;
+    --line:#D2D6CF;--line-2:#E1E4DD;--accent:#1E5A54;--accent-2:#2C7A70;--accent-soft:#DDE8E4;
+    --ok:#2F7D4F;--ok-soft:#DCEBE0;--warn:#8F6410;--warn-soft:#F0E6CE;--bad:#A5433A;--bad-soft:#F1DAD5;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  }
+  @media (prefers-color-scheme: dark){:root{
+    --bg:#12150F;--surface:#1A1E17;--surface-2:#20251D;--ink:#E7EAE4;--ink-2:#B0B7B0;--ink-3:#838A84;
+    --line:#2B3129;--line-2:#242A22;--accent:#63B6A9;--accent-2:#7FCBBE;--accent-soft:#182723;
+    --ok:#6FCB8F;--ok-soft:#16241A;--warn:#D6A63C;--warn-soft:#2A2312;--bad:#E28A7E;--bad-soft:#2C1815;}}
+  :root[data-theme="light"]{--bg:#E8EAE6;--surface:#F6F7F4;--surface-2:#FCFDFB;--ink:#1A1E1C;--ink-2:#434A47;--ink-3:#6C736F;--line:#D2D6CF;--line-2:#E1E4DD;--accent:#1E5A54;--accent-2:#2C7A70;--accent-soft:#DDE8E4;--ok:#2F7D4F;--ok-soft:#DCEBE0;--warn:#8F6410;--warn-soft:#F0E6CE;--bad:#A5433A;--bad-soft:#F1DAD5;}
+  :root[data-theme="dark"]{--bg:#12150F;--surface:#1A1E17;--surface-2:#20251D;--ink:#E7EAE4;--ink-2:#B0B7B0;--ink-3:#838A84;--line:#2B3129;--line-2:#242A22;--accent:#63B6A9;--accent-2:#7FCBBE;--accent-soft:#182723;--ok:#6FCB8F;--ok-soft:#16241A;--warn:#D6A63C;--warn-soft:#2A2312;--bad:#E28A7E;--bad-soft:#2C1815;}
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased;}
+  .docbar{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:10px 24px;font-family:var(--mono);font-size:.78rem;letter-spacing:.03em;}
+  .docbar a{color:var(--accent-2);text-decoration:none;} .docbar a:hover{text-decoration:underline;}
+  .docbar .b{color:var(--accent);font-weight:600;text-transform:uppercase;letter-spacing:.12em;}
+  main{max-width:900px;margin:0 auto;padding:14px 24px 90px;}
+  h1,h2,h3,h4{font-family:var(--serif);font-weight:600;line-height:1.15;letter-spacing:-.01em;}
+  h1{font-size:clamp(1.7rem,4vw,2.4rem);margin:24px 0 4px;}
+  h2{font-size:clamp(1.3rem,3vw,1.7rem);margin:34px 0 6px;padding-top:10px;border-top:1px solid var(--line-2);}
+  h3{font-size:1.15rem;margin:22px 0 4px;} h4{font-size:1rem;margin:16px 0 2px;}
+  p,li{max-width:80ch;} a{color:var(--accent-2);}
+  code{font-family:var(--mono);font-size:.85em;background:var(--surface-2);border:1px solid var(--line-2);padding:1px 5px;border-radius:5px;}
+  pre{overflow-x:auto;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-family:var(--mono);font-size:.8rem;line-height:1.5;}
+  pre code{background:none;border:none;padding:0;}
+  blockquote{margin:16px 0;padding:10px 16px;border-left:3px solid var(--accent);background:var(--accent-soft);border-radius:0 8px 8px 0;color:var(--ink-2);}
+  blockquote p{margin:6px 0;}
+  table{border-collapse:collapse;width:100%;font-size:.86rem;margin:16px 0;display:block;overflow-x:auto;}
+  th,td{padding:8px 11px;border:1px solid var(--line-2);text-align:left;vertical-align:top;}
+  thead th{background:var(--surface-2);font-family:var(--mono);font-size:.66rem;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-3);white-space:nowrap;}
+  hr{border:none;border-top:1px solid var(--line);margin:26px 0;}
+  ul,ol{padding-left:22px;} li{margin:3px 0;}
+  strong{color:var(--ink);}
+  .title{border-bottom:1px solid var(--line);padding-bottom:10px;}
+</style>
+</head>
+<body>
+<div class="docbar"><span class="b">SEPIA</span> &nbsp;·&nbsp; <a href="sepia-plan.html">← roadmap</a> &nbsp;·&nbsp; <a href="docs.html">all docs</a></div>
+<main>
+<h1 class="title">SEPIA — current state &amp; handoff</h1>
+<h1 id="sepia--current-state--handoff">SEPIA — current state &amp; handoff</h1>
+<p><em>Living snapshot, last updated 2026-07-24. Its job: let anyone (or a fresh, post-compaction
+session) pick up cold without losing decisions or context. Companions: <a href="changelog.html"><code>changelog.md</code></a>
+= dated log of what was done/found/decided; <a href="sepia-plan.html"><code>plan.md</code></a> = the forward roadmap; this file =
+the current-state + open-questions snapshot. <strong>Update this whenever a decision is made or a track finishes.</strong></em></p>
+<h2 id="orientation--where-everything-lives">Orientation — where everything lives</h2>
+<ul>
+<li><strong>GitHub repo:</strong> <code>lasisilab/sepia</code> (renamed from <code>paint-workflowr</code>). Branch: <code>main</code> only. This is the published anchor; Lily Heald's <strong>PAINT</strong> thesis is the prior work (her own repo is separate + untouched).</li>
+<li><strong>Laptop checkout:</strong> <code>~/GitHub/sepia</code> — note the on-disk folder may still literally be named <code>paint-workflowr</code> (a cosmetic rename is pending; git + remote are already <code>sepia</code>).</li>
+<li><strong>Cluster checkout (repo = workdir):</strong> <code>/nfs/turbo/lsa-tlasisi1/sepia</code> on UMich Great Lakes. It can now <strong>push</strong> (SSH remote + an SSH key SSO-authorized for <code>lasisilab</code>).</li>
+<li><strong>Shared lab genomes (outside the project, symlinked in as <code>resources/genomes</code>; reusable by other lab studies):</strong> <code>/nfs/turbo/lsa-tlasisi1/genomes/</code> → <code>reference/</code> (hs37d5, hg19), <code>SGDP/</code> (completed 159-sample reference), <code>archaic/{vcf,mask,bam}/</code> + <code>MANIFEST.tsv</code>.</li>
+<li><strong>Lily's original data (READ-ONLY seed; do not modify/delete — Tina will clean it later):</strong> <code>/nfs/turbo/lsa-tlasisi1/lheald_thesis/aDNA_data/</code>.</li>
+<li><strong>Git tracking model:</strong> big data is gitignored (<code>resources/</code>, <code>scratch/</code>, <code>*.bam/.bcf/.vcf.gz/.fa/.bed/.bim/.fam</code>…); small results sync via <strong><code>output/</code></strong>.</li>
+</ul>
+<h2 id="decisions-locked-in-with-the-why">Decisions locked in (with the why)</h2>
+<ol type="1">
+<li><strong>Project = SEPIA</strong> (<em>Systematic Evaluation of Pigmentation In Archaic hominins</em>); a QC-first re-analysis continuing PAINT.</li>
+<li><strong>Build strategy — report/integrate on hg38; genotypes physically stay hg19; bridge by a verified rsID↔︎hg19↔︎hg38 map.</strong> A genotype is build-independent, so this is lossless relabeling — <strong>no re-alignment</strong>. The genome-wide sanity PCA stays hg19 (a control). Genome-wide hg38 (B2b) is optional/deferred. <em>(This reconciled an earlier hg38-monolithic drift and a mid-session hg19 over-correction.)</em></li>
+<li><strong>Site build:</strong> migrated <strong>workflowr → Quarto</strong> (reconciled onto <code>main</code>); <strong>auto-deploy paused</strong> (<code>workflow_dispatch</code>) until the R-analysis pages are rendered (they need data / will be regenerated by SEPIA).</li>
+<li><strong>Trust:</strong> rebuild from raw/published sources with QC gates; do <strong>not</strong> trust Lily's derived data.</li>
+<li><strong>Sample subset</strong> (<a href="papers/SAMPLE_INCLUSION.html"><code>papers/SAMPLE_INCLUSION.md</code></a>): high-cov (Altai/Den5, Vindija 33.19, Denisova 3, Chagyrskaya 8, Denisova 25) → <strong>published snpAD VCFs, no BAM</strong>; Mez1 → its VCF; low-cov <strong>Les Cottés, Denisova 11, Goyet</strong> → <strong>BAMs</strong> (ANGSD GLs + mapDamage); <strong>excluded</strong>: El Sidrón (exome), Vindija 87 (= Vi 33.19), Mez2, Spy, HST, Scladina.</li>
+<li><strong>Modern reference:</strong> complete the 166-SGDP merge → <strong>159 usable</strong> (7 were truncated local copies, dropped). <strong>Sanity 1 PASSED</strong> — recovers textbook global structure.</li>
+<li><strong>Shared genomes = full canonical genomes</strong> (reusable), + <strong>cluster→GitHub push via SSH + SAML-SSO</strong>.</li>
+<li><strong>Merge architecture lesson:</strong> NFS punishes random seeks — stream-thin (<code>bcftools view -T</code>) in parallel, don't <code>merge -R</code> over scattered regions.</li>
+</ol>
+<h2 id="current-state">Current state</h2>
+<ul>
+<li><strong>DONE:</strong> SEPIA rename+rebrand; Quarto reconciled (deploy gated); cluster reorg + shared genomes; <strong>SGDP 159-sample reference + Sanity-1 PCA</strong> (<code>output/pca_wg/</code>); SGDP metadata (<code>data/sgdp_metadata.tsv</code>, Mallick 2016/Reich); <strong>archaic high-cov VCFs</strong> (5 genomes, ~258 GB) + Den25 masks; cluster push fixed.</li>
+<li><strong>IN FLIGHT (at this snapshot):</strong>
+<ul>
+<li><strong>Archaic acquisition round-2</strong> — SLURM <strong>job 54632488</strong> on the cluster: Chagyrskaya 8 VCFs+masks (http), Vindija-tree masks (per-genome subdirs), low-cov BAMs (https). Resume-safe; verify from <code>genomes/archaic/acquire_*.log</code>.</li>
+<li><strong>Background agent → <code>data/panel_hg19_hg38_map.tsv</code> (+ <code>.SOURCE.md</code>)</strong> — the B2a rsID↔︎hg19↔︎hg38 panel map + Q4 harmonization inputs. <em>(Review + commit when it lands.)</em></li>
+<li><strong>Background agent → <code>plan/papers/GENE_NETWORK_DATASETS.md</code></strong> — inventory of <code>pigmentation-gene-network</code> for the B1 gene-level integration. <em>(Review + commit when it lands.)</em></li>
+</ul></li>
+<li><strong>QUEUED:</strong> <strong>Sanity 2</strong> — project the (pseudo-haploid) archaic calls onto the modern PCA; needs a newer plink2 (<code>allele-wts</code>) or smartpca <code>lsqproject</code>; runs on the cluster (parallel to the download). Uses the pre-existing <code>ancient_sgdp_wg</code> calls — no new data.</li>
+<li><strong>BLOCKED (by the above):</strong> ANGSD GLs + mapDamage (Q7/Q8 — need the low-cov BAMs); the pigmentation-panel PCA + directional/HIrisPlex-S scores (B3/B4 — need the panel map + genotypes on hg38).</li>
+</ul>
+<h2 id="open-questions--awaiting-tina">Open questions / awaiting Tina</h2>
+<ul>
+<li><strong>Full 166 SGDP?</strong> The 7 dropped are truncated <em>local</em> copies; a clean re-acquire needs the <strong>CGC all-sites</strong> data (Seven Bridges login) — the public Reich route is <em>variant-only</em> and would bias them. <strong>Default: stay at 159</strong> (ample) unless you want the CGC pull.</li>
+<li><strong>Quarto site go-live timing</strong> — the R-analysis pages need their data (laptop-only) rendered, or SEPIA regenerates them; also <code>git rm docs/</code> (vestigial workflowr) + wire the <code>introgression_app</code> into Quarto before deploy.</li>
+<li><strong>Gene-network integration scope</strong> — how far to take the "bigger goal" (B3/B4/B6/B7) once the inventory lands.</li>
+<li><strong>Local folder rename</strong> (<code>~/GitHub/paint-workflowr</code> → <code>sepia</code>) — cosmetic, do at a break (git works regardless).</li>
+</ul>
+<h2 id="immediate-next-steps">Immediate next steps</h2>
+<ol type="1">
+<li>When the two agents land → review + <strong>commit</strong> <code>data/panel_hg19_hg38_map.tsv</code> and <code>plan/papers/GENE_NETWORK_DATASETS.md</code>.</li>
+<li>When acquisition round-2 lands → verify Chagyrskaya + masks + BAMs; commit the <code>MANIFEST</code> provenance (a first real cluster→GitHub push).</li>
+<li>Set up + run <strong>Sanity 2</strong> (archaic projection).</li>
+<li><strong>B2a</strong> — use the panel map to extract SGDP + archaic genotypes on hg38 and redo the pigmentation PCA (validates Lily) → then the gene-network integration.</li>
+</ol>
+<h2 id="cluster-access-rules-still-binding">Cluster-access rules (still binding)</h2>
+<p><code>ssh -O check greatlakes</code> before batched commands; <strong>one batched command</strong> at a time; never hammer; heavy work via <code>sbatch</code>, not the login node. Full rules in <a href="CLUSTER_ACCESS.html"><code>CLUSTER_ACCESS.md</code></a>.</p>
+</main>
+</body>
+</html>

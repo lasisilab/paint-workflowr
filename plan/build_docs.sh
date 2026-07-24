@@ -8,7 +8,7 @@ STYLE="assets/doc-style.html"
 
 # docs to convert (markdown -> sibling .html). sepia-plan.html + pipeline.html are hand-built; skip.
 DOCS=(
-  changelog.md rebuild_from_raw.md b2a_runbook.md cluster_inventory.md pipeline_workbook.md
+  STATE.md changelog.md rebuild_from_raw.md b2a_runbook.md cluster_inventory.md pipeline_workbook.md
   evaluation_plan.md CLUSTER_ACCESS.md papers/REFERENCES.md papers/VCF_QC.md papers/PIPELINE_QC_BY_PAPER.md
   papers/SAMPLE_INCLUSION.md verify/BUG_EVIDENCE.md
 )
