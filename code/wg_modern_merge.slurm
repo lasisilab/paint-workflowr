@@ -63,8 +63,15 @@ echo "  usable: $N   dropped: $ND"
 [ "$N" -ge 100 ] || { echo "!! only $N usable BCFs (<100); aborting"; exit 3; }
 
 # ---- 2. merge -> bgzipped VCF (plink2 --bcf is unimplemented in this build) ---------
-echo "===== 2. merge $N usable BCFs -> VCF.gz ====="
-bcftools merge -l sgdp_bcf.list --threads 8 -Oz -o merged_sgdp.vcf.gz
+# THIN FIRST: the subsets are all-sites at ~34.4M SGDP positions; merging all of them
+# x159 is enormous and slow (and the PCA only needs common SNPs after LD-pruning). Take
+# every 25th SGDP position (~1.4M) and merge ONLY those -> ~25x less data, minutes not
+# hours. Genome-wide random thinning preserves global structure; LD-pruning reduces it
+# further in step 4.
+echo "===== 2. thin SGDP positions, then merge $N usable BCFs -> VCF.gz ====="
+awk 'NR%25==0{print $1"\t"$2}' "$SRC/snps/sgdp.snps.pos" > thin.regions
+echo "  thinned merge positions: $(wc -l < thin.regions)  (of 34.4M)"
+bcftools merge -R thin.regions -l sgdp_bcf.list --threads 8 -Oz -o merged_sgdp.vcf.gz
 bcftools index -t -f merged_sgdp.vcf.gz
 NS=$(bcftools query -l merged_sgdp.vcf.gz | wc -l)
 echo "  merged samples: $NS   sites: $(bcftools index -n merged_sgdp.vcf.gz)"
