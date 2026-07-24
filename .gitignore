@@ -72,3 +72,20 @@ data/allele_ref.txt
 
 # Source-paper PDFs kept local (copyright — not redistributed on the public repo)
 plan/papers/pdf/
+
+# Quarto (migration from workflowr — see MIGRATION.md)
+/_site/
+/.quarto/
+# NOTE: _freeze/ is intentionally NOT ignored — it holds the rendered R outputs
+# that CI serves without re-running R. Commit it after a local `quarto render`.
+
+# ── SEPIA cluster-only data (lives inside the checkout on Great Lakes; never synced) ──
+/resources/
+/scratch/
+# safety net for large genomic binaries anywhere in the working tree
+*.bam
+*.bai
+*.bcf
+*.csi
+*.fa
+*.fai

@@ -1,3 +1,11 @@
+---
+title: "Data cleaning"
+---
+
+Prep step: filter the GWAS/EBI skin-pigmentation SNP export down to rows with a valid `rs…` ID (→ `pigmentation_snps.csv`), and merge two SGDP ("Simons") metadata tables into one (→ `modern_metadata.csv`).
+
+Paths are repo-relative (`data/…`); the Simons inputs (`simons_metadata.csv`, `simons_whole.csv`) are not committed — supply them in `data/` before rendering.
+
 ```{r setup, include = FALSE, message = FALSE, warning = FALSE}
 library(data.table)
 library(stringr)
@@ -9,7 +17,7 @@ library(dplyr)
 # Cleaning EBI SNP list
 
 ```{r cleaning}
-snps_set <- read.csv("/Users/lilyheald/Documents/GitHub/PAINT/data/skin_pigmentation.tsv", sep = "\t")
+snps_set <- read.csv("data/skin_pigmentation.tsv", sep = "\t")
 
 snps_set <- snps_set %>%
   mutate(
@@ -22,14 +30,14 @@ snps_set <- snps_set %>%
   ) %>%
   filter(!is.na(riskAllele))
 
-write.csv(snps_set, file = "/Users/lilyheald/Documents/GitHub/PAINT/data/pigmentation_snps.csv", row.names = FALSE)
+write.csv(snps_set, file = "data/pigmentation_snps.csv", row.names = FALSE)
 ```
 
 
 ```{r simons_meta}
-simons_sample <- read_csv("/Users/lilyheald/Documents/GitHub/PAINT/data/simons_metadata.csv",
+simons_sample <- read_csv("data/simons_metadata.csv",
                           show_col_types = FALSE)
-simons_whole <- read_csv("/Users/lilyheald/Documents/GitHub/PAINT/data/simons_whole.csv",
+simons_whole <- read_csv("data/simons_whole.csv",
                          show_col_types = FALSE)
 simons_whole <- simons_whole %>%
   group_by(sample_id) %>%
@@ -40,12 +48,5 @@ head(simons_sample)
 
 sample_metadata <- merge(simons_sample, simons_whole, by.x = "Sample_ID", by.y = "sample_id")
 sample_metadata
-write.csv(sample_metadata, file = "/Users/lilyheald/Documents/GitHub/PAINT/data/modern_metadata.csv", row.names = FALSE)
+write.csv(sample_metadata, file = "data/modern_metadata.csv", row.names = FALSE)
 ```
-
-
-
-
-
-
-

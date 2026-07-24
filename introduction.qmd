@@ -1,7 +1,7 @@
 ---
-title: "Introduction"
-output: html_document
+title: "Background"
 ---
+
 
 ```{r setup, include = FALSE, message = FALSE, warning = FALSE}
 library(ggplot2)
@@ -189,7 +189,7 @@ modern_samples <- data.frame(
            -13.0, 46.0, 47.5, 38.0) #N (+) S (-)
 )
 
-modern_sf <- st_as_sf(sites, coords = c("lon","lat"), crs = 4326)
+modern_sf <- st_as_sf(modern_samples, coords = c("lon","lat"), crs = 4326)
 
 ggplot() +
   geom_raster(data = uv_land_df, aes(x = lon, y = lat, fill = UVIndex)) +
@@ -281,7 +281,7 @@ Regional distributions of autosomal heterozygosity in SGDP regions. Boxplots sho
 
 # Distribution of pigmentation SNPs
 
-In order to allow for comparison of genome-wide ancestry patterns with structure driven by a targeted functional SNP set. For pigmentation-specific analyses, a panel consisting of 395 SNPs previously associated with pigmentation phenotypes published on the NHGRI-EBI Catalog of human genome-wide association studies was used. The by-chromosome distribution of these SNPs is shown below.
+To compare genome-wide ancestry patterns against the structure driven by a targeted functional SNP set, pigmentation-specific analyses used a panel of 222 SNPs previously associated with pigmentation phenotypes in the NHGRI-EBI Catalog of human genome-wide association studies. The by-chromosome distribution of these SNPs is shown below.
 
 The genetic architecture of human pigmentation is highly polygenic, involving many loci that contribute to variation in skin, hair, and eye color (E. Quillen et al., 2018). Genome-wide association studies have identified hundreds of single-nucleotide polymorphisms (SNPs) associated with pigmentation phenotypes. Many of these variants lie in genes involved in melanogenesis, melanosome biogenesis, melanosomal transport, or regulation of melanocyte signaling, including SLC45A2 (chr5), ADAMTS12 (chr5), TYR (chr11), SLC24A5 (chr15), OCA2 (chr15), HERC2 (chr15), and MC1R (chr16) (Sturm, 2009). The distribution of pigmentation associated SNPs across the genome is not uniform. 
 

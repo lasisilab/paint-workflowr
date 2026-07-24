@@ -1,0 +1,53 @@
+project:
+  type: website
+  output-dir: _site
+  # Execute code with the working directory at the project root, so the
+  # analysis pages' `data/...` paths resolve the same way workflowr's did
+  # (workflowr used knit_root_dir: ".").
+  execute-dir: project
+
+website:
+  title: "SEPIA"
+  description: "Pigmentation genetics in archaic hominins"
+  site-url: https://lasisilab.github.io/sepia/
+  repo-url: https://github.com/lasisilab/sepia
+  navbar:
+    title: "SEPIA"
+    left:
+      - href: index.qmd
+        text: Home
+      - href: introduction.qmd
+        text: Background
+      - href: depth.qmd
+        text: Depth
+      - href: pca.qmd
+        text: PCA
+      - href: about.qmd
+        text: About
+      - href: license.qmd
+        text: License
+    right:
+      - icon: github
+        href: https://github.com/lasisilab/sepia
+        aria-label: GitHub
+  # NOTE: cleaning.qmd renders but is intentionally left out of the navbar
+  # (it was not in the workflowr navbar either). The project plan is served at
+  # /plan/ by the publish workflow and is deliberately NOT linked here.
+
+format:
+  html:
+    theme: cosmo          # same theme workflowr used
+    toc: true
+    toc-depth: 2
+    code-fold: true
+    code-tools: true
+
+execute:
+  # freeze: auto  → use the committed _freeze/ results if present, otherwise
+  # execute. CI has no R/data, so the R-heavy pages (introduction, depth, pca,
+  # cleaning) MUST be rendered once locally (with R + the data files) to populate
+  # _freeze/, which is then committed. See MIGRATION.md. Prose pages (index,
+  # about, license) render fine without any of that.
+  freeze: auto
+  warning: false
+  message: false
