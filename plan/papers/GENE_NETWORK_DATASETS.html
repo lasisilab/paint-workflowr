@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Gene-network datasets inventory — `tinalasisi/pigmentation-gene-network`</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<style>
+  :root {
+    --bg:#E8EAE6;--surface:#F6F7F4;--surface-2:#FCFDFB;--ink:#1A1E1C;--ink-2:#434A47;--ink-3:#6C736F;
+    --line:#D2D6CF;--line-2:#E1E4DD;--accent:#1E5A54;--accent-2:#2C7A70;--accent-soft:#DDE8E4;
+    --ok:#2F7D4F;--ok-soft:#DCEBE0;--warn:#8F6410;--warn-soft:#F0E6CE;--bad:#A5433A;--bad-soft:#F1DAD5;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  }
+  @media (prefers-color-scheme: dark){:root{
+    --bg:#12150F;--surface:#1A1E17;--surface-2:#20251D;--ink:#E7EAE4;--ink-2:#B0B7B0;--ink-3:#838A84;
+    --line:#2B3129;--line-2:#242A22;--accent:#63B6A9;--accent-2:#7FCBBE;--accent-soft:#182723;
+    --ok:#6FCB8F;--ok-soft:#16241A;--warn:#D6A63C;--warn-soft:#2A2312;--bad:#E28A7E;--bad-soft:#2C1815;}}
+  :root[data-theme="light"]{--bg:#E8EAE6;--surface:#F6F7F4;--surface-2:#FCFDFB;--ink:#1A1E1C;--ink-2:#434A47;--ink-3:#6C736F;--line:#D2D6CF;--line-2:#E1E4DD;--accent:#1E5A54;--accent-2:#2C7A70;--accent-soft:#DDE8E4;--ok:#2F7D4F;--ok-soft:#DCEBE0;--warn:#8F6410;--warn-soft:#F0E6CE;--bad:#A5433A;--bad-soft:#F1DAD5;}
+  :root[data-theme="dark"]{--bg:#12150F;--surface:#1A1E17;--surface-2:#20251D;--ink:#E7EAE4;--ink-2:#B0B7B0;--ink-3:#838A84;--line:#2B3129;--line-2:#242A22;--accent:#63B6A9;--accent-2:#7FCBBE;--accent-soft:#182723;--ok:#6FCB8F;--ok-soft:#16241A;--warn:#D6A63C;--warn-soft:#2A2312;--bad:#E28A7E;--bad-soft:#2C1815;}
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased;}
+  .docbar{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:10px 24px;font-family:var(--mono);font-size:.78rem;letter-spacing:.03em;}
+  .docbar a{color:var(--accent-2);text-decoration:none;} .docbar a:hover{text-decoration:underline;}
+  .docbar .b{color:var(--accent);font-weight:600;text-transform:uppercase;letter-spacing:.12em;}
+  main{max-width:900px;margin:0 auto;padding:14px 24px 90px;}
+  h1,h2,h3,h4{font-family:var(--serif);font-weight:600;line-height:1.15;letter-spacing:-.01em;}
+  h1{font-size:clamp(1.7rem,4vw,2.4rem);margin:24px 0 4px;}
+  h2{font-size:clamp(1.3rem,3vw,1.7rem);margin:34px 0 6px;padding-top:10px;border-top:1px solid var(--line-2);}
+  h3{font-size:1.15rem;margin:22px 0 4px;} h4{font-size:1rem;margin:16px 0 2px;}
+  p,li{max-width:80ch;} a{color:var(--accent-2);}
+  code{font-family:var(--mono);font-size:.85em;background:var(--surface-2);border:1px solid var(--line-2);padding:1px 5px;border-radius:5px;}
+  pre{overflow-x:auto;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-family:var(--mono);font-size:.8rem;line-height:1.5;}
+  pre code{background:none;border:none;padding:0;}
+  blockquote{margin:16px 0;padding:10px 16px;border-left:3px solid var(--accent);background:var(--accent-soft);border-radius:0 8px 8px 0;color:var(--ink-2);}
+  blockquote p{margin:6px 0;}
+  table{border-collapse:collapse;width:100%;font-size:.86rem;margin:16px 0;display:block;overflow-x:auto;}
+  th,td{padding:8px 11px;border:1px solid var(--line-2);text-align:left;vertical-align:top;}
+  thead th{background:var(--surface-2);font-family:var(--mono);font-size:.66rem;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-3);white-space:nowrap;}
+  hr{border:none;border-top:1px solid var(--line);margin:26px 0;}
+  ul,ol{padding-left:22px;} li{margin:3px 0;}
+  strong{color:var(--ink);}
+  .title{border-bottom:1px solid var(--line);padding-bottom:10px;}
+</style>
+</head>
+<body>
+<div class="docbar"><span class="b">SEPIA</span> &nbsp;·&nbsp; <a href="../sepia-plan.html">← roadmap</a> &nbsp;·&nbsp; <a href="../docs.html">all docs</a></div>
+<main>
+<h1 class="title">Gene-network datasets inventory — `tinalasisi/pigmentation-gene-network`</h1>
+<h1 id="gene-network-datasets-inventory--tinalasisipigmentation-gene-network">Gene-network datasets inventory — <code>tinalasisi/pigmentation-gene-network</code></h1>
+<p><strong>Purpose.</strong> SEPIA item <strong>B1</strong> prep: catalog every dataset the public repo
+<code>tinalasisi/pigmentation-gene-network</code> provides, so we can plan folding its richer, gene-level
+pigmentation data into SEPIA (the "bigger goal" beyond Lily's 222-SNP panel).</p>
+<p><strong>Provenance of this inventory.</strong> Cloned <code>https://github.com/tinalasisi/pigmentation-gene-network</code>
+at commit <code>7618746</code> (2026-07-13). Every count, column, DOI, and build below was read directly from
+the repo's committed <code>DATA_SOURCES.md</code> and by inspecting each file's header + rows. Where a figure
+below differs from <code>DATA_SOURCES.md</code>, the file-actual value is given and the difference noted. Nothing
+here is inferred beyond what was read; missing items are called out as missing.</p>
+<hr />
+<h2 id="build-reality-read-this-first--it-is-not-all-hg38">Build reality (read this first — it is not "all hg38")</h2>
+<p><code>DATA_SOURCES.md</code> and SEPIA <code>plan.md</code> §5 both describe the repo as "hg38." That is true for the two
+pieces SEPIA most cares about, but <strong>not uniform</strong> across the repo:</p>
+<ul>
+<li><strong>hg38 (GRCh38):</strong> the GWAS Catalog pull (<code>pos_hg38</code> column, 1,065/1,072 rows populated) and the
+assembled gene network's gene coordinates (MyGene <code>genomic_pos</code>, default GRCh38). These are the
+datasets SEPIA calls the "four hg38 gene-network datasets."</li>
+<li><strong>hg19 (GRCh37):</strong> the per-paper SNP extractions carry <code>coord_build = GRCh37/hg19</code> and <code>pos_hg19</code>
+columns — Martin 2017, Kim 2024, the discordance/case-study loci, and the merged <code>nb4</code> base's
+curated-paper rows. In <code>nb4_unified_association_base.csv</code> the two builds sit <strong>side by side</strong>:
+1,072 rows tagged <code>GRCh38 (pos_hg38 … GWAS Catalog)</code> and 105 curated-paper rows mostly
+<code>GRCh37/hg19 (b37)</code>.</li>
+<li><strong>build-agnostic:</strong> HIrisPlex-S, Bajpai, Baxter, Raghunath, and the D'Arcy tables are keyed by
+<strong>rsID or gene symbol only</strong> — no genomic coordinates at all (except the assembled network's gene
+<code>chr</code>), so "build" does not apply until coordinates are attached.</li>
+</ul>
+<p><strong>Implication for SEPIA's B2 bridge:</strong> rsID is the only field common to all SNP-level sources, which
+is exactly why the B2 plan keys the hg19↔︎hg38 map on rsID. Coordinate columns in these files cannot be
+trusted to be hg38 without checking the per-file <code>coord_build</code> tag.</p>
+<hr />
+<h2 id="source-index-what-the-repo-provides">Source index (what the repo provides)</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Dataset</th>
+<th>Level</th>
+<th>File(s) read</th>
+<th>Rows</th>
+<th>rsIDs / genes</th>
+<th>Build</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>GWAS Catalog</strong> pigmentation (deduplicated)</td>
+<td><strong>SNP</strong></td>
+<td><code>data/external/gwas_catalog/pigmentation_gwas_catalog.csv</code></td>
+<td>1,072</td>
+<td>1,072 unique rsIDs</td>
+<td>hg38</td>
+</tr>
+<tr>
+<td>1b</td>
+<td><strong>GWAS Catalog</strong> pigmentation (granular, per-association)</td>
+<td><strong>SNP</strong></td>
+<td><code>data/external/gwas_catalog/gwas_pigmentation_associations.csv</code></td>
+<td>723</td>
+<td>472 unique rsIDs · 723 gene–SNP assoc</td>
+<td>(rsID + gene)</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>Bajpai 2023</strong> genome-wide CRISPR screen hits</td>
+<td><strong>gene</strong></td>
+<td><code>data/processed/bajpai2023_crispr_hits.csv</code></td>
+<td>169</td>
+<td>169 genes (Symbol+Ensembl)</td>
+<td>n/a</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>Baxter 2018/19</strong> curated cross-species gene list</td>
+<td><strong>gene</strong></td>
+<td><code>data/processed/baxter2018_650_pigmentation_genes.csv</code></td>
+<td>659</td>
+<td>635 w/ human symbol</td>
+<td>n/a</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>HIrisPlex-S</strong> (Chaitanya 2018) forensic markers</td>
+<td><strong>SNP</strong></td>
+<td><code>data/processed/hirisplexs2018_markers.csv</code></td>
+<td>36</td>
+<td>36 rsIDs → 16 genes</td>
+<td>rsID only</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>Raghunath 2015</strong> melanogenesis backbone</td>
+<td><strong>gene/network</strong></td>
+<td><code>data/processed/raghunath_nodes_typed.csv</code> + <code>..._edges_typed_signed.csv</code></td>
+<td>265 nodes / 429 edges</td>
+<td>265 nodes (genes+metabolites)</td>
+<td>n/a</td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>D'Arcy 2023</strong> OMIM disease genes (Table S1)</td>
+<td><strong>gene</strong></td>
+<td><code>data/processed/darcy2023_S1_disease_genes.csv</code></td>
+<td>278</td>
+<td>243 unique genes</td>
+<td>n/a</td>
+</tr>
+<tr>
+<td>6b</td>
+<td><strong>D'Arcy 2023</strong> STRING PPI network (Tables S4/S5)</td>
+<td><strong>gene/network</strong></td>
+<td><code>darcy2023_S4_string_edges.csv</code> / <code>_S5_string_nodes.csv</code></td>
+<td>4,668 edges / 452 nodes</td>
+<td>452 genes</td>
+<td>n/a</td>
+</tr>
+<tr>
+<td>6c</td>
+<td><strong>D'Arcy 2023</strong> mass-spec expression (Table S6) + sys/GO (S2)</td>
+<td><strong>gene</strong></td>
+<td><code>darcy2023_S6_massspec_expression.csv</code> / <code>_S2_sysgo_annotation.csv</code></td>
+<td>4,232 / 243</td>
+<td>4,232 / 243 genes</td>
+<td>n/a</td>
+</tr>
+<tr>
+<td>7</td>
+<td><strong>Assembled gene network</strong> (Notebook 2 output)</td>
+<td><strong>gene/network</strong></td>
+<td><code>data/processed/gene_network_nodes.csv</code> + <code>_edges.csv</code></td>
+<td>168 nodes / 309 edges</td>
+<td>168 genes (entrez/ensembl/chr)</td>
+<td>hg38 (gene coords)</td>
+</tr>
+<tr>
+<td>—</td>
+<td><strong>Additional SNP extractions</strong> (Martin, Kim, discordance/case studies)</td>
+<td><strong>SNP</strong></td>
+<td>see "Additional SNP-level sources" below</td>
+<td>—</td>
+<td>—</td>
+<td><strong>hg19</strong></td>
+</tr>
+</tbody>
+</table>
+<p>The five SEPIA §5 "four datasets + prediction panel" map to rows above: <strong>GWAS Catalog</strong> (1/1b),
+<strong>CRISPR</strong> = Bajpai (2), <strong>cross-species</strong> = Baxter (3), <strong>melanogenesis network</strong> = Raghunath (5),
+<strong>PPI expansion</strong> = D'Arcy (6/6b/6c), <strong>prediction panel</strong> = HIrisPlex-S (4).</p>
+<hr />
+<h2 id="per-dataset-detail">Per-dataset detail</h2>
+<h3 id="1--gwas-catalog--pigmentation-associations-snp-level-hg38">1 · GWAS Catalog — pigmentation associations (SNP-level, hg38)</h3>
+<ul>
+<li><strong>What:</strong> NHGRI-EBI GWAS Catalog lead SNPs for pigmentation (skin/eye/hair + photo-response),
+pulled over 10 frozen EFO/OBA/MONDO trait roots with child traits.</li>
+<li><strong>Provenance:</strong> live pull, download endpoint <code>https://www.ebi.ac.uk/gwas/api/search/downloads</code>,
+<code>queried_utc = 2026-07-12T14:46:57Z</code>; script <code>scripts/gwas_catalog.py v1.0</code>. Catalog citation
+<strong>Sollis 2023</strong>; EMBL-EBI terms (reuse with attribution) + per-row study PubMed IDs. Independently
+cross-checked via the human-genetics MCP connector.</li>
+<li><strong>File / format:</strong> <code>pigmentation_gwas_catalog.csv</code>, <strong>27 columns</strong> including
+<code>rsid, chr, pos_hg38, risk_allele, direction_raw, risk_freq, or_beta, pvalue, mapped_gene, reported_gene, pubmed, study_accession, ancestry, initial/replication ancestry+N, queried_utc</code>.
+<strong>Build GRCh38/hg38</strong> (<code>pos_hg38</code>; 1,065 of 1,072 rows populated — 7 rsIDs unmapped).</li>
+<li><strong>Counts:</strong> 1,072 rows = <strong>1,072 unique rsIDs</strong>. Payoff loci per <code>DATA_SOURCES.md</code>:
+MC1R 16 assoc · OCA2 67 · HERC2 65. p-values kept as <strong>strings</strong> (underflow-safe); no p-filter at pull.</li>
+<li><strong>1b (granular sibling):</strong> <code>gwas_pigmentation_associations.csv</code> — 723 rows,
+columns <code>efo_id, trait, gene, snp_id, pvalue</code>; <strong>472 unique rsIDs</strong>. This is the per-gene / per-association
+table (supports the ≥2-association replication filter → 83 replicated genes); the deduplicated 1,072 table
+cannot give per-gene counts.</li>
+</ul>
+<h3 id="2--bajpai-2023--genome-wide-crispr-screen-gene-level">2 · Bajpai 2023 — genome-wide CRISPR screen (gene-level)</h3>
+<ul>
+<li><strong>What:</strong> 169 genes whose CRISPR perturbation changed melanin content in a genome-wide screen
+(Table S1, "Low SSC FACS enriched genes"), called at <strong>q &lt; 0.10</strong> (reproduces the paper).</li>
+<li><strong>Provenance:</strong> DOI <strong>10.1126/science.ade6289</strong> · PMC10901463 · <em>Science</em> 381(6658):eade6289.
+Table S1 is a supplementary file of the <strong>CC BY 4.0</strong> PMC deposit (redistributable w/ attribution).</li>
+<li><strong>File / format:</strong> <code>bajpai2023_crispr_hits.csv</code>, 13 columns —
+<code>GeneID(Ensembl), Symbol, GeneInfo, Localization, Process, Function, Combined_casTLE_Effect, Combined_casTLE_Score, Minimum/Maximum_Effect_Estimate, p_value, q_value, direction_note</code>.</li>
+<li><strong>Counts:</strong> <strong>169 gene rows</strong>, no rsIDs (verified 0 rsID matches). All effects positive →
+uniform direction <em>perturbation reduces pigmentation</em>. TYR/SLC45A2/OCA2 are hits; MC1R/HERC2 are not.</li>
+</ul>
+<h3 id="3--baxter-201819--curated-cross-species-gene-list-gene-level">3 · Baxter 2018/19 — curated cross-species gene list (gene-level)</h3>
+<ul>
+<li><strong>What:</strong> curated pigmentation genes with mouse/zebrafish orthologs (Supporting Table S7,
+"650 Pigmentation Genes").</li>
+<li><strong>Provenance:</strong> DOI <strong>10.1111/pcmr.12743</strong> · PMID 30339321 · PMC10413850 · <em>Pigment Cell Melanoma Res</em>.
+Raw Table S7 is <strong>NOT redistributed</strong> (Wiley subscription VOR, no open-license copy; git-ignored);
+only the derived CSV is committed. Cite Baxter + OMIM/MGI/ZFIN/GO.</li>
+<li><strong>File / format:</strong> <code>baxter2018_650_pigmentation_genes.csv</code>, 12 columns —
+<code>Gene stable ID, Human gene symbol, Mouse gene symbol, Zebrafish gene symbol, Orthologs across species, Pigment phenotype location, GO, OMIM, MGI, ZFIN, PubMed, Species with phenotype</code>.</li>
+<li><strong>Counts:</strong> <strong>659 rows</strong>; <strong>635 carry a human gene symbol</strong> (the project's "Baxter 635"). Membership
+list only — no direction, no effect size, no rsIDs. OCA2, MC1R present; <strong>HERC2 absent</strong>.</li>
+</ul>
+<h3 id="4--hirisplex-s--chaitanya-2018-forensic-prediction-markers-snp-level-">4 · HIrisPlex-S — Chaitanya 2018 forensic prediction markers (SNP-level) ★</h3>
+<ul>
+<li><strong>What:</strong> the forensic skin/hair/eye-color prediction marker set.</li>
+<li><strong>Provenance:</strong> DOI <strong>10.1016/j.fsigen.2018.04.004</strong> · <em>FSI:Genetics</em> 35:123–135; skin-model
+coefficients from <strong>Walsh 2017</strong> (<em>Hum Genet</em> 136:847); web tool hirisplex.erasmusmc.nl. rsIDs are
+factual; model free to use via the Erasmus MC tool. Elsevier subscription for the PDF text.
+Extraction notebook <code>notebooks/01c_extract_hirisplex_markers.ipynb</code>; raw transcription
+<code>data/raw/hirisplexs2018/hirisplexs2018_markers_raw_transcribed.csv</code>.</li>
+<li><strong>File / format:</strong> <code>hirisplexs2018_markers.csv</code>, 3 columns — <code>gene, rsid, in_novel_17plex_skin</code>.</li>
+<li><strong>Counts:</strong> <strong>36 markers = 36 unique rsIDs → 16 genes.</strong> <code>DATA_SOURCES.md</code> documents this as 36/41
+(full 41 needs Table 1 transcription; one OCR fix <code>rs228479</code>→<code>rs2228479</code>, one dup dropped).</li>
+<li><strong>The 16 genes:</strong> ANKRD11, ASIP, BNC2, DEF8, HERC2, IRF4, KITLG, MC1R, OCA2, PIGU, RALY, SLC24A4,
+SLC24A5, SLC45A2, TYR, TYRP1.</li>
+<li><strong>MC1R red-hair set — complete (8 markers present):</strong> rs1805007, rs1805008, rs1805006, rs11547464,
+rs885479, rs2228479, rs1110400, rs3212355.</li>
+<li><strong>Blue-eye markers — present:</strong> HERC2 <strong>rs12913832</strong> ✓ and OCA2 <strong>rs1800407</strong> ✓ (also OCA2 rs1800414,
+rs1470608, rs1545397, rs12441727; HERC2 rs2238289/rs6497292/rs1129038/rs1667394/rs1667395).</li>
+<li>Companion <code>hirisplexs2018_population_provenance.json</code> documents the model training populations
+(eye ~97% European, hair ~85% European, skin most diverse) — relevant to SEPIA's European-training
+caveat for archaic prediction. <strong>Numeric prediction weights are NOT in this repo</strong> (must be pulled
+from Walsh 2017 / the web tool) — matches SEPIA plan's "optional fetch" note.</li>
+</ul>
+<h3 id="5--raghunath-2015--directed-melanogenesis-backbone-genenetwork">5 · Raghunath 2015 — directed melanogenesis backbone (gene/network)</h3>
+<ul>
+<li><strong>What:</strong> the mechanistic directed/signed melanogenesis network; the backbone everything else annotates.</li>
+<li><strong>Provenance:</strong> <em>BMC Res Notes</em> 2015, Additional Files 1–5 (CC BY 4.0; raw MOESM1–5 committed in
+<code>data/raw/raghunath2015/</code>). Prior in-lab SEPIA work.</li>
+<li><strong>Files / format:</strong> <code>raghunath_nodes_typed.csv</code> (cols <code>node, base, node_type, type_source, compartment, state, dual_compartment</code>) + <code>raghunath_edges_typed_signed.csv</code> (cols <code>source, target, verb, interaction_norm, sign, reference</code>).</li>
+<li><strong>Counts:</strong> <strong>265 nodes / 429 signed directed edges.</strong> Nodes are a mix of genes/proteins <strong>and
+metabolites</strong> (e.g. <code>4HNE_kerat</code>, <code>ACTH_kerat</code>) with compartment tags — <strong>not</strong> a clean gene list.
+No rsIDs. OCA2 present; HERC2 absent; MC1R present in both keratinocyte and melanocyte compartments.</li>
+</ul>
+<h3 id="6--darcy-2023--omim-disease-genes--string-ppi--mass-spec-genenetwork">6 · D'Arcy 2023 — OMIM disease genes + STRING PPI + mass-spec (gene/network)</h3>
+<ul>
+<li><strong>Provenance:</strong> DOI <strong>10.3390/bioengineering10010013</strong> · PMC9854651 · PMID 36671585 ·
+<em>Bioengineering</em> 10(1):13. <strong>CC BY 4.0</strong>, six supplementary tables committed at
+<code>data/raw/darcy2023/Table S1–S6 …FINAL.xlsx</code>; derived CSVs in <code>data/processed/darcy2023_S*.csv</code>
+(each with a <code>.meta.json</code>).</li>
+<li><strong>Table S1 — disease genes:</strong> <code>darcy2023_S1_disease_genes.csv</code>, cols <code>gene, disease_name, inheritance, phenotype_mim, phenotype_class, pigmentation_phenotype, source, citation, citation_source</code>.
+<strong>278 rows / 243 unique genes</strong> (<code>DATA_SOURCES.md</code> calls it the "243-gene OMIM disease-gene table" —
+the extra rows are multiple disease entries per gene; S2 sys/GO annotation confirms 243 unique genes).</li>
+<li><strong>Tables S4/S5 — STRING PPI:</strong> <code>darcy2023_S4_string_edges.csv</code> (<strong>4,668 edges</strong>, cols
+<code>node1, node2, combined_score, citation, citation_source</code>) + <code>darcy2023_S5_string_nodes.csv</code>
+(<strong>452 nodes</strong>, cols incl. <code>gene_string, process_1..3, main_location, disease_gene_flag/class, in_a375, in_fm55</code>). STRING <code>combined_score</code>, <strong>undirected/unsigned association — not mechanistic</strong>.
+(<code>DATA_SOURCES.md</code> states "451-node/4668-edge"; file has 452 node rows.)</li>
+<li><strong>Table S6 — mass-spec:</strong> <code>darcy2023_S6_massspec_expression.csv</code>, <strong>4,232 genes</strong>, A375/FM55 melanoma
+LFQ expression. <strong>Table S2 — sys/GO:</strong> 243 genes annotated.</li>
+<li>No rsIDs anywhere in the D'Arcy tables.</li>
+</ul>
+<h3 id="7--assembled-gene-network--notebook-2-output-genenetwork-hg38-gene-coords">7 · Assembled gene network — Notebook 2 output (gene/network, hg38 gene coords)</h3>
+<ul>
+<li><code>data/processed/gene_network_nodes.csv</code> (<strong>168 nodes</strong>, cols <code>gene, entrez, ensembl, chr, node_class, citation, citation_source</code>) + <code>gene_network_edges.csv</code> (<strong>309 edges</strong>, cols <code>source, target, sign, edge_class, via, citation, citation_source</code>). Gene identity via MyGene/UniProt (GRCh38 <code>chr</code>),
+release-gated so every node+edge carries a resolvable citation. No rsIDs. This is the repo's own
+integrated backbone (Raghunath + database enrichment); downstream NB5 layers Bajpai/Baxter/D'Arcy onto it.</li>
+</ul>
+<h3 id="additional-snp-level-sources-present-hg19--beyond-the-sepia-5-five">Additional SNP-level sources (present, hg19 — beyond the SEPIA §5 five)</h3>
+<p>These are extra rsID-bearing tables the repo also ships. They are <strong>hg19/GRCh37</strong> and are relevant to
+SEPIA only if the panel is extended beyond the §5 set:</p>
+<ul>
+<li><code>EXTRACT_Martin2017_loci.csv</code> — KhoeSan (San/Nama) skin-pigmentation GWAS, 51 rows / <strong>49 unique
+lead rsIDs</strong>, <code>pos_hg19</code>, San/W-African/N-European allele freqs. DOI 10.1016/j.cell.2017.11.015.</li>
+<li><code>EXTRACT_Kim2024_loci_v2.csv</code> — East-Asian skin-color GWAS, 26 rows / <strong>26 rsIDs</strong>,
+<code>coord_build = GRCh37/hg19</code>. DOI 10.1038/s41467-024-49031-4.</li>
+<li><code>discordance_loci.csv</code> — 105 rows / <strong>75 unique rsIDs</strong> (eye-color discordance case studies), hg19.</li>
+<li><code>data/case_records/EXTRACT_*_records.csv</code> (13 papers) + <code>data/processed/EXTRACT_*_loci_v2.csv</code>
+(15 papers) — per-individual validation case-study genotype records (Norton TYRP1, Morgan MC1R,
+Yang OCA2, etc.). SNP/genotype-level, hg19, small.</li>
+<li><code>nb4_unified_association_base.csv</code> — the <strong>merged SNP base</strong>: 1,177 rows / <strong>1,103 unique rsIDs</strong>
+= 1,072 GWAS-Catalog-dedup (hg38) + 105 curated-paper rows (mostly hg19), with <code>rsid</code>, <code>rsid_primary</code>,
+<code>pos_hg38</code>, <code>coord_build</code>, <code>gene_label</code>, <code>pvalue</code>, <code>population</code>, and cross-membership flags. This is
+the single most convenient union table if SEPIA wants "all pigmentation rsIDs the repo knows about."</li>
+</ul>
+<hr />
+<h2 id="integration-into-sepia">Integration into SEPIA</h2>
+<p>SEPIA's plan (<code>plan.md</code> B1/B3/B6) already splits sources into <strong>SNP-level</strong> (feed the directional
+polygenic score B3 + panel PCA) vs <strong>gene-level</strong> (gene-region PCA B4-ii, layered coverage B1,
+functional interpretation B7). This inventory confirms and quantifies that split.</p>
+<h3 id="a-rsid-snp-lists--fold-into-the-hg19hg38-panel-map-b2-extend-the-panel-b1b3">A. rsID SNP-lists → fold into the hg19↔︎hg38 panel map (B2), extend the panel (B1/B3)</h3>
+<p>These have rsIDs, so B2's <code>rsID ↔︎ hg19 ↔︎ hg38</code> map can resolve them and we can pull archaic/SGDP
+genotypes at each locus and report on hg38:</p>
+<table>
+<thead>
+<tr>
+<th>Source</th>
+<th style="text-align: right;">rsIDs</th>
+<th style="text-align: right;">In SEPIA 222-panel already</th>
+<th style="text-align: right;"><strong>New to the panel</strong></th>
+<th>Note</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>GWAS Catalog dedup</strong></td>
+<td style="text-align: right;">1,072</td>
+<td style="text-align: right;">212</td>
+<td style="text-align: right;"><strong>~860</strong></td>
+<td>Panel is essentially a subset of this pull; carries <code>or_beta</code>/<code>direction_raw</code> for B3 signs</td>
+</tr>
+<tr>
+<td><strong>HIrisPlex-S</strong></td>
+<td style="text-align: right;">36</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;"><strong>21</strong></td>
+<td>Adds the MC1R red-hair extras (rs1110400, rs2228479, rs3212355), OCA2 (rs1470608/rs1545397/rs12441727), TYR rs1393350, TYRP1 rs683, KITLG rs12821256, etc.</td>
+</tr>
+<tr>
+<td>Martin 2017 (KhoeSan)</td>
+<td style="text-align: right;">49</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">~34</td>
+<td>hg19 already — but African-ancestry axis; optional</td>
+</tr>
+<tr>
+<td>Kim 2024 (East Asian)</td>
+<td style="text-align: right;">26</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">~25</td>
+<td>hg19; almost entirely novel to the panel</td>
+</tr>
+<tr>
+<td>GWAS granular assoc</td>
+<td style="text-align: right;">472</td>
+<td style="text-align: right;">43</td>
+<td style="text-align: right;">—</td>
+<td>per-gene replication counts, not new loci</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Overlap method / caveat:</strong> SEPIA's 222 panel positions (<code>data/snps.txt</code>, hg38) map cleanly to 222
+rsIDs via <code>data/skin_pigmentation.tsv</code> (the panel's GWAS-Catalog source table, 226 unique rsIDs).
+Overlap counts above are rsID-set intersections against those 222 (identical whether measured against
+the 222-mapped set or the 226-rsID source table, ±1). So:</p>
+<ul>
+<li><strong>The GWAS Catalog pull is a strict superset of the current panel</strong> (212/222 present) and roughly
+<strong>quadruples</strong> the pigmentation SNP count (→ ~1,072). The 10 panel rsIDs not found are likely
+non-pigmentation/near-miss trait rows dropped by the repo's trait-root filter — worth a spot check
+before swapping the panel source.</li>
+<li><strong>HIrisPlex-S contributes 21 forensically-validated markers not in the panel</strong>, including the
+well-characterized MC1R red-hair and HERC2/OCA2 blue-eye variants SEPIA's Q9 concordance check
+(<code>plan.md</code> B7) explicitly wants. This is the highest-value small addition.</li>
+<li>Martin/Kim add non-European ancestry axes but are <strong>hg19</strong> — they still route through the same rsID
+bridge, so no extra machinery; include only if the phenotype scope broadens.</li>
+</ul>
+<p><strong>Build handling:</strong> fold these in by <strong>rsID</strong>, not by coordinate. Only the GWAS Catalog rows are
+natively hg38; HIrisPlex-S is rsID-only and Martin/Kim are hg19. B2's dual-coordinate dbSNP re-pull
+(keyed by rsID) is exactly the right mechanism, and <code>nb4_unified_association_base.csv</code> is a ready-made
+union to seed the map (it already stores <code>rsid</code>+<code>pos_hg38</code>+<code>coord_build</code> per row).</p>
+<h3 id="b-gene-level--b6-genes-vs-snps--b4-ii-gene-region-pca--b7-functional">B. Gene-level → B6 (genes-vs-SNPs) / B4-ii (gene-region PCA) / B7 (functional)</h3>
+<p>No per-SNP genotype; used as <strong>gene-region sets</strong> (take each gene's Ensembl start/end, use all variants
+inside) or for network/functional interpretation — never in the +1/−1 directional score:</p>
+<ul>
+<li><strong>Bajpai 169</strong> CRISPR hits — gene set + <code>Combined_casTLE_Effect</code> weight, uniform reduces-pigmentation sign.</li>
+<li><strong>Baxter 635</strong> curated genes — membership only.</li>
+<li><strong>Raghunath 265-node / 429-edge</strong> signed directed backbone — mechanism/direction context (nodes include
+metabolites; filter to gene nodes before coordinate lookup).</li>
+<li><strong>D'Arcy</strong> 243 disease genes + 452-node/4,668-edge STRING PPI (association, not mechanistic) + 4,232-gene
+mass-spec — disease-gene overlay + PPI-shell expansion for B7.</li>
+<li><strong>Assembled gene network</strong> (168 nodes, GRCh38 <code>chr</code>) — the repo's integrated backbone, already citation-gated.</li>
+</ul>
+<p>These need gene coordinates from Ensembl/BioMart on the matched build (SEPIA plan B4-ii/B6 already
+specify this); the repo supplies <strong>symbols/Ensembl IDs</strong>, not coordinates (except the 168-node assembled
+network's <code>chr</code>), so a coordinate join is required regardless.</p>
+<h3 id="c-what-is-not-in-the-repo-do-not-assume">C. What is NOT in the repo (do not assume)</h3>
+<ul>
+<li><strong>HIrisPlex-S numeric prediction weights</strong> — absent; pull from Walsh 2017 / Erasmus MC tool if
+quantitative color probabilities are needed (SEPIA already flags this as optional for archaics).</li>
+<li><strong>Per-SNP genotypes / allele-frequency panels for archaics</strong> — not here; that is SEPIA's own data.</li>
+<li><strong>Kim 2024 / Zhang 2018 full summary stats</strong> — only reference/derived extracts; full stats are
+publisher/dbGaP-gated.</li>
+<li>Coordinates for the gene-level sources — symbols only.</li>
+</ul>
+</main>
+</body>
+</html>

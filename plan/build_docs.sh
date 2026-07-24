@@ -10,7 +10,7 @@ STYLE="assets/doc-style.html"
 DOCS=(
   STATE.md changelog.md rebuild_from_raw.md b2a_runbook.md cluster_inventory.md pipeline_workbook.md
   evaluation_plan.md CLUSTER_ACCESS.md papers/REFERENCES.md papers/VCF_QC.md papers/PIPELINE_QC_BY_PAPER.md
-  papers/SAMPLE_INCLUSION.md verify/BUG_EVIDENCE.md
+  papers/SAMPLE_INCLUSION.md papers/GENE_NETWORK_DATASETS.md verify/BUG_EVIDENCE.md
 )
 
 for md in "${DOCS[@]}"; do

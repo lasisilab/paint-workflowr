@@ -28,14 +28,14 @@ the current-state + open-questions snapshot. **Update this whenever a decision i
 - **IN FLIGHT (at this snapshot):**
   - **Archaic acquisition round-2** — SLURM **job 54632488** on the cluster: Chagyrskaya 8 VCFs+masks (http), Vindija-tree masks (per-genome subdirs), low-cov BAMs (https). Resume-safe; verify from `genomes/archaic/acquire_*.log`.
   - **Background agent → `data/panel_hg19_hg38_map.tsv` (+ `.SOURCE.md`)** — the B2a rsID↔hg19↔hg38 panel map + Q4 harmonization inputs. *(Review + commit when it lands.)*
-  - **Background agent → `plan/papers/GENE_NETWORK_DATASETS.md`** — inventory of `pigmentation-gene-network` for the B1 gene-level integration. *(Review + commit when it lands.)*
+  - **DONE → [`papers/GENE_NETWORK_DATASETS.md`](papers/GENE_NETWORK_DATASETS.md)** — gene-network inventory. Key findings: the repo's **GWAS-Catalog pull is a superset of the 222 panel** (212/222 present + ~860 new rsIDs, hg38); **HIrisPlex-S adds 21 forensically-validated markers** not in the panel (MC1R red-hair set complete + HERC2 `rs12913832` / OCA2 `rs1800407`) — the highest-value small addition; gene-level tables (Baxter 635, Bajpai 169, Raghunath, D'Arcy) are **symbol-only → need a coordinate join** (feed B6/B7). Repo is **mixed-build** (GWAS hg38, paper extracts hg19) → fold in by **rsID** (exactly what B2's map does).
 - **QUEUED:** **Sanity 2** — project the (pseudo-haploid) archaic calls onto the modern PCA; needs a newer plink2 (`allele-wts`) or smartpca `lsqproject`; runs on the cluster (parallel to the download). Uses the pre-existing `ancient_sgdp_wg` calls — no new data.
 - **BLOCKED (by the above):** ANGSD GLs + mapDamage (Q7/Q8 — need the low-cov BAMs); the pigmentation-panel PCA + directional/HIrisPlex-S scores (B3/B4 — need the panel map + genotypes on hg38).
 
 ## Open questions / awaiting Tina
 - **Full 166 SGDP?** The 7 dropped are truncated *local* copies; a clean re-acquire needs the **CGC all-sites** data (Seven Bridges login) — the public Reich route is *variant-only* and would bias them. **Default: stay at 159** (ample) unless you want the CGC pull.
 - **Quarto site go-live timing** — the R-analysis pages need their data (laptop-only) rendered, or SEPIA regenerates them; also `git rm docs/` (vestigial workflowr) + wire the `introgression_app` into Quarto before deploy.
-- **Gene-network integration scope** — how far to take the "bigger goal" (B3/B4/B6/B7) once the inventory lands.
+- **Gene-network integration scope** — inventory done ([`papers/GENE_NETWORK_DATASETS.md`](papers/GENE_NETWORK_DATASETS.md)). Two calls: (a) extend the rsID↔hg19↔hg38 map from the 222 panel to the **GWAS superset (~1,072) + HIrisPlex-S (+21 markers)** as the SNP surface (same lookup — likely yes); (b) how far to take the gene-level analyses (Baxter 635 / Bajpai 169 / Raghunath / D'Arcy → B6/B7; symbol-only, need a coordinate join).
 - **Local folder rename** (`~/GitHub/paint-workflowr` → `sepia`) — cosmetic, do at a break (git works regardless).
 
 ## Immediate next steps
