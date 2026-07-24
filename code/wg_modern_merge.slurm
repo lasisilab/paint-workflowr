@@ -44,24 +44,39 @@ PLINK2="$(command -v plink2 || command -v plink)"
 echo "--- tools ---"; for t in bcftools plink2; do printf "%s: " "$t"; command -v "$t" || echo "(see PLINK2=$PLINK2)"; done
 [ -n "$PLINK2" ] || { echo "!! plink2 not found"; exit 2; }
 
-# ---- 1. gather the 166 per-sample SGDP BCFs ----------------------------------------
-ls "$SUB"/*_sgdp.bcf > sgdp_bcf.list 2>/dev/null
-N=$(wc -l < sgdp_bcf.list)
-echo "===== 1. merge $N modern SGDP per-sample BCFs ====="
-[ "$N" -ge 100 ] || { echo "!! only $N BCFs found (<100); aborting so we don't rebuild a partial ref"; exit 3; }
+# ---- 1. validate + index each subset BCF; drop truncated/unreadable ones -----------
+# (one download can be truncated — no BGZF EOF / missing .csi — and would abort the
+#  whole merge. Test each, index if needed, and exclude the unusable ones by name.)
+echo "===== 1. validate + index the per-sample SGDP BCFs ====="
+: > sgdp_bcf.list; : > sgdp_bcf.dropped
+for f in "$SUB"/*_sgdp.bcf; do
+  if bcftools view -h "$f" >/dev/null 2>&1; then
+    [ -f "$f.csi" ] || bcftools index -f "$f" 2>/dev/null
+    if [ -f "$f.csi" ]; then echo "$f" >> sgdp_bcf.list; else echo "$f (no index)" >> sgdp_bcf.dropped; fi
+  else
+    echo "$f (truncated/unreadable)" >> sgdp_bcf.dropped
+  fi
+done
+N=$(wc -l < sgdp_bcf.list); ND=$(wc -l < sgdp_bcf.dropped)
+echo "  usable: $N   dropped: $ND"
+[ "$ND" -gt 0 ] && { echo "  --- dropped (excluded from the reference) ---"; cat sgdp_bcf.dropped; }
+[ "$N" -ge 100 ] || { echo "!! only $N usable BCFs (<100); aborting"; exit 3; }
 
-# ---- 2. merge (missing stays missing; do NOT use -0 which would fabricate 0/0) ------
-bcftools merge -l sgdp_bcf.list --threads 8 -Ob -o merged_sgdp.bcf
-bcftools index -f merged_sgdp.bcf
-echo "  merged samples: $(bcftools query -l merged_sgdp.bcf | wc -l)"
-echo "  merged sites  : $(bcftools index -n merged_sgdp.bcf)"
+# ---- 2. merge -> bgzipped VCF (plink2 --bcf is unimplemented in this build) ---------
+echo "===== 2. merge $N usable BCFs -> VCF.gz ====="
+bcftools merge -l sgdp_bcf.list --threads 8 -Oz -o merged_sgdp.vcf.gz
+bcftools index -t -f merged_sgdp.vcf.gz
+NS=$(bcftools query -l merged_sgdp.vcf.gz | wc -l)
+echo "  merged samples: $NS   sites: $(bcftools index -n merged_sgdp.vcf.gz)"
+[ "$NS" -ge 100 ] || { echo "!! merge produced $NS samples (<100); aborting"; exit 4; }
 
-# ---- 3. BCF -> PLINK; set variant IDs to chr:pos:ref:alt (stable cross-dataset key) -
+# ---- 3. VCF -> PLINK; set variant IDs to chr:pos:ref:alt (stable cross-dataset key) -
 echo "===== 3. convert to PLINK (chr:pos:ref:alt IDs) ====="
-"$PLINK2" --bcf merged_sgdp.bcf \
+"$PLINK2" --vcf merged_sgdp.vcf.gz \
   --set-all-var-ids '@:#:$r:$a' --new-id-max-allele-len 100 missing \
   --max-alleles 2 --snps-only \
   --make-bed --out sgdp166
+[ -f sgdp166.fam ] || { echo "!! plink --make-bed failed"; exit 5; }
 echo "  sgdp166 samples: $(wc -l < sgdp166.fam)   variants: $(wc -l < sgdp166.bim)"
 
 # ---- 4. LD prune (same params as Lily's sgdp_merge_pca.slurm) -----------------------
@@ -69,19 +84,22 @@ echo "===== 4. LD prune (200 25 0.4) ====="
 "$PLINK2" --bfile sgdp166 --indep-pairwise 200 25 0.4 --out sgdp166_prune
 echo "  prune.in variants: $(wc -l < sgdp166_prune.prune.in 2>/dev/null || echo 0)"
 
-# ---- 5. projection-ready PCA: allele weights + allele freqs -------------------------
-echo "===== 5. PCA (10 PCs, allele-wts) + allele freqs ====="
-"$PLINK2" --bfile sgdp166 --extract sgdp166_prune.prune.in \
-  --freq --pca 10 allele-wts --threads 8 --out sgdp166_pca
-echo "  eigenvec samples: $(tail -n +2 sgdp166_pca.eigenvec 2>/dev/null | wc -l)"
-echo "  --- eigenvalues (want a clear PC1/PC2 gap, not a flat tail) ---"
-cat sgdp166_pca.eigenval 2>/dev/null
+# ---- 5. PCA (10 PCs) + allele freqs -------------------------------------------------
+# NB: no 'allele-wts' modifier — unsupported in this plink2 (v2.00a2LM, 2019). That's
+# only needed to PROJECT the archaics (Sanity check 2); the modern-only PCA here needs
+# just the eigenvec/eigenval. Projection weights will be produced then (newer plink2 or
+# smartpca lsqproject).
+echo "===== 5. PCA (10 PCs) + freqs ====="
+"$PLINK2" --bfile sgdp166 --extract sgdp166_prune.prune.in --freq --out sgdp166_freq
+"$PLINK2" --bfile sgdp166 --extract sgdp166_prune.prune.in --pca 10 --threads 8 --out sgdp166_pca
+[ -f sgdp166_pca.eigenvec ] || { echo "!! PCA failed"; exit 6; }
+echo "  eigenvec samples: $(tail -n +2 sgdp166_pca.eigenvec | wc -l)"
+echo "  --- eigenvalues (want a clear PC1/PC2 gap, not a flat tail) ---"; cat sgdp166_pca.eigenval
 
-# ---- 6. place outputs: reusable reference -> resources/ ; small coords -> output/ ----
-cp -f sgdp166.bed sgdp166.bim sgdp166.fam sgdp166_pca.eigenvec.allele sgdp166_pca.afreq "$RES/" 2>/dev/null || true
+# ---- 6. place outputs: reusable reference -> shared genomes ; coords -> output/ -----
+cp -f sgdp166.bed sgdp166.bim sgdp166.fam sgdp166_freq.afreq "$RES/" 2>/dev/null || true
 cp -f sgdp166_pca.eigenvec sgdp166_pca.eigenval "$OUT/" 2>/dev/null || true
 echo "  reference -> $RES ; PCA coords -> $OUT (tracked)"
 
 echo "===== modern merge done ====="; date
-echo "NEXT: reheader+intersect ancient_sgdp_wg -> project onto sgdp166_pca (no-mean-imputation),"
-echo "      per-sample call-rate QC, then the ancient+modern cluster figure."
+echo "NEXT: render sanity_sgdp_pca.qmd from output/pca_wg; then Sanity check 2 (project archaics)."
